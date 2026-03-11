@@ -1,0 +1,89 @@
+import type { WidgetConfig, WidgetDataSource } from '../types/dashboard.type'
+import type { WidgetSize } from '../types/dashboard.type'
+import { DEFAULT_LAYOUT } from '../consts/dashboard.const'
+
+export function useDashboard() {
+  const { data, refresh } = useAsyncData('dashboard-layout', () => $fetch('/api/dashboard/layout'), { server: false })
+  const layout = computed<WidgetConfig[]>(() => (data.value as WidgetConfig[]) ?? DEFAULT_LAYOUT)
+
+  const editing = ref(false)
+  const localLayout = ref<WidgetConfig[]>([])
+
+  function startEditing() {
+    localLayout.value = [...layout.value]
+    editing.value = true
+  }
+
+  const draggingIndex = ref<number | null>(null)
+
+  function onDragStart(index: number) {
+    draggingIndex.value = index
+  }
+
+  function onDragOver(e: DragEvent, index: number) {
+    e.preventDefault()
+    if (draggingIndex.value === null || draggingIndex.value === index) return
+    const arr = [...localLayout.value]
+    const [item] = arr.splice(draggingIndex.value, 1)
+    arr.splice(index, 0, item)
+    localLayout.value = arr
+    draggingIndex.value = index
+  }
+
+  function onDragEnd() {
+    draggingIndex.value = null
+  }
+
+  function removeWidget(index: number) {
+    localLayout.value.splice(index, 1)
+  }
+
+  function addWidget(widget: WidgetConfig) {
+    localLayout.value.push(widget)
+  }
+
+  function resizeWidget(index: number, size: WidgetSize) {
+    localLayout.value[index].size = size
+  }
+
+  function updateWidgetConfig(index: number, patch: { dataSource?: WidgetDataSource | undefined; title?: string | undefined }) {
+    if (index < 0 || index >= localLayout.value.length) return
+    localLayout.value[index] = { ...localLayout.value[index], ...patch }
+  }
+
+  const saving = ref(false)
+
+  async function saveLayout() {
+    saving.value = true
+    try {
+      await $fetch('/api/dashboard/layout', { method: 'POST', body: localLayout.value })
+      await refresh()
+      editing.value = false
+    } finally {
+      saving.value = false
+    }
+  }
+
+  function cancelEditing() {
+    editing.value = false
+    localLayout.value = []
+  }
+
+  return {
+    layout,
+    editing,
+    localLayout,
+    saving,
+    draggingIndex,
+    startEditing,
+    cancelEditing,
+    saveLayout,
+    onDragStart,
+    onDragOver,
+    onDragEnd,
+    removeWidget,
+    addWidget,
+    resizeWidget,
+    updateWidgetConfig,
+  }
+}

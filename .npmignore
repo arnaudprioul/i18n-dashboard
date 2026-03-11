@@ -1,0 +1,34 @@
+# Development files
+.nuxt/
+.output/
+node_modules/
+*.db
+*.db-shm
+*.db-wal
+
+# Source maps & logs
+*.log
+npm-debug.log*
+
+# IDE & OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+.github/
+
+# Tests
+test/
+tests/
+*.test.ts
+*.spec.ts
+coverage/
+
+# Misc
+.env
+.env.*
+*.local

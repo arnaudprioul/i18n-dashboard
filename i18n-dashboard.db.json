@@ -1,0 +1,4 @@
+{
+  "dbClient": "better-sqlite3",
+  "dbConnection": "/Users/aprioul/Projects/test/vue-i18n/i18n-dashboard.db"
+}
