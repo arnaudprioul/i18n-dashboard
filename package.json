@@ -40,6 +40,30 @@
       "optional": true
     }
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "assets/",
+    "bin/",
+    "components/",
+    "composables/",
+    "consts/",
+    "enums/",
+    "interfaces/",
+    "layouts/",
+    "middleware/",
+    "pages/",
+    "plugins/",
+    "server/",
+    "services/",
+    "types/",
+    "utils/",
+    "app.vue",
+    "nuxt.config.ts",
+    "tsconfig.json",
+    "i18n-dashboard.config.example.js"
+  ],
   "author": "i18n-dashboard contributors",
   "repository": {
     "type": "git",

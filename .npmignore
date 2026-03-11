@@ -32,3 +32,10 @@ coverage/
 .env
 .env.*
 *.local
+
+# Local config & lock files
+*.db.json
+package-lock.json
+
+# Claude
+.claude/
