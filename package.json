@@ -1,10 +1,10 @@
 {
-  "name": "vue-i18n-dashboard",
+  "name": "i18n-dashboard",
   "version": "0.1.0",
   "description": "A web dashboard to manage vue-i18n translation keys with database persistence",
   "type": "module",
   "bin": {
-    "vue-i18n-dashboard": "./bin/cli.mjs"
+    "i18n-dashboard": "./bin/cli.mjs"
   },
   "scripts": {
     "dev": "nuxt dev --port 3333",
@@ -40,7 +40,7 @@
       "optional": true
     }
   },
-  "author": "vue-i18n-dashboard contributors",
+  "author": "i18n-dashboard contributors",
   "repository": {
     "type": "git",
     "url": "https://github.com/arnaudprioul/i18n-dashboard.git"

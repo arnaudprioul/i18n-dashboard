@@ -71,7 +71,7 @@ export default defineEventHandler(async (event) => {
   try {
     await sendEmail({
       to: email,
-      subject: 'Votre accès à vue-i18n-dashboard',
+      subject: 'Votre accès à i18n-dashboard',
       html: inviteEmailHtml({
         name,
         email: email.toLowerCase().trim(),

@@ -1,10 +1,10 @@
-# vue-i18n-dashboard
+# i18n-dashboard
 
 > A full-featured web dashboard to manage [vue-i18n](https://vue-i18n.intlify.dev/) translation keys — inspired by [Storybook](https://storybook.js.org/): run it alongside your project, manage all your translations in one place, and consume them via a ready-to-use API.
 
-[![npm version](https://img.shields.io/npm/v/vue-i18n-dashboard)](https://www.npmjs.com/package/vue-i18n-dashboard)
-[![license](https://img.shields.io/npm/l/vue-i18n-dashboard)](./LICENSE)
-[![node](https://img.shields.io/node/v/vue-i18n-dashboard)](https://nodejs.org/)
+[![npm version](https://img.shields.io/npm/v/i18n-dashboard)](https://www.npmjs.com/package/i18n-dashboard)
+[![license](https://img.shields.io/npm/l/i18n-dashboard)](./LICENSE)
+[![node](https://img.shields.io/node/v/i18n-dashboard)](https://nodejs.org/)
 
 ---
 
@@ -71,13 +71,13 @@
 ### As a dev dependency (recommended — per project)
 
 ```bash
-npm install vue-i18n-dashboard --save-dev
+npm install i18n-dashboard --save-dev
 ```
 
 ### Globally (use across multiple projects)
 
 ```bash
-npm install -g vue-i18n-dashboard
+npm install -g i18n-dashboard
 ```
 
 ---
@@ -89,7 +89,7 @@ npm install -g vue-i18n-dashboard
 Run the interactive setup wizard from your project root:
 
 ```bash
-npx vue-i18n-dashboard init
+npx i18n-dashboard init
 ```
 
 This creates an `i18n-dashboard.config.js` file at the root of your project.
@@ -97,7 +97,7 @@ This creates an `i18n-dashboard.config.js` file at the root of your project.
 ### 2 — Start
 
 ```bash
-npx vue-i18n-dashboard start
+npx i18n-dashboard start
 ```
 
 Open **http://localhost:3333** in your browser.
@@ -112,7 +112,7 @@ The onboarding wizard will guide you through:
 If you already have `.json` locale files, import them into the database:
 
 ```bash
-npx vue-i18n-dashboard sync
+npx i18n-dashboard sync
 ```
 
 > The dashboard must be running for this command to work.
@@ -139,7 +139,7 @@ export const i18n = createI18n({
 {
   "scripts": {
     "dev": "vite",
-    "i18n": "vue-i18n-dashboard start"
+    "i18n": "i18n-dashboard start"
   }
 }
 ```
@@ -218,7 +218,7 @@ All options can be passed as environment variables (useful for CI/CD and Docker)
 ## CLI Commands
 
 ```
-vue-i18n-dashboard <command> [options]
+i18n-dashboard <command> [options]
 
 Commands:
   start     Start the dashboard server
@@ -240,10 +240,10 @@ Global options:
 
 ```bash
 # Start in background
-npx vue-i18n-dashboard start --detach
+npx i18n-dashboard start --detach
 
 # Stop the background process
-npx vue-i18n-dashboard stop
+npx i18n-dashboard stop
 ```
 
 ---
@@ -634,13 +634,13 @@ GET /api/fs/browse?path=/some/path   # List subdirectories; defaults to home dir
 
 ```bash
 # 1. Install
-npm install vue-i18n-dashboard --save-dev
+npm install i18n-dashboard --save-dev
 
 # 2. Initialize
-npx vue-i18n-dashboard init
+npx i18n-dashboard init
 
 # 3. Start
-npx vue-i18n-dashboard start
+npx i18n-dashboard start
 
 # 4. In the UI:
 #    - Add languages (Languages tab)
@@ -652,14 +652,14 @@ npx vue-i18n-dashboard start
 
 ```bash
 # 1. Install and initialize
-npm install vue-i18n-dashboard --save-dev
-npx vue-i18n-dashboard init
+npm install i18n-dashboard --save-dev
+npx i18n-dashboard init
 
 # 2. Start
-npx vue-i18n-dashboard start
+npx i18n-dashboard start
 
 # 3. Sync your existing locale files
-npx vue-i18n-dashboard sync
+npx i18n-dashboard sync
 
 # 4. All keys and translations are now in the database
 ```
@@ -702,8 +702,8 @@ npx vue-i18n-dashboard sync
 Contributions are welcome. Please open an issue before submitting a pull request for significant changes.
 
 ```bash
-git clone https://github.com/your-username/vue-i18n-dashboard
-cd vue-i18n-dashboard
+git clone https://github.com/your-username/i18n-dashboard
+cd i18n-dashboard
 npm install
 npm run dev
 ```

@@ -63,7 +63,7 @@ export function inviteEmailHtml({
   </div>
   <div style="background: #f9fafb; padding: 24px; border-radius: 0 0 8px 8px; border: 1px solid #e5e7eb;">
     <h2>Bonjour ${name},</h2>
-    <p>Un compte a été créé pour vous sur <strong>vue-i18n-dashboard</strong>.</p>
+    <p>Un compte a été créé pour vous sur <strong>i18n-dashboard</strong>.</p>
     <p>Vous avez le rôle <strong>${roleLabels[role] || role}</strong> ${scopeMsg}.</p>
     <div style="background: white; padding: 16px; border-radius: 6px; border: 1px solid #e5e7eb; margin: 20px 0;">
       <p style="margin: 4px 0;"><strong>Email :</strong> ${email}</p>

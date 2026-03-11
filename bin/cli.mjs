@@ -13,7 +13,7 @@ const packageRoot = resolve(_dirname, '..')
 const program = new Command()
 
 program
-    .name('vue-i18n-dashboard')
+    .name('i18n-dashboard')
     .description('Dashboard to manage vue-i18n translation keys')
     .version(JSON.parse(readFileSync(resolve(packageRoot, 'package.json'), 'utf-8')).version)
 
