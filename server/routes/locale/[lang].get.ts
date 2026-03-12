@@ -111,7 +111,7 @@ export default defineEventHandler(async (event) => {
       if (p) projectId = p.id
     }
 
-    // 2. Match by request Origin / Referer against project source_url
+    // 2. Match by request Origin / Referer against project source_url (supports multiple URLs, one per line)
     if (!projectId) {
       const requestOrigin = getHeader(event, 'origin') || getHeader(event, 'referer') || ''
       if (requestOrigin) {
@@ -122,7 +122,8 @@ export default defineEventHandler(async (event) => {
           .select('id', 'source_url')
 
         for (const p of projectsWithUrl) {
-          if (normalizeOrigin(p.source_url) === normalizedRequest) {
+          const urls = p.source_url.split(/[\n,]+/).map((u: string) => u.trim()).filter(Boolean)
+          if (urls.some((u: string) => normalizeOrigin(u) === normalizedRequest)) {
             projectId = p.id
             break
           }

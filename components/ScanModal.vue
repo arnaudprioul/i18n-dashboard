@@ -29,28 +29,12 @@
           </UFormField>
         </div>
 
-        <!-- Git mode -->
-        <div v-if="mode === 'git'" class="space-y-3">
-          <p class="text-sm text-gray-500 dark:text-gray-400">
-            {{ t('scan.git_hint', 'Enter the Git repository URL. The scanner will clone it and detect all translation key usages in source files.') }}
-          </p>
-          <UFormField :label="t('scan.git_url_label', 'Repository URL')" :hint="t('scan.git_url_hint', 'Example: https://github.com/user/repo.git')">
-            <UInput v-model="gitUrl" class="w-full" placeholder="https://github.com/user/repo.git" />
-          </UFormField>
-          <UFormField :label="t('scan.git_branch_label', 'Branch')" :hint="t('scan.git_branch_hint', 'Leave empty to use main')">
-            <UInput v-model="gitBranch" class="w-full" placeholder="main" />
-          </UFormField>
-          <UFormField :label="t('scan.git_token_label', 'Access token')" :hint="t('scan.git_token_hint', 'Required for private repositories')">
-            <UInput v-model="gitToken" type="password" class="w-full" :placeholder="t('scan.git_token_placeholder', 'ghp_xxxxxxxxxxxx')" />
-          </UFormField>
-        </div>
-
         <!-- URL mode -->
         <div v-if="mode === 'url'" class="space-y-3">
           <p class="text-sm text-gray-500 dark:text-gray-400">
             {{ t('scan.url_hint', 'Enter the base URL of your app. The scanner will fetch each configured locale file (en.json, fr.json…) and import all keys it finds.') }}
           </p>
-          <UFormField :label="t('scan.url_label', 'Base URL')" :hint="t('scan.url_hint2', 'Example: https://my-app.com')">
+          <UFormField :label="t('scan.url_label', 'Base URL')" :hint="t('scan.url_hint2', 'First configured URL is used by default')">
             <UInput v-model="remoteUrl" class="w-full" placeholder="https://my-app.com" />
           </UFormField>
           <div v-if="!project?.languages?.length" class="flex items-start gap-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg px-3 py-2 text-xs text-amber-700 dark:text-amber-300">
@@ -100,7 +84,7 @@
         <UButton color="neutral" variant="ghost" @click="open = false">{{ t('common.cancel', 'Cancel') }}</UButton>
         <UButton
           :loading="loading"
-          :disabled="isDisabled"
+          :disabled="mode === 'local' ? !localPath : !remoteUrl"
           icon="i-heroicons-magnifying-glass"
           @click="runScan"
         >
@@ -116,55 +100,32 @@ const { t } = useT()
 
 const props = defineProps<{
   projectId: number
-  project?: {
-    languages?: { code: string; name: string }[]
-    root_path?: string
-    source_url?: string
-    git_url?: string
-    git_token?: string
-    git_branch?: string
-  }
+  project?: { languages?: { code: string; name: string }[]; root_path?: string; source_url?: string }
 }>()
 
 const emit = defineEmits<{ done: [] }>()
 
 const open = defineModel<boolean>('open', { default: false })
 
-const mode = ref<'local' | 'git' | 'url'>('local')
+const mode = ref<'local' | 'url'>('local')
 const localPath = ref(props.project?.root_path ?? '')
-const gitUrl = ref(props.project?.git_url ?? '')
-const gitToken = ref(props.project?.git_token ?? '')
-const gitBranch = ref(props.project?.git_branch ?? '')
-const remoteUrl = ref(props.project?.source_url ?? '')
+const remoteUrl = ref(props.project?.source_url?.split(/[\n,]+/).map(u => u.trim()).filter(Boolean)[0] ?? '')
 const loading = ref(false)
 const result = ref<any>(null)
 const error = ref('')
 
 const modes = computed(() => [
   { value: 'local', label: t('scan.mode_local', 'Local'), icon: 'i-heroicons-computer-desktop' },
-  { value: 'git', label: t('scan.mode_git', 'Git'), icon: 'i-heroicons-code-bracket' },
   { value: 'url', label: t('scan.mode_url', 'Via URL'), icon: 'i-heroicons-globe-alt' },
 ])
-
-const isDisabled = computed(() => {
-  if (mode.value === 'local') return !localPath.value
-  if (mode.value === 'git') return !gitUrl.value
-  return !remoteUrl.value
-})
 
 watch(open, (val) => {
   if (val) {
     result.value = null
     error.value = ''
     localPath.value = props.project?.root_path ?? ''
-    gitUrl.value = props.project?.git_url ?? ''
-    gitToken.value = props.project?.git_token ?? ''
-    gitBranch.value = props.project?.git_branch ?? ''
-    remoteUrl.value = props.project?.source_url ?? ''
-    if (props.project?.git_url) mode.value = 'git'
-    else if (props.project?.root_path) mode.value = 'local'
-    else if (props.project?.source_url) mode.value = 'url'
-    else mode.value = 'local'
+    remoteUrl.value = props.project?.source_url?.split(/[\n,]+/).map(u => u.trim()).filter(Boolean)[0] ?? ''
+    mode.value = props.project?.root_path ? 'local' : props.project?.source_url ? 'url' : 'local'
   }
 })
 
@@ -179,9 +140,6 @@ async function runScan() {
         project_id: props.projectId,
         mode: mode.value,
         root_path: mode.value === 'local' ? localPath.value : undefined,
-        git_url: mode.value === 'git' ? gitUrl.value : undefined,
-        git_token: mode.value === 'git' ? gitToken.value : undefined,
-        git_branch: mode.value === 'git' ? (gitBranch.value || 'main') : undefined,
         url: mode.value === 'url' ? remoteUrl.value : undefined,
       },
     })
