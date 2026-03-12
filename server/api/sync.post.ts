@@ -109,7 +109,8 @@ export default defineEventHandler(async (event) => {
     }
 
     for (const lang of languages) {
-      const remoteData = await fetchRemoteLocale(project.source_url, lang.code)
+      const primaryUrl = project.source_url?.split(/[\n,]+/).map((u: string) => u.trim()).filter(Boolean)[0] || project.source_url
+      const remoteData = await fetchRemoteLocale(primaryUrl, lang.code)
       if (!remoteData) continue
 
       const flattened = flattenObject(remoteData, separator)

@@ -36,8 +36,8 @@
             <UFormField :label="t('settings.root_path', 'Root path')" :hint="t('settings.root_path_hint', 'Absolute path to the project root')">
               <PathPicker v-model="form.root_path" class="w-full" />
             </UFormField>
-            <UFormField :label="t('settings.source_url', 'Source URL')" :hint="t('settings.source_url_hint', 'App URL (for CORS auto-detection)')">
-              <UInput v-model="form.source_url" class="w-full" placeholder="https://my-app.com"/>
+            <UFormField class="col-span-2" :label="t('settings.source_url', 'App URLs')" :hint="t('settings.source_url_hint', 'One URL per line — all allowed for CORS, first used for scan/sync')">
+              <UTextarea v-model="form.source_url" class="w-full" :rows="3" placeholder="https://my-app.com&#10;https://staging.my-app.com"/>
             </UFormField>
             <UFormField :label="t('settings.locales_folder', 'Locales folder')" :hint="t('settings.locales_folder_hint', 'Relative to root')">
               <UInput v-model="form.locales_path" class="w-full" placeholder="src/locales"/>

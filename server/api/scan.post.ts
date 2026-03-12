@@ -15,7 +15,8 @@ export default defineEventHandler(async (event) => {
 
   // ── URL mode: fetch locale files and import keys ───────────────────────
   if (mode === 'url') {
-    const baseUrl = (bodyUrl || project.source_url || '').replace(/\/$/, '')
+    const rawUrl = bodyUrl || project.source_url?.split(/[\n,]+/).map((u: string) => u.trim()).filter(Boolean)[0] || ''
+    const baseUrl = rawUrl.replace(/\/$/, '')
     if (!baseUrl) throw createError({ statusCode: 400, message: 'No URL provided' })
 
     const languages = await db('languages').where({ project_id: Number(project_id) }).select('code')

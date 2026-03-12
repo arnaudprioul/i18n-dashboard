@@ -34,7 +34,7 @@
           <p class="text-sm text-gray-500 dark:text-gray-400">
             {{ t('scan.url_hint', 'Enter the base URL of your app. The scanner will fetch each configured locale file (en.json, fr.json…) and import all keys it finds.') }}
           </p>
-          <UFormField :label="t('scan.url_label', 'Base URL')" :hint="t('scan.url_hint2', 'Example: https://my-app.com')">
+          <UFormField :label="t('scan.url_label', 'Base URL')" :hint="t('scan.url_hint2', 'First configured URL is used by default')">
             <UInput v-model="remoteUrl" class="w-full" placeholder="https://my-app.com" />
           </UFormField>
           <div v-if="!project?.languages?.length" class="flex items-start gap-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg px-3 py-2 text-xs text-amber-700 dark:text-amber-300">
@@ -109,7 +109,7 @@ const open = defineModel<boolean>('open', { default: false })
 
 const mode = ref<'local' | 'url'>('local')
 const localPath = ref(props.project?.root_path ?? '')
-const remoteUrl = ref(props.project?.source_url ?? '')
+const remoteUrl = ref(props.project?.source_url?.split(/[\n,]+/).map(u => u.trim()).filter(Boolean)[0] ?? '')
 const loading = ref(false)
 const result = ref<any>(null)
 const error = ref('')
@@ -124,7 +124,7 @@ watch(open, (val) => {
     result.value = null
     error.value = ''
     localPath.value = props.project?.root_path ?? ''
-    remoteUrl.value = props.project?.source_url ?? ''
+    remoteUrl.value = props.project?.source_url?.split(/[\n,]+/).map(u => u.trim()).filter(Boolean)[0] ?? ''
     mode.value = props.project?.root_path ? 'local' : props.project?.source_url ? 'url' : 'local'
   }
 })
