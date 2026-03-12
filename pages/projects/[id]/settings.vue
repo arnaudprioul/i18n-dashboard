@@ -36,8 +36,17 @@
             <UFormField :label="t('settings.root_path', 'Root path')" :hint="t('settings.root_path_hint', 'Absolute path to the project root')">
               <PathPicker v-model="form.root_path" class="w-full" />
             </UFormField>
-            <UFormField :label="t('settings.source_url', 'Source URL')" :hint="t('settings.source_url_hint', 'App URL (for CORS auto-detection)')">
+            <UFormField :label="t('settings.source_url', 'Source URL')" :hint="t('settings.source_url_hint', 'App URL (for URL scan mode)')">
               <UInput v-model="form.source_url" class="w-full" placeholder="https://my-app.com"/>
+            </UFormField>
+            <UFormField :label="t('settings.git_url', 'Git repository URL')" :hint="t('settings.git_url_hint', 'Used for Git scan mode')">
+              <UInput v-model="form.git_url" class="w-full" placeholder="https://github.com/user/repo.git"/>
+            </UFormField>
+            <UFormField :label="t('settings.git_branch', 'Git branch')" :hint="t('settings.git_branch_hint', 'Default: main')">
+              <UInput v-model="form.git_branch" class="w-full" placeholder="main"/>
+            </UFormField>
+            <UFormField :label="t('settings.git_token', 'Git access token')" :hint="t('settings.git_token_hint', 'For private repositories')">
+              <UInput v-model="form.git_token" type="password" class="w-full" placeholder="ghp_xxxxxxxxxxxx"/>
             </UFormField>
             <UFormField :label="t('settings.locales_folder', 'Locales folder')" :hint="t('settings.locales_folder_hint', 'Relative to root')">
               <UInput v-model="form.locales_path" class="w-full" placeholder="src/locales"/>
@@ -369,6 +378,9 @@
     name: '',
     root_path: '',
     source_url: '',
+    git_url: '',
+    git_token: '',
+    git_branch: '',
     locales_path: 'src/locales',
     key_separator: '.',
     color: '#6366f1',
@@ -390,6 +402,9 @@
       form.value.name = val.name || ''
       form.value.root_path = val.root_path || ''
       form.value.source_url = val.source_url || ''
+      form.value.git_url = val.git_url || ''
+      form.value.git_token = val.git_token || ''
+      form.value.git_branch = val.git_branch || ''
       form.value.locales_path = val.locales_path || 'src/locales'
       form.value.key_separator = val.key_separator || '.'
       form.value.color = val.color || '#6366f1'
@@ -435,6 +450,9 @@ const i18n = createI18n({
           enable_number_formats: form.value.enable_number_formats,
           enable_datetime_formats: form.value.enable_datetime_formats,
           enable_modifiers: form.value.enable_modifiers,
+          git_url: form.value.git_url,
+          git_token: form.value.git_token,
+          git_branch: form.value.git_branch,
         },
       })
       await fetchProjects()

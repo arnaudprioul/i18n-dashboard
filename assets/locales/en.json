@@ -376,5 +376,20 @@
   "scan.unused": "unused",
   "scan.files_scanned": "files scanned",
   "scan.errors": "errors",
-  "scan.run": "Scan"
+  "scan.run": "Scan",
+  "scan.mode_git": "Git",
+  "scan.git_hint": "Enter the Git repository URL. The scanner will clone it and detect all translation key usages in source files.",
+  "scan.git_url_label": "Repository URL",
+  "scan.git_url_hint": "Example: https://github.com/user/repo.git",
+  "scan.git_branch_label": "Branch",
+  "scan.git_branch_hint": "Leave empty to use main",
+  "scan.git_token_label": "Access token",
+  "scan.git_token_hint": "Required for private repositories",
+  "scan.git_token_placeholder": "ghp_xxxxxxxxxxxx",
+  "settings.git_url": "Git repository URL",
+  "settings.git_url_hint": "Used for Git scan mode",
+  "settings.git_branch": "Git branch",
+  "settings.git_branch_hint": "Default: main",
+  "settings.git_token": "Git access token",
+  "settings.git_token_hint": "For private repositories"
 }

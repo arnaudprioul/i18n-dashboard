@@ -669,4 +669,15 @@ export async function initDb(): Promise<void> {
   await addColumnIfMissing(db, 'projects', 'enable_modifiers', (t) =>
     t.boolean('enable_modifiers').defaultTo(false),
   )
+
+  // ── migration: git columns on projects ───────────────────────────────────
+  await addColumnIfMissing(db, 'projects', 'git_url', (t) =>
+    t.text('git_url').nullable(),
+  )
+  await addColumnIfMissing(db, 'projects', 'git_token', (t) =>
+    t.text('git_token').nullable(),
+  )
+  await addColumnIfMissing(db, 'projects', 'git_branch', (t) =>
+    t.text('git_branch').nullable(),
+  )
 }
