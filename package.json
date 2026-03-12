@@ -1,5 +1,5 @@
 {
-  "name": "i18n-dashboard",
+  "name": "@arnaudprioul/i18n-dashboard",
   "version": "0.1.0",
   "description": "A web dashboard to manage vue-i18n translation keys with database persistence",
   "type": "module",
@@ -81,6 +81,9 @@
     "dashboard",
     "localization"
   ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "license": "MIT",
   "devDependencies": {
     "@iconify-json/heroicons": "^1.2.3",
