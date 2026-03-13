@@ -1,6 +1,6 @@
 # i18n-dashboard
 
-> A full-featured web dashboard to manage [vue-i18n](https://vue-i18n.intlify.dev/) translation keys — inspired by [Storybook](https://storybook.js.org/): run it alongside your project, manage all your translations in one place, and consume them via a ready-to-use API.
+> A full-featured web dashboard to manage [vue-i18n](https://vue-i18n.intlify.dev/) translation keys. Run it alongside your project, manage all your translations in one place, and consume them via a ready-to-use API.
 
 [![npm version](https://img.shields.io/npm/v/i18n-dashboard)](https://www.npmjs.com/package/i18n-dashboard)
 [![license](https://img.shields.io/npm/l/i18n-dashboard)](./LICENSE)
@@ -30,6 +30,7 @@
 
 ### Scan & Sync
 - **Source scan (local)** — browse your file system with the built-in folder picker, detect all `$t()`, `t()`, `<i18n-t>`, `v-t`, and `<i18n>` block usages across `.vue`, `.ts`, `.js` files
+- **Source scan (Git)** — clone any Git repository (public or private) using a URL, branch, and access token, then scan the source files without needing a local checkout
 - **Source scan (URL)** — fetch `en.json`, `fr.json`… from any remote URL and import all keys
 - **Sync** — import existing `.json` locale files (local path or remote URL) into the database
 - **Unused key detection** — keys not found in source files are automatically flagged
@@ -42,7 +43,7 @@
 - **Snippet generator** — generates a ready-to-paste `createI18n()` configuration block
 
 ### Projects
-- **Inline settings** — edit project name, root path, locales folder, key separator, color, and description directly from the project settings page
+- **Inline settings** — edit project name, root path, source URLs, Git repository info, locales folder, key separator, color, and description directly from the project settings page
 - **Folder browser** — navigate your file system visually to pick the project root path
 - **Project snapshot** — export a complete backup (config + languages + all keys + translations) as a single JSON file, import it on any other instance (merge or replace mode)
 
@@ -55,6 +56,7 @@
 - **Multi-database** — SQLite (default, zero config), PostgreSQL, MySQL/MariaDB
 - **Auto-migration** — schema is created and updated automatically on startup
 - **REST API** — full API for all operations, consume locale JSON from your Vue app
+- **CORS auto-detection** — multiple app URLs per project; all are checked for CORS on `/locale/[lang].json`
 - **Dark mode** — system preference + manual toggle
 
 ---
@@ -304,7 +306,7 @@ The `{count}` and `{n}` parameters are always available implicitly.
 
 ### Scan
 
-Click **Scan project** in the sidebar to open the scan modal:
+Click **Scan project** in the sidebar to open the scan modal. Three modes are available:
 
 **Local mode** — browse your file system with the folder picker and scan `.vue`, `.ts`, `.js` files for:
 - `$t('key')`, `$tc()`, `$te()`, `$tm()`
@@ -313,6 +315,10 @@ Click **Scan project** in the sidebar to open the scan modal:
 - `v-t="'key'"`
 - `<i18n>` SFC blocks
 
+**Git mode** — provide a repository URL, branch (default: `main`), and a personal access token. The dashboard clones the repo (shallow, depth 1) into a temp directory, scans the source files exactly like local mode, then cleans up automatically. Useful for CI environments or when you don't have a local checkout.
+
+> Required token permission: **Contents → Read** (GitHub fine-grained PAT) or **repo** scope (classic PAT).
+
 **URL mode** — enter the base URL of your app; the scanner fetches each configured locale file (`/locale/en.json`, `/locale/fr.json`…) and imports all keys it finds.
 
 Results (keys found, new keys, unused keys, files scanned) are displayed inline.
@@ -320,7 +326,9 @@ Results (keys found, new keys, unused keys, files scanned) are displayed inline.
 ### Settings
 
 Per-project settings (editable inline):
-- **Project name, root path, source URL, locales folder, key separator, color, description**
+- **Project name, root path, locales folder, key separator, color, description**
+- **App URLs** — one URL per line; all are accepted for CORS on `/locale/[lang].json`, the first is used for URL-based scan/sync
+- **Git repository** — URL, branch, and access token for Git scan mode (token stored in DB, never exposed in the UI after save)
 - **Advanced features** — enable/disable Number formats, Datetime formats, Custom modifiers pages
 - **Scanner** — configure excluded directories
 - **Google Translate** — optional API key
@@ -569,7 +577,7 @@ POST /api/translations/batch-translate   # Auto-translate all missing for a lang
 ### Scan & Sync
 
 ```http
-POST /api/scan   # body: { project_id, mode: 'local'|'url', root_path?, url? }
+POST /api/scan   # body: { project_id, mode: 'local'|'git'|'url', root_path?, url?, git_url?, git_branch?, git_token? }
 POST /api/sync   # body: { project_id }
 ```
 
@@ -702,7 +710,7 @@ npx i18n-dashboard sync
 Contributions are welcome. Please open an issue before submitting a pull request for significant changes.
 
 ```bash
-git clone https://github.com/your-username/i18n-dashboard
+git clone https://github.com/arnaudprioul/i18n-dashboard.git
 cd i18n-dashboard
 npm install
 npm run dev
