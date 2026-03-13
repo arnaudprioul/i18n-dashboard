@@ -37,6 +37,7 @@ jobs:
 
       - name: Publish to GitHub Packages
         run: |
+          npm pkg set name="@arnaudprioul/i18n-dashboard"
           echo "@arnaudprioul:registry=https://npm.pkg.github.com" > .npmrc
           echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
           npm publish
