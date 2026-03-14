@@ -7,7 +7,7 @@ import { scanProject, detectLanguages } from '../utils/scanner.uti'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const { project_id, mode = 'local', root_path: bodyRootPath, git_url: gitUrl, git_branch: gitBranch } = body
+  const { project_id, mode = 'local', root_path: bodyRootPath, git_url: gitUrl, git_branch: gitBranch, git_token: gitToken } = body
 
   if (!project_id) throw createError({ statusCode: 400, message: 'project_id is required' })
 
@@ -22,8 +22,16 @@ export default defineEventHandler(async (event) => {
 
     const tmpDir = mkdtempSync(resolve(tmpdir(), 'i18n-scan-'))
     try {
+      // Build authenticated URL if token provided
+      let cloneUrl = gitUrl
+      if (gitToken) {
+        const parsed = new URL(gitUrl)
+        parsed.username = 'oauth2'
+        parsed.password = gitToken
+        cloneUrl = parsed.toString()
+      }
       const branchArgs = gitBranch ? `--branch ${gitBranch} ` : ''
-      execSync(`git clone --depth 1 ${branchArgs}-- "${gitUrl}" "${tmpDir}"`, { timeout: 60_000, stdio: 'pipe' })
+      execSync(`git clone --depth 1 ${branchArgs}-- "${cloneUrl}" "${tmpDir}"`, { timeout: 60_000, stdio: 'pipe' })
     } catch (e: any) {
       rmSync(tmpDir, { recursive: true, force: true })
       throw createError({ statusCode: 400, message: `Git clone failed: ${e.message ?? 'unknown error'}` })

@@ -10,6 +10,7 @@ export default defineEventHandler(async () => {
     const langCount = await db('languages').where({ project_id: p.id }).count('* as count').first()
     return {
       ...p,
+      git_repos: p.git_repos ? JSON.parse(p.git_repos) : [],
       key_count: Number((keyCount as any)?.count || 0),
       language_count: Number((langCount as any)?.count || 0),
     }
