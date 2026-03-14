@@ -119,30 +119,45 @@ const TM_FUNCTION_PATTERN = /(?<![.$\w])tm\s*\(\s*['"`]([^'"`\n]+)['"`]/g
 // Pattern for t(variable) calls — argument is not a string literal
 const T_VARIABLE_PATTERN = /(?<![.$\w])t\s*\(\s*(?!['"`])([a-zA-Z_$][a-zA-Z0-9_$.?]*)/g
 
-// i18n key heuristic: dot-separated segments, e.g. "origam.pagination.ariaLabel.root"
+// i18n key heuristic: at least 2 dot-separated segments, alphanumeric/camelCase only
+// Rejects URLs, paths, CSS selectors, version strings, etc.
 const I18N_KEY_HEURISTIC = /^[a-z][a-zA-Z0-9]*(?:\.[a-zA-Z][a-zA-Z0-9]*){1,}$/
 
-// Extract string literals from withDefaults({ ... }) that look like i18n keys
-function extractPropDefaultKeys(content: string, filePath: string): KeyUsage[] {
+// Strings to exclude even if they match the heuristic (common false-positives)
+const EXCLUDE_PATTERNS = [
+  /^https?:\/\//,       // URLs
+  /\//,                  // Paths
+  /\s/,                  // Whitespace
+  /^\d/,                 // Starts with a digit
+  /@/,                   // Emails
+]
+
+function looksLikeI18nKey(value: string): boolean {
+  if (!I18N_KEY_HEURISTIC.test(value)) return false
+  if (EXCLUDE_PATTERNS.some(p => p.test(value))) return false
+  return true
+}
+
+/**
+ * When a file contains t(variable) calls, scan ALL string literals in the file
+ * and return those that match the i18n key heuristic.
+ * This handles: variable assignments, ternaries, arrays, objects, prop defaults, etc.
+ */
+function extractVariableKeyStrings(content: string, filePath: string): KeyUsage[] {
   const usages: KeyUsage[] = []
 
-  // Does the file have any t(variable) call?
+  // Only run if the file has at least one t(variable) call
   T_VARIABLE_PATTERN.lastIndex = 0
   if (!T_VARIABLE_PATTERN.test(content)) return usages
 
-  // Find the withDefaults block
-  const withDefaultsMatch = content.match(/withDefaults\s*\([\s\S]*?,\s*(\{[\s\S]*?\})\s*\)/)
-  if (!withDefaultsMatch) return usages
-
-  const defaultsBlock = withDefaultsMatch[1]
-  const stringPattern = /:\s*['"`]([^'"`\n]+)['"`]/g
-
+  // Collect all string literals in the file
+  const stringLiteralPattern = /['"`]([^'"`\n\\]{2,100})['"`]/g
   let match: RegExpExecArray | null
-  while ((match = stringPattern.exec(defaultsBlock)) !== null) {
+  while ((match = stringLiteralPattern.exec(content)) !== null) {
     const value = match[1].trim()
-    if (I18N_KEY_HEURISTIC.test(value)) {
-      const lineNumber = content.slice(0, content.indexOf(defaultsBlock) + match.index).split('\n').length
-      usages.push({ key: value, filePath, lineNumber, detectedFunction: 't(prop-default)' })
+    if (looksLikeI18nKey(value)) {
+      const lineNumber = content.slice(0, match.index).split('\n').length
+      usages.push({ key: value, filePath, lineNumber, detectedFunction: 't(variable)' })
     }
   }
 
@@ -256,9 +271,9 @@ function scanFile(filePath: string, content: string): KeyUsage[] {
     usages.push(...extractI18nBlock(content, filePath))
   }
 
-  // Prop defaults used as t() arguments
+  // String literals that look like i18n keys, found in files with t(variable) calls
   if (hasUseI18n) {
-    usages.push(...extractPropDefaultKeys(content, filePath))
+    usages.push(...extractVariableKeyStrings(content, filePath))
   }
 
   return usages
