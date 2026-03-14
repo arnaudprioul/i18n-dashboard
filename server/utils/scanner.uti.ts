@@ -108,13 +108,46 @@ const PATTERNS: Array<{ regex: RegExp; fn: string }> = [
   { regex: /v-t\s*=\s*'([^']+)'/g, fn: 'v-t' },
 ]
 
-// Pattern to detect useI18n() in a file — to allow t() scanning
-const USE_I18N_PATTERN = /useI18n\s*\(/
-// Pattern for t() only when useI18n is present
+// Pattern to detect any i18n composable in a file — to allow t() scanning
+const USE_I18N_PATTERN = /use(?:I18n|Locale|Trans(?:lations?)?)\s*\(/
+// Pattern for t() only when an i18n composable is present
 const T_FUNCTION_PATTERN = /(?<![.$\w])t\s*\(\s*['"`]([^'"`\n]+)['"`]/g
 const TC_FUNCTION_PATTERN = /(?<![.$\w])tc\s*\(\s*['"`]([^'"`\n]+)['"`]/g
 const TE_FUNCTION_PATTERN = /(?<![.$\w])te\s*\(\s*['"`]([^'"`\n]+)['"`]/g
 const TM_FUNCTION_PATTERN = /(?<![.$\w])tm\s*\(\s*['"`]([^'"`\n]+)['"`]/g
+
+// Pattern for t(variable) calls — argument is not a string literal
+const T_VARIABLE_PATTERN = /(?<![.$\w])t\s*\(\s*(?!['"`])([a-zA-Z_$][a-zA-Z0-9_$.?]*)/g
+
+// i18n key heuristic: dot-separated segments, e.g. "origam.pagination.ariaLabel.root"
+const I18N_KEY_HEURISTIC = /^[a-z][a-zA-Z0-9]*(?:\.[a-zA-Z][a-zA-Z0-9]*){1,}$/
+
+// Extract string literals from withDefaults({ ... }) that look like i18n keys
+function extractPropDefaultKeys(content: string, filePath: string): KeyUsage[] {
+  const usages: KeyUsage[] = []
+
+  // Does the file have any t(variable) call?
+  T_VARIABLE_PATTERN.lastIndex = 0
+  if (!T_VARIABLE_PATTERN.test(content)) return usages
+
+  // Find the withDefaults block
+  const withDefaultsMatch = content.match(/withDefaults\s*\([\s\S]*?,\s*(\{[\s\S]*?\})\s*\)/)
+  if (!withDefaultsMatch) return usages
+
+  const defaultsBlock = withDefaultsMatch[1]
+  const stringPattern = /:\s*['"`]([^'"`\n]+)['"`]/g
+
+  let match: RegExpExecArray | null
+  while ((match = stringPattern.exec(defaultsBlock)) !== null) {
+    const value = match[1].trim()
+    if (I18N_KEY_HEURISTIC.test(value)) {
+      const lineNumber = content.slice(0, content.indexOf(defaultsBlock) + match.index).split('\n').length
+      usages.push({ key: value, filePath, lineNumber, detectedFunction: 't(prop-default)' })
+    }
+  }
+
+  return usages
+}
 
 /**
  * Parse an <i18n> custom block from a .vue SFC and extract all keys
@@ -221,6 +254,11 @@ function scanFile(filePath: string, content: string): KeyUsage[] {
   // <i18n> blocks in .vue files
   if (filePath.endsWith('.vue')) {
     usages.push(...extractI18nBlock(content, filePath))
+  }
+
+  // Prop defaults used as t() arguments
+  if (hasUseI18n) {
+    usages.push(...extractPropDefaultKeys(content, filePath))
   }
 
   return usages
