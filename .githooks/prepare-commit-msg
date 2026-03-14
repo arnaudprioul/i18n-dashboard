@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Automatically pre-fill merge commit messages based on the branch being merged.
+#
+# Rules:
+#   feature/migrate/* → feat!: breaking change [major]
+#   feature/*         → feat: new feature [minor]
+#   hotfix/*          → fix: critical bug [patch]
+
+COMMIT_MSG_FILE="$1"
+COMMIT_SOURCE="$2"
+
+# Only act on merge commits
+if [[ "$COMMIT_SOURCE" != "merge" ]]; then
+  exit 0
+fi
+
+# Read the branch name from the auto-generated MERGE_MSG
+# Git writes something like: Merge branch 'feature/my-feature'
+MERGE_MSG=$(cat "$COMMIT_MSG_FILE")
+BRANCH=$(echo "$MERGE_MSG" | grep -oP "(?<=Merge branch ')[^']+")
+
+if [[ -z "$BRANCH" ]]; then
+  exit 0
+fi
+
+# Determine message based on branch pattern (most specific first)
+if echo "$BRANCH" | grep -qE "^feature/migrate/"; then
+  echo "feat!: breaking change [major]" > "$COMMIT_MSG_FILE"
+elif echo "$BRANCH" | grep -qE "^feature/"; then
+  echo "feat: new feature [minor]" > "$COMMIT_MSG_FILE"
+elif echo "$BRANCH" | grep -qE "^hotfix/"; then
+  echo "fix: critical bug [patch]" > "$COMMIT_MSG_FILE"
+fi
+
+exit 0
