@@ -174,7 +174,7 @@
     v-model:open="showScanModal"
     :project-id="currentProject.id"
     :project="currentProject"
-    @done="fetchProjects"
+    @done="() => { fetchProjects(); refreshStats() }"
   />
 
   <!-- Change password modal -->
@@ -262,7 +262,7 @@ function isActive(to: string) {
   return true
 }
 
-const { stats: statsData } = useStats()
+const { stats: statsData, refresh: refreshStats } = useStats()
 
 const projectNavigation = computed(() => {
   const id = route.params.id

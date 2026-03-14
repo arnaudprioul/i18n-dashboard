@@ -680,4 +680,10 @@ export async function initDb(): Promise<void> {
   await addColumnIfMissing(db, 'projects', 'git_branch', (t) =>
     t.text('git_branch').nullable(),
   )
+
+  // ── migration: git_repos column on projects ──────────────────────────────
+  // Stores a JSON array of { name, url, branch, token } objects
+  await addColumnIfMissing(db, 'projects', 'git_repos', (t) =>
+    t.text('git_repos').nullable(),
+  )
 }
