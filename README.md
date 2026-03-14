@@ -736,6 +736,14 @@ If both checks pass, the CI automatically bumps `package.json`, creates the git 
 
 ---
 
+## Support
+
+If this project saved you time, consider buying me a coffee ☕
+
+[![Donate with PayPal](https://img.shields.io/badge/Donate-PayPal-blue?logo=paypal)](https://www.paypal.com/paypalme/arnaudprioul)
+
+---
+
 ## License
 
 [MIT](./LICENSE)
