@@ -1,5 +1,5 @@
 <template>
-  <UModal v-model:open="open" :title="t('scan.modal_title', 'Scan project')" :ui="{ width: 'sm:max-w-lg' }">
+  <UModal v-model:open="open" :title="t('scan.modal_title', 'Scan project')" :ui="{ width: '48rem' }">
     <template #body>
       <div class="space-y-5">
 
