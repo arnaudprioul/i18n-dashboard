@@ -713,8 +713,26 @@ Contributions are welcome. Please open an issue before submitting a pull request
 git clone https://github.com/arnaudprioul/i18n-dashboard.git
 cd i18n-dashboard
 npm install
-npm run dev
+
+# Register the project git hooks (one-time, per clone)
+git config core.hooksPath .githooks
 ```
+
+### Commit message convention
+
+Every push to `main` must include at least one commit message with a version bump indicator:
+
+| Indicator | Bump | Example |
+|---|---|---|
+| `[patch]` | `0.3.8 → 0.3.9` | `fix: correct typo in error message [patch]` |
+| `[minor]` | `0.3.8 → 0.4.0` | `feat: add git scan mode [minor]` |
+| `[major]` | `0.3.8 → 1.0.0` | `feat!: breaking API change [major]` |
+
+The pre-push hook will block the push if:
+- No `[major]`, `[minor]`, or `[patch]` indicator is found in the commits
+- `README.md` has not been updated
+
+If both checks pass, the CI automatically bumps `package.json`, creates the git tag, and triggers the npm publish workflow.
 
 ---
 
