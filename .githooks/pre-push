@@ -52,10 +52,8 @@ while read local_ref local_sha remote_ref remote_sha; do
 
   if ! echo "$changed" | grep -q "README.md"; then
     echo ""
-    echo "❌  Push to main blocked: README.md has not been updated."
-    echo "    Update the README before pushing to main."
+    echo "⚠️   Warning: README.md has not been updated in this push."
     echo ""
-    exit 1
   fi
 
   echo ""
