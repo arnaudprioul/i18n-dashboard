@@ -29,24 +29,17 @@
           </UFormField>
         </div>
 
-        <!-- URL mode -->
-        <div v-if="mode === 'url'" class="space-y-3">
+        <!-- Git mode -->
+        <div v-if="mode === 'git'" class="space-y-3">
           <p class="text-sm text-gray-500 dark:text-gray-400">
-            {{ t('scan.url_hint', 'Enter the base URL of your app. The scanner will fetch each configured locale file (en.json, fr.json…) and import all keys it finds.') }}
+            {{ t('scan.git_hint', 'Enter the URL of a Git repository. The dashboard will clone it and scan source files for translation keys.') }}
           </p>
-          <UFormField :label="t('scan.url_label', 'Base URL')" :hint="t('scan.url_hint2', 'Example: https://my-app.com')">
-            <UInput v-model="remoteUrl" class="w-full" placeholder="https://my-app.com" />
+          <UFormField :label="t('scan.git_url_label', 'Repository URL')" :hint="t('scan.git_url_hint', 'Example: https://github.com/user/my-app')">
+            <UInput v-model="gitUrl" class="w-full" placeholder="https://github.com/user/my-app" />
           </UFormField>
-          <div v-if="!project?.languages?.length" class="flex items-start gap-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg px-3 py-2 text-xs text-amber-700 dark:text-amber-300">
-            <UIcon name="i-heroicons-exclamation-triangle" class="shrink-0 mt-0.5" />
-            {{ t('scan.url_no_langs', 'No languages configured on this project yet. Add languages first so the scanner knows which locale files to fetch.') }}
-          </div>
-          <div v-else class="flex flex-wrap gap-1.5">
-            <UBadge v-for="lang in project.languages" :key="lang.code" color="neutral" variant="soft" size="xs">
-              <UIcon name="i-heroicons-document-text" class="mr-1 opacity-60" />
-              {{ lang.code }}.json
-            </UBadge>
-          </div>
+          <UFormField :label="t('scan.git_branch_label', 'Branch')" :hint="t('scan.git_branch_hint', 'Leave empty to use the default branch')">
+            <UInput v-model="gitBranch" class="w-full" placeholder="main" />
+          </UFormField>
         </div>
 
         <!-- Results -->
@@ -84,7 +77,7 @@
         <UButton color="neutral" variant="ghost" @click="open = false">{{ t('common.cancel', 'Cancel') }}</UButton>
         <UButton
           :loading="loading"
-          :disabled="mode === 'local' ? !localPath : !remoteUrl"
+          :disabled="mode === 'local' ? !localPath : !gitUrl"
           icon="i-heroicons-magnifying-glass"
           @click="runScan"
         >
@@ -100,23 +93,24 @@ const { t } = useT()
 
 const props = defineProps<{
   projectId: number
-  project?: { languages?: { code: string; name: string }[]; root_path?: string; source_url?: string }
+  project?: { languages?: { code: string; name: string }[]; root_path?: string }
 }>()
 
 const emit = defineEmits<{ done: [] }>()
 
 const open = defineModel<boolean>('open', { default: false })
 
-const mode = ref<'local' | 'url'>('local')
+const mode = ref<'local' | 'git'>('local')
 const localPath = ref(props.project?.root_path ?? '')
-const remoteUrl = ref(props.project?.source_url ?? '')
+const gitUrl = ref('')
+const gitBranch = ref('')
 const loading = ref(false)
 const result = ref<any>(null)
 const error = ref('')
 
 const modes = computed(() => [
   { value: 'local', label: t('scan.mode_local', 'Local'), icon: 'i-heroicons-computer-desktop' },
-  { value: 'url', label: t('scan.mode_url', 'Via URL'), icon: 'i-heroicons-globe-alt' },
+  { value: 'git', label: t('scan.mode_git', 'Git repo'), icon: 'i-heroicons-code-bracket' },
 ])
 
 watch(open, (val) => {
@@ -124,8 +118,9 @@ watch(open, (val) => {
     result.value = null
     error.value = ''
     localPath.value = props.project?.root_path ?? ''
-    remoteUrl.value = props.project?.source_url ?? ''
-    mode.value = props.project?.root_path ? 'local' : props.project?.source_url ? 'url' : 'local'
+    gitUrl.value = ''
+    gitBranch.value = ''
+    mode.value = props.project?.root_path ? 'local' : 'git'
   }
 })
 
@@ -140,7 +135,8 @@ async function runScan() {
         project_id: props.projectId,
         mode: mode.value,
         root_path: mode.value === 'local' ? localPath.value : undefined,
-        url: mode.value === 'url' ? remoteUrl.value : undefined,
+        git_url: mode.value === 'git' ? gitUrl.value : undefined,
+        git_branch: mode.value === 'git' && gitBranch.value ? gitBranch.value : undefined,
       },
     })
     emit('done')
