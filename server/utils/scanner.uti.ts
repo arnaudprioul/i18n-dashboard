@@ -108,13 +108,61 @@ const PATTERNS: Array<{ regex: RegExp; fn: string }> = [
   { regex: /v-t\s*=\s*'([^']+)'/g, fn: 'v-t' },
 ]
 
-// Pattern to detect useI18n() in a file — to allow t() scanning
-const USE_I18N_PATTERN = /useI18n\s*\(/
-// Pattern for t() only when useI18n is present
+// Pattern to detect any i18n composable in a file — to allow t() scanning
+const USE_I18N_PATTERN = /use(?:I18n|Locale|Trans(?:lations?)?)\s*\(/
+// Pattern for t() only when an i18n composable is present
 const T_FUNCTION_PATTERN = /(?<![.$\w])t\s*\(\s*['"`]([^'"`\n]+)['"`]/g
 const TC_FUNCTION_PATTERN = /(?<![.$\w])tc\s*\(\s*['"`]([^'"`\n]+)['"`]/g
 const TE_FUNCTION_PATTERN = /(?<![.$\w])te\s*\(\s*['"`]([^'"`\n]+)['"`]/g
 const TM_FUNCTION_PATTERN = /(?<![.$\w])tm\s*\(\s*['"`]([^'"`\n]+)['"`]/g
+
+// Pattern for t(variable) calls — argument is not a string literal
+const T_VARIABLE_PATTERN = /(?<![.$\w])t\s*\(\s*(?!['"`])([a-zA-Z_$][a-zA-Z0-9_$.?]*)/g
+
+// i18n key heuristic: at least 2 dot-separated segments, alphanumeric/camelCase only
+// Rejects URLs, paths, CSS selectors, version strings, etc.
+const I18N_KEY_HEURISTIC = /^[a-z][a-zA-Z0-9]*(?:\.[a-zA-Z][a-zA-Z0-9]*){1,}$/
+
+// Strings to exclude even if they match the heuristic (common false-positives)
+const EXCLUDE_PATTERNS = [
+  /^https?:\/\//,       // URLs
+  /\//,                  // Paths
+  /\s/,                  // Whitespace
+  /^\d/,                 // Starts with a digit
+  /@/,                   // Emails
+]
+
+function looksLikeI18nKey(value: string): boolean {
+  if (!I18N_KEY_HEURISTIC.test(value)) return false
+  if (EXCLUDE_PATTERNS.some(p => p.test(value))) return false
+  return true
+}
+
+/**
+ * When a file contains t(variable) calls, scan ALL string literals in the file
+ * and return those that match the i18n key heuristic.
+ * This handles: variable assignments, ternaries, arrays, objects, prop defaults, etc.
+ */
+function extractVariableKeyStrings(content: string, filePath: string): KeyUsage[] {
+  const usages: KeyUsage[] = []
+
+  // Only run if the file has at least one t(variable) call
+  T_VARIABLE_PATTERN.lastIndex = 0
+  if (!T_VARIABLE_PATTERN.test(content)) return usages
+
+  // Collect all string literals in the file
+  const stringLiteralPattern = /['"`]([^'"`\n\\]{2,100})['"`]/g
+  let match: RegExpExecArray | null
+  while ((match = stringLiteralPattern.exec(content)) !== null) {
+    const value = match[1].trim()
+    if (looksLikeI18nKey(value)) {
+      const lineNumber = content.slice(0, match.index).split('\n').length
+      usages.push({ key: value, filePath, lineNumber, detectedFunction: 't(variable)' })
+    }
+  }
+
+  return usages
+}
 
 /**
  * Parse an <i18n> custom block from a .vue SFC and extract all keys
@@ -221,6 +269,11 @@ function scanFile(filePath: string, content: string): KeyUsage[] {
   // <i18n> blocks in .vue files
   if (filePath.endsWith('.vue')) {
     usages.push(...extractI18nBlock(content, filePath))
+  }
+
+  // String literals that look like i18n keys, found in files with t(variable) calls
+  if (hasUseI18n) {
+    usages.push(...extractVariableKeyStrings(content, filePath))
   }
 
   return usages

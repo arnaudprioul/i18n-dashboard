@@ -85,9 +85,9 @@
             <UIcon class="text-xs" name="i-heroicons-folder"/>
             {{ project.locales_path }}
           </span>
-          <span v-if="project.source_url" class="flex items-center gap-1 text-blue-400">
-            <UIcon class="text-xs" name="i-heroicons-globe-alt"/>
-            <span class="truncate max-w-[160px]">{{ project.source_url }}</span>
+          <span v-if="project.git_repos?.length" class="flex items-center gap-1 text-blue-400">
+            <UIcon class="text-xs" name="i-heroicons-code-bracket"/>
+            {{ project.git_repos.length }} {{ t('projects.git_repos_count', 'git repo(s)') }}
           </span>
           <span class="flex items-center gap-1">
             <UIcon class="text-xs" name="i-heroicons-key"/>
@@ -138,45 +138,9 @@
             <UInput v-model="form.name" class="w-full" :placeholder="t('projects.name_placeholder', 'My Vue App')"/>
           </UFormField>
 
-          <!-- Source mode toggle -->
-          <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 space-y-3">
-            <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">{{ t('projects.source_title', 'File source') }}</p>
-
-            <UFormField :hint="t('projects.local_path_hint', 'Absolute path on the server where the dashboard runs')" :label="t('projects.local_path_label', 'Local path (scan + sync)')">
-              <PathPicker v-model="form.root_path" class="w-full" />
-            </UFormField>
-
-            <div class="flex items-center gap-2 text-xs text-gray-400">
-              <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700"/>
-              <span>{{ t('common.or', 'or') }}</span>
-              <div class="flex-1 h-px bg-gray-200 dark:bg-gray-700"/>
-            </div>
-
-            <UFormField
-                :hint="t('projects.remote_url_hint', 'URL of a remote project exposing /locale/[lang].json — used for sync only')"
-                :label="t('projects.remote_url_label', 'Remote URL (sync only)')"
-            >
-              <UInput v-model="form.source_url" class="w-full" placeholder="https://my-app.com"/>
-            </UFormField>
-
-            <!-- Source mode indicator -->
-            <div v-if="!form.root_path && !form.source_url" class="flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400">
-              <UIcon name="i-heroicons-exclamation-triangle" class="shrink-0"/>
-              {{ t('projects.no_source_warning', 'Without a source configured, scan and sync will be disabled.') }}
-            </div>
-            <div v-else-if="form.root_path && !form.source_url" class="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400">
-              <UIcon name="i-heroicons-check-circle" class="shrink-0"/>
-              {{ t('projects.local_active', 'Scan + Sync enabled via local path.') }}
-            </div>
-            <div v-else-if="!form.root_path && form.source_url" class="flex items-center gap-1.5 text-xs text-blue-600 dark:text-blue-400">
-              <UIcon name="i-heroicons-information-circle" class="shrink-0"/>
-              {{ t('projects.remote_active', 'Sync enabled via remote URL. Scan disabled (requires local path).') }}
-            </div>
-            <div v-else class="flex items-center gap-1.5 text-xs text-green-600 dark:text-green-400">
-              <UIcon name="i-heroicons-check-circle" class="shrink-0"/>
-              {{ t('projects.both_active', 'Scan + Sync enabled (local path takes priority).') }}
-            </div>
-          </div>
+          <UFormField :hint="t('projects.local_path_hint', 'Absolute path on the server where the dashboard runs')" :label="t('projects.local_path_label', 'Local path (optional)')">
+            <PathPicker v-model="form.root_path" class="w-full" />
+          </UFormField>
 
           <UFormField :hint="t('projects.locales_path_hint', 'Relative to the project root')" :label="t('projects.locales_path_label', 'Locales folder')">
             <UInput v-model="form.locales_path" class="w-full" placeholder="src/locales"/>
@@ -245,7 +209,6 @@ const deletingProject = ref<any>(null)
 const form = ref({
   name: '',
   root_path: '',
-  source_url: '',
   locales_path: 'src/locales',
   key_separator: '.',
   color: 'primary',
@@ -280,7 +243,7 @@ const {
 
 function openAdd() {
   editingProject.value = null
-  form.value = { name: '', root_path: '', source_url: '', locales_path: 'src/locales', key_separator: '.', color: 'primary', description: '' }
+  form.value = { name: '', root_path: '', locales_path: 'src/locales', key_separator: '.', color: 'primary', description: '' }
   showModal.value = true
 }
 
@@ -289,7 +252,6 @@ function openEdit(project: any) {
   form.value = {
     name: project.name,
     root_path: project.root_path || '',
-    source_url: project.source_url || '',
     locales_path: project.locales_path,
     key_separator: project.key_separator,
     color: project.color || 'primary',

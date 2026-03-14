@@ -4,12 +4,9 @@ import { resolve } from 'path'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const { name, root_path, source_url, locales_path, key_separator, color, description } = body
+  const { name, root_path, locales_path, key_separator, color, description, git_repos } = body
 
   if (!name?.trim()) throw createError({ statusCode: 400, message: 'name is required' })
-  if (!root_path?.trim() && !source_url?.trim()) {
-    throw createError({ statusCode: 400, message: 'root_path or source_url is required' })
-  }
 
   let absolutePath = ''
   if (root_path?.trim()) {
@@ -22,12 +19,12 @@ export default defineEventHandler(async (event) => {
   const db = getDb()
   const [id] = await db('projects').insert({
     name: name.trim(),
-    root_path: absolutePath,
-    source_url: source_url?.trim() || null,
+    root_path: absolutePath || null,
     locales_path: locales_path || 'src/locales',
     key_separator: key_separator || '.',
     color: color || 'primary',
     description: description || null,
+    git_repos: git_repos ? JSON.stringify(git_repos) : null,
   })
 
   return db('projects').where({ id }).first()
