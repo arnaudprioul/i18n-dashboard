@@ -739,3 +739,7 @@ If both checks pass, the CI automatically bumps `package.json`, creates the git 
 ## License
 
 [MIT](./LICENSE)
+
+---
+
+Made with ❤️ by [arnaudprioul](https://github.com/arnaudprioul)
