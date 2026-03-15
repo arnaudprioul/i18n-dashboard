@@ -63,8 +63,17 @@ jobs:
       - name: Bump version and create tag
         if: steps.semver.outputs.bump != 'none'
         run: |
-          npm version ${{ steps.semver.outputs.bump }} --message "chore: bump version to %s [skip ci]"
-          echo "NEW_TAG=$(git describe --tags --abbrev=0)" >> "$GITHUB_ENV"
+          npm version ${{ steps.semver.outputs.bump }} --no-git-tag-version
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          NEW_TAG="v${NEW_VERSION}"
+          echo "NEW_TAG=${NEW_TAG}" >> "$GITHUB_ENV"
+          git add package.json package-lock.json
+          git commit -m "chore: bump version to ${NEW_TAG} [skip ci]"
+          if git rev-parse "${NEW_TAG}" >/dev/null 2>&1; then
+            echo "Tag ${NEW_TAG} already exists, skipping tag creation"
+          else
+            git tag "${NEW_TAG}" -m "${NEW_TAG}"
+          fi
 
       - name: Push commit and tag
         if: steps.semver.outputs.bump != 'none'
