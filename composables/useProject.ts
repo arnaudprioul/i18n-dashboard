@@ -14,14 +14,17 @@ export interface Project {
   key_count?: number
   language_count?: number
   is_system?: boolean
+  git_repo?: { name?: string; url: string; branch?: string; token?: string } | null
 }
 
 export function canScanProject(project: Project): boolean {
-  return !!project.root_path && project.root_path !== '__DASHBOARD_UI__'
+  if (project.root_path && project.root_path !== '__DASHBOARD_UI__') return true
+  return !!project.git_repo?.url
 }
 
 export function canSyncProject(project: Project): boolean {
-  return (!!project.root_path && project.root_path !== '__DASHBOARD_UI__') || !!project.source_url
+  if (project.root_path && project.root_path !== '__DASHBOARD_UI__') return true
+  return !!project.git_repo?.url
 }
 
 /**

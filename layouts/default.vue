@@ -1,4 +1,11 @@
 <template>
+  <!-- Global loading overlay -->
+  <Transition name="fade">
+    <div v-if="!appReady || pending" class="fixed inset-0 z-50 flex items-center justify-center bg-white/60 dark:bg-gray-950/60 backdrop-blur-sm">
+      <UIcon name="i-heroicons-arrow-path" class="text-4xl text-primary-500 animate-spin" />
+    </div>
+  </Transition>
+
   <div class="min-h-screen bg-gray-50 dark:bg-gray-950 flex">
 
     <!-- ── Sidebar ─────────────────────────────────────────────────────────── -->
@@ -209,7 +216,10 @@ const route = useRoute()
 const router = useRouter()
 const toast = useToast()
 const colorMode = useColorMode()
-const { currentProject, projects: projectsData, systemProject, fetchProjects, visibleProjects: userProjects, syncing, syncProject } = useProject()
+const { currentProject, projects: projectsData, systemProject, fetchProjects, visibleProjects: userProjects, syncing, syncProject, pending } = useProject()
+
+const appReady = ref(false)
+watch(pending, (val) => { if (!val) appReady.value = true }, { immediate: true })
 const showScanModal = ref(false)
 const { currentUser, fetchMe, logout, changePassword: changePasswordFn, canManageProject, canApprove } = useAuth()
 const { t, lang: uiLang, setLang, getLangs } = useT()
@@ -325,3 +335,14 @@ async function doSync() {
   await syncProject(currentProject.value)
 }
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

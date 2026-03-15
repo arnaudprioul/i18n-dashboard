@@ -143,8 +143,11 @@
             <!-- Status dot -->
             <UTooltip :text="statusLabel(lang.code)" :delay-duration="300">
               <span
-                class="mt-1.5 w-2 h-2 rounded-full shrink-0"
-                :class="[statusDot(lang.code), canClickStatus(lang.code) ? 'cursor-pointer' : 'cursor-default']"
+                class="mt-1.5 w-2 h-2 rounded-full shrink-0 transition-opacity"
+                :class="[
+                  cyclingStatusLang === lang.code ? 'bg-gray-300 dark:bg-gray-600 animate-pulse cursor-wait' : statusDot(lang.code),
+                  canClickStatus(lang.code) && cyclingStatusLang !== lang.code ? 'cursor-pointer' : 'cursor-default'
+                ]"
                 @click="cycleStatus(lang.code)"
               />
             </UTooltip>
@@ -275,6 +278,8 @@ const editingCell = ref<string | null>(null)
 const editValues = ref<Record<string, string>>({})
 const saving = ref<string | null>(null)
 const translateLoading = ref<string | null>(null)
+const cyclingStatusLang = ref<string | null>(null)
+const deletingKey = ref(false)
 const showHistory = ref(false)
 const historyTranslationId = ref<number | null>(null)
 const textareaWrappers = ref<Record<string, HTMLElement | null>>({})
@@ -387,7 +392,7 @@ function canClickStatus(langCode: string): boolean {
 
 async function cycleStatus(langCode: string) {
   const tr = props.translationKey.translations[langCode]
-  if (!tr?.value) return
+  if (!tr?.value || cyclingStatusLang.value) return
 
   const current = (tr.status as TRANSLATION_STATUS) || TRANSLATION_STATUS.DRAFT
   let next: TRANSLATION_STATUS
@@ -400,6 +405,7 @@ async function cycleStatus(langCode: string) {
     next = current === TRANSLATION_STATUS.DRAFT ? TRANSLATION_STATUS.REVIEWED : TRANSLATION_STATUS.DRAFT
   }
 
+  cyclingStatusLang.value = langCode
   try {
     await $fetch('/api/translations/status', {
       method: 'POST',
@@ -409,6 +415,8 @@ async function cycleStatus(langCode: string) {
     refreshNuxtData('project-stats')
   } catch (e: any) {
     toast.add({ title: t('common.error', 'Error'), description: e.data?.message || e.message, color: 'error' })
+  } finally {
+    cyclingStatusLang.value = null
   }
 }
 
@@ -529,6 +537,7 @@ const rowActions = computed(() => {
 })
 
 async function deleteKey() {
+  deletingKey.value = true
   try {
     await $fetch(`/api/keys/${props.translationKey.id}`, { method: 'DELETE' })
     toast.add({ title: t('translations.key_deleted', 'Key deleted'), color: 'success' })
@@ -536,6 +545,8 @@ async function deleteKey() {
     refreshNuxtData('project-stats')
   } catch (e: any) {
     toast.add({ title: t('common.error', 'Error'), description: e.data?.message || e.message, color: 'error' })
+  } finally {
+    deletingKey.value = false
   }
 }
 </script>
