@@ -4,8 +4,14 @@
     <!-- Loading -->
     <div v-if="pending" class="space-y-4">
       <USkeleton class="h-24" />
-      <div class="grid grid-cols-2 gap-4">
-        <USkeleton v-for="i in 2" :key="i" class="h-20" />
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <USkeleton class="h-4 w-16" />
+          <USkeleton class="h-8 w-52" />
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <USkeleton v-for="i in 2" :key="i" class="h-20" />
+        </div>
       </div>
     </div>
 
@@ -51,8 +57,18 @@
       </div>
 
       <!-- Stats -->
-      <div class="flex items-center justify-between gap-4">
-        <div class="grid grid-cols-2 gap-4 flex-1">
+      <div class="space-y-3">
+        <div class="flex items-center justify-between gap-4">
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">{{ t('profile.stats_title', 'Activity') }}</p>
+          <USelect
+            v-model="period"
+            :items="periodOptions"
+            class="w-52"
+            value-key="value"
+            label-key="label"
+          />
+        </div>
+        <div class="grid grid-cols-2 gap-4">
           <UCard v-for="stat in statCards" :key="stat.label">
             <div class="flex items-center gap-3">
               <div class="p-2 rounded-lg" :class="stat.bg">
@@ -65,13 +81,6 @@
             </div>
           </UCard>
         </div>
-        <USelect
-          v-model="period"
-          :items="periodOptions"
-          class="w-52 shrink-0"
-          value-key="value"
-          label-key="label"
-        />
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">

@@ -313,6 +313,7 @@
   "profile.edit_modal_title": "Edit account",
   "profile.name_label": "Full name",
   "profile.name_placeholder": "John Doe",
+  "profile.stats_title": "Activity",
   "profile.total_translations": "Total translations",
   "profile.period_1d": "Last 24 hours",
   "profile.period_7d": "Last 7 days",
