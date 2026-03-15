@@ -1,8 +1,8 @@
 <template>
   <div class="p-4 lg:p-6 max-w-5xl mx-auto space-y-6">
 
-    <!-- Loading -->
-    <div v-if="pending" class="space-y-4">
+    <!-- Loading: shown server-side, before mount, and while client fetch runs -->
+    <div v-if="!mounted || pending" class="space-y-4">
       <USkeleton class="h-24" />
       <div class="space-y-3">
         <div class="flex items-center justify-between">
@@ -272,6 +272,10 @@
 const route = useRoute()
 const { findLanguage } = useLanguages()
 const { currentUser, canManageUsers, getRoleForProject } = useAuth()
+
+// Prevents showing error state before client-side fetch completes (server: false on useAsyncData)
+const mounted = ref(false)
+onMounted(() => { mounted.value = true })
 const { projects } = useProject()
 const { t } = useT()
 

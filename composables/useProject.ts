@@ -39,7 +39,7 @@ export function useProject() {
   const { data: projectsData, pending, refresh: fetchProjects } = useAsyncData<Project[]>(
     'all-projects',
     () => projectService.getAll(),
-    { default: () => [] },
+    { default: () => [], server: false },
   )
 
   const projects = computed(() => (projectsData.value ?? []) as Project[])

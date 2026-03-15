@@ -17,7 +17,7 @@ export function useProfile(userId?: MaybeRefOrGetter<number | string>) {
     () => targetId.value
       ? profileService.getUserProfile(targetId.value, period.value)
       : profileService.getProfile(period.value),
-    { watch: [targetId, period] },
+    { watch: [targetId, period], server: false },
   )
 
   // ── Own account editing (current logged-in user) ─────────────────────────
