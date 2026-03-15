@@ -1,6 +1,7 @@
 import { profileService } from '../services/profile.service'
 import { authService } from '../services/auth.service'
 import { userService } from '../services/user.service'
+import type { ProfilePeriod } from '../server/interfaces/profile.interface'
 
 export function useProfile(userId?: MaybeRefOrGetter<number | string>) {
   const toast = useToast()
@@ -8,16 +9,15 @@ export function useProfile(userId?: MaybeRefOrGetter<number | string>) {
   const { fetchMe } = useAuth()
 
   // ── Profile data ─────────────────────────────────────────────────────────
-  // Load the target user's profile (or own profile if no userId provided)
-
   const targetId = computed(() => userId ? toValue(userId) : null)
+  const period = ref<ProfilePeriod>('all')
 
   const { data: profile, pending, refresh } = useAsyncData(
-    () => targetId.value ? `user-profile-${targetId.value}` : 'user-profile',
+    () => targetId.value ? `user-profile-${targetId.value}-${period.value}` : `user-profile-${period.value}`,
     () => targetId.value
-      ? profileService.getUserProfile(targetId.value)
-      : profileService.getProfile(),
-    { watch: [targetId] },
+      ? profileService.getUserProfile(targetId.value, period.value)
+      : profileService.getProfile(period.value),
+    { watch: [targetId, period] },
   )
 
   // ── Own account editing (current logged-in user) ─────────────────────────
@@ -66,6 +66,7 @@ export function useProfile(userId?: MaybeRefOrGetter<number | string>) {
 
   return {
     profile,
+    period,
     pending,
     refresh,
     editSaving,
