@@ -38,7 +38,7 @@
     </div>
 
     <!-- Project cards -->
-    <div v-else-if="userProjects.length" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+    <div v-else-if="userProjects.length" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 items-start">
       <div
           v-for="project in userProjects"
           :key="project.id"
@@ -46,26 +46,22 @@
           @click="router.push(`/projects/${project.id}`)"
       >
         <!-- Header -->
-        <div class="flex items-start justify-between">
-          <div class="flex items-center gap-3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex items-center gap-3 min-w-0">
             <div :class="`bg-${project.color || 'primary'}-100 dark:bg-${project.color || 'primary'}-900/30`"
                  class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0">
               <UIcon :class="`text-${project.color || 'primary'}-600`" class="text-xl" name="i-heroicons-folder"/>
             </div>
             <div class="min-w-0">
               <h3 class="font-semibold text-gray-900 dark:text-white truncate">{{ project.name }}</h3>
-              <p class="text-xs text-gray-400 truncate font-mono mt-0.5">{{ project.root_path }}</p>
+              <p v-if="project.description" class="text-xs text-gray-400 truncate mt-0.5">{{ project.description }}</p>
+              <p v-else class="text-xs text-gray-300 dark:text-gray-600 truncate mt-0.5 italic">{{ t('projects.no_description', 'No description') }}</p>
             </div>
           </div>
           <UDropdownMenu :items="projectActions(project)" @click.stop>
             <UButton color="neutral" icon="i-heroicons-ellipsis-vertical" size="xs" variant="ghost" @click.stop/>
           </UDropdownMenu>
         </div>
-
-        <!-- Description -->
-        <p v-if="project.description" class="text-sm text-gray-500 dark:text-gray-400">
-          {{ project.description }}
-        </p>
 
         <!-- Stats -->
         <div class="grid grid-cols-2 gap-3">
@@ -80,19 +76,29 @@
         </div>
 
         <!-- Config info -->
-        <div class="flex flex-wrap gap-3 text-xs text-gray-400">
-          <span v-if="project.root_path" class="flex items-center gap-1">
-            <UIcon class="text-xs" name="i-heroicons-folder"/>
-            {{ project.locales_path }}
-          </span>
-          <span v-if="project.git_repos?.length" class="flex items-center gap-1 text-blue-400">
-            <UIcon class="text-xs" name="i-heroicons-code-bracket"/>
-            {{ project.git_repos.length }} {{ t('projects.git_repos_count', 'git repo(s)') }}
-          </span>
-          <span class="flex items-center gap-1">
-            <UIcon class="text-xs" name="i-heroicons-key"/>
-            {{ t('projects.separator', 'separator:') }} <code class="font-mono">{{ project.key_separator }}</code>
-          </span>
+        <div class="space-y-1.5">
+          <div v-if="project.root_path" class="flex items-center gap-2 text-xs text-gray-400">
+            <UIcon name="i-heroicons-folder" class="shrink-0 text-gray-300 dark:text-gray-600"/>
+            <span class="truncate font-mono">{{ project.root_path }}/{{ project.locales_path }}</span>
+          </div>
+          <template v-if="project.git_repos?.length">
+            <div
+              v-for="(repo, i) in project.git_repos.slice(0, 2)"
+              :key="i"
+              class="flex items-center gap-2 text-xs text-blue-500 dark:text-blue-400"
+            >
+              <UIcon name="i-heroicons-code-bracket" class="shrink-0"/>
+              <span class="truncate font-mono">{{ repo.url }}</span>
+              <span v-if="repo.branch" class="shrink-0 text-gray-400">· {{ repo.branch }}</span>
+            </div>
+            <div v-if="project.git_repos.length > 2" class="text-xs text-gray-400 pl-5">
+              +{{ project.git_repos.length - 2 }} {{ t('projects.more_repos', 'more repo(s)') }}
+            </div>
+          </template>
+          <div class="flex items-center gap-2 text-xs text-gray-400">
+            <UIcon name="i-heroicons-key" class="shrink-0 text-gray-300 dark:text-gray-600"/>
+            <span>{{ t('projects.separator', 'separator:') }} <code class="font-mono text-gray-600 dark:text-gray-300">{{ project.key_separator }}</code></span>
+          </div>
         </div>
 
         <!-- Actions -->
@@ -110,7 +116,7 @@
               {{ t('sidebar.scan', 'Scan') }}
             </UButton>
           </UTooltip>
-          <UTooltip :text="!canSyncProject(project) ? t('projects.sync_requires_source', 'Requires a local path or remote URL') : t('projects.sync_tooltip', 'Sync JSON files')" :disabled="canSyncProject(project)">
+          <UTooltip :text="!canSyncProject(project) ? t('projects.sync_requires_source', 'Requires a local path') : t('projects.sync_tooltip', 'Sync JSON files')" :disabled="canSyncProject(project)">
             <UButton
                 :disabled="!canSyncProject(project)"
                 :loading="syncing === project.id"

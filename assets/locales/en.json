@@ -238,6 +238,8 @@
   "projects.keys_stat": "keys",
   "projects.separator": "separator",
   "projects.git_repos_count": "git repo(s)",
+  "projects.more_repos": "more repo(s)",
+  "projects.no_description": "No description",
   "projects.name_taken": "This name is already taken",
   "projects.scan_requires_local": "Requires a local path",
   "projects.scan_tooltip": "Scan source files to detect translation keys",
