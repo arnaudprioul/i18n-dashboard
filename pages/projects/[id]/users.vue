@@ -61,9 +61,81 @@
     </UCard>
 
     <!-- Add user modal -->
-    <UModal v-model:open="showModal" :title="t('users.add_user_title', 'Add a user')">
+    <UModal v-model:open="showModal" :title="addModalTitle">
       <template #body>
-        <div class="space-y-4">
+
+        <!-- ── Mode: select existing ──────────────────────────────────────── -->
+        <div v-if="addMode === 'select'" class="space-y-4">
+          <!-- Search -->
+          <UInput
+            v-model="search"
+            :placeholder="t('users.search_placeholder', 'Search by name or email…')"
+            icon="i-heroicons-magnifying-glass"
+            class="w-full"
+          />
+
+          <!-- User list -->
+          <div class="max-h-64 overflow-y-auto rounded-lg border border-gray-200 dark:border-gray-700">
+            <div v-if="loadingAvailable" class="flex items-center justify-center py-8">
+              <UIcon name="i-heroicons-arrow-path" class="animate-spin text-primary-500 text-xl" />
+            </div>
+            <div v-else-if="!filteredAvailable.length" class="py-8 text-center text-sm text-gray-400">
+              <UIcon name="i-heroicons-users" class="text-2xl mb-1 block mx-auto text-gray-300" />
+              {{ search ? t('users.no_match', 'No user matches your search') : t('users.all_already_members', 'All users are already members of this project') }}
+            </div>
+            <div v-else class="divide-y divide-gray-100 dark:divide-gray-800">
+              <button
+                v-for="u in filteredAvailable"
+                :key="u.id"
+                type="button"
+                class="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors text-left"
+                :class="selectedUser?.id === u.id ? 'bg-primary-50 dark:bg-primary-900/20' : ''"
+                @click="selectUser(u)"
+              >
+                <div class="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0">
+                  <span class="text-xs font-bold text-primary-600 dark:text-primary-400">{{ u.name.charAt(0).toUpperCase() }}</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ u.name }}</p>
+                  <p class="text-xs text-gray-400 truncate">{{ u.email }}</p>
+                </div>
+                <UIcon v-if="selectedUser?.id === u.id" name="i-heroicons-check-circle" class="text-primary-500 shrink-0" />
+              </button>
+            </div>
+          </div>
+
+          <!-- Role picker (shown when a user is selected) -->
+          <Transition name="slide-down">
+            <div v-if="selectedUser" class="rounded-lg border border-primary-200 dark:border-primary-800 bg-primary-50 dark:bg-primary-900/20 p-4 space-y-3">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0">
+                  <span class="text-xs font-bold text-primary-600">{{ selectedUser.name.charAt(0).toUpperCase() }}</span>
+                </div>
+                <div class="min-w-0">
+                  <p class="text-sm font-medium text-gray-900 dark:text-white">{{ selectedUser.name }}</p>
+                  <p class="text-xs text-gray-400">{{ selectedUser.email }}</p>
+                </div>
+              </div>
+              <UFormField :label="t('users.role_label', 'Role')" required>
+                <USelect v-model="selectRole" :items="roleOptions" class="w-full" />
+              </UFormField>
+            </div>
+          </Transition>
+
+          <!-- Divider + create new -->
+          <div class="flex items-center gap-3">
+            <div class="flex-1 border-t border-gray-200 dark:border-gray-700" />
+            <span class="text-xs text-gray-400">{{ t('common.or', 'or') }}</span>
+            <div class="flex-1 border-t border-gray-200 dark:border-gray-700" />
+          </div>
+
+          <UButton block color="neutral" variant="outline" icon="i-heroicons-user-plus" @click="switchToCreate">
+            {{ t('users.create_new_user', 'Create a new user') }}
+          </UButton>
+        </div>
+
+        <!-- ── Mode: create new ───────────────────────────────────────────── -->
+        <div v-else class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <UFormField :label="t('users.full_name', 'Full name')" required>
               <UInput v-model="form.name" placeholder="Marie Dupont" class="w-full" />
@@ -100,12 +172,39 @@
           </div>
         </div>
       </template>
+
       <template #footer>
-        <div class="flex justify-end gap-3">
-          <UButton color="neutral" variant="ghost" @click="closeModal">
-            {{ createdTempPassword ? t('common.close', 'Close') : t('common.cancel', 'Cancel') }}
+        <div class="flex items-center justify-between gap-3">
+          <!-- Back button in create mode -->
+          <UButton
+            v-if="addMode === 'create' && !createdTempPassword"
+            color="neutral"
+            variant="ghost"
+            icon="i-heroicons-arrow-left"
+            @click="addMode = 'select'"
+          >
+            {{ t('users.back_to_select', 'Back') }}
           </UButton>
-          <UButton v-if="!createdTempPassword" :loading="saving" @click="saveUser">{{ t('common.create', 'Create') }}</UButton>
+          <div v-else class="flex-1" />
+
+          <div class="flex gap-3">
+            <UButton color="neutral" variant="ghost" @click="closeModal">
+              {{ createdTempPassword ? t('common.close', 'Close') : t('common.cancel', 'Cancel') }}
+            </UButton>
+            <!-- Select mode: add existing user -->
+            <UButton
+              v-if="addMode === 'select'"
+              :disabled="!selectedUser"
+              :loading="rolesSaving"
+              @click="addExistingUser"
+            >
+              {{ t('users.add_to_project', 'Add to project') }}
+            </UButton>
+            <!-- Create mode: create new user -->
+            <UButton v-else-if="!createdTempPassword" :loading="saving" @click="saveUser">
+              {{ t('common.create', 'Create') }}
+            </UButton>
+          </div>
         </div>
       </template>
     </UModal>
@@ -157,6 +256,9 @@
 </template>
 
 <script setup lang="ts">
+import { userService } from '~/services/user.service'
+import type { UserItem } from '~/interfaces/user.interface'
+
 const toast = useToast()
 const { currentUser } = useAuth()
 const { currentProject } = useProject()
@@ -165,6 +267,7 @@ const { t } = useT()
 // Guard: requires project context
 watch(currentProject, (p) => { if (!p) navigateTo('/projects') }, { immediate: true })
 
+// ── Modal state ────────────────────────────────────────────────────────────────
 const showModal = ref(false)
 const showDeleteConfirm = ref(false)
 const showRoleModal = ref(false)
@@ -173,8 +276,57 @@ const createdTempPassword = ref('')
 const roleModalUser = ref<any>(null)
 const roleModalValue = ref('translator')
 
+// ── Add modal modes ────────────────────────────────────────────────────────────
+const addMode = ref<'select' | 'create'>('select')
+
+const addModalTitle = computed(() => {
+  if (addMode.value === 'create') return t('users.add_user_title', 'Add a user')
+  return t('users.add_to_project_title', 'Add a user to the project')
+})
+
+// ── Select mode: existing users ────────────────────────────────────────────────
+const search = ref('')
+const availableUsers = ref<UserItem[]>([])
+const loadingAvailable = ref(false)
+const selectedUser = ref<UserItem | null>(null)
+const selectRole = ref('translator')
+
+const filteredAvailable = computed(() => {
+  const q = search.value.toLowerCase().trim()
+  if (!q) return availableUsers.value
+  return availableUsers.value.filter(u =>
+    u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q),
+  )
+})
+
+async function loadAvailableUsers() {
+  if (!currentProject.value) return
+  loadingAvailable.value = true
+  try {
+    availableUsers.value = await userService.getAvailableUsers(currentProject.value.id)
+  }
+  catch {
+    availableUsers.value = []
+  }
+  finally {
+    loadingAvailable.value = false
+  }
+}
+
+function selectUser(u: UserItem) {
+  selectedUser.value = selectedUser.value?.id === u.id ? null : u
+}
+
+function switchToCreate() {
+  addMode.value = 'create'
+  form.value = { name: '', email: '', role: 'translator' }
+  createdTempPassword.value = ''
+}
+
+// ── Create mode: new user form ─────────────────────────────────────────────────
 const form = ref({ name: '', email: '', role: 'translator' })
 
+// ── Shared ─────────────────────────────────────────────────────────────────────
 const roleOptions = computed(() => [
   { label: t('users.role_translator', 'Translator'), value: 'translator' },
   { label: t('users.role_moderator', 'Moderator'), value: 'moderator' },
@@ -228,9 +380,14 @@ function userActions(user: any) {
 }
 
 function openAdd() {
+  addMode.value = 'select'
+  search.value = ''
+  selectedUser.value = null
+  selectRole.value = 'translator'
   createdTempPassword.value = ''
   form.value = { name: '', email: '', role: 'translator' }
   showModal.value = true
+  loadAvailableUsers()
 }
 
 function openRoleModal(user: any) {
@@ -242,6 +399,15 @@ function openRoleModal(user: any) {
 function closeModal() {
   showModal.value = false
   createdTempPassword.value = ''
+  selectedUser.value = null
+}
+
+async function addExistingUser() {
+  if (!selectedUser.value || !currentProject.value) return
+  const ok = await updateRoles(selectedUser.value.id, [
+    { project_id: currentProject.value.id, role: selectRole.value },
+  ])
+  if (ok) closeModal()
 }
 
 async function saveUser() {
@@ -274,3 +440,15 @@ async function copyTemp() {
   toast.add({ title: t('common.copied', 'Copied!'), color: 'success' })
 }
 </script>
+
+<style scoped>
+.slide-down-enter-active,
+.slide-down-leave-active {
+  transition: all 0.2s ease;
+}
+.slide-down-enter-from,
+.slide-down-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+</style>

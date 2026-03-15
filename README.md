@@ -54,6 +54,8 @@
 
 ### Users & Authentication
 - **Role-based access** — `Super Admin`, `Admin`, `Moderator`, `Translator` — per-project assignments
+- **User search when adding to a project** — search existing users by name or email, select one and choose their role directly; or switch to the creation form for a brand new account
+- **User activity profile** — view translation statistics per user with a configurable time period (last 24h, 7d, 30d, 1 year, or since account creation)
 - **Onboarding wizard** — guided setup on first launch
 - **Multi-language UI** — the dashboard interface itself is translatable
 
@@ -62,6 +64,7 @@
 - **Auto-migration** — schema is created and updated automatically on startup
 - **REST API** — full API for all operations, consume locale JSON from your Vue app
 - **CORS auto-detection** — multiple app URLs per project; all are checked for CORS on `/locale/[lang].json`
+- **Global loading overlay** — a full-page loading screen prevents interaction before data is ready, including on direct page load (F5) for any route
 - **Dark mode** — system preference + manual toggle
 
 ---
@@ -613,6 +616,19 @@ PUT  /api/formats/modifiers/:id
 DELETE /api/formats/modifiers/:id
 
 GET  /api/formats/snippet?project_id=1   # Generate createI18n() config snippet
+```
+
+### Users
+
+```http
+GET  /api/users                           # All users (super admin / global admin)
+GET  /api/users?project_id=1              # Members of a project
+GET  /api/users?exclude_project_id=1      # Users not yet in a project (for the add picker)
+POST /api/users                           # Create user
+PUT  /api/users/:id                       # Update user (name, is_active, role)
+PUT  /api/users/:id/roles                 # Bulk-update role assignments across projects
+DELETE /api/users/:id?project_id=1        # Remove user from project (or globally if super admin)
+GET  /api/users/:id/profile?period=30d    # Full user profile with activity stats
 ```
 
 ### Settings

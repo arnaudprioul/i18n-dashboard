@@ -3,7 +3,7 @@ import { getUserRole, canManageUsers } from '../../utils/auth.util'
 
 export default defineEventHandler(async (event) => {
   const currentUser = event.context.user
-  const { project_id } = getQuery(event)
+  const { project_id, exclude_project_id } = getQuery(event)
   const db = getDb()
 
   // ── Project-scoped view ────────────────────────────────────────────────────
@@ -23,6 +23,28 @@ export default defineEventHandler(async (event) => {
       .select('u.id', 'u.email', 'u.name', 'u.is_active', 'u.last_login_at', 'r.role')
 
     return projectRoles
+  }
+
+  // ── Users not yet in a given project (for "add existing user" picker) ──────
+  if (exclude_project_id) {
+    const pid = Number(exclude_project_id)
+
+    if (!currentUser.is_super_admin) {
+      const role = await getUserRole(currentUser.id, pid)
+      if (!canManageUsers(role, false)) {
+        throw createError({ statusCode: 403, message: 'Accès refusé' })
+      }
+    }
+
+    const alreadyIn = await db('user_project_roles').where('project_id', pid).pluck('user_id')
+
+    const query = db('users')
+      .select('id', 'email', 'name', 'is_active', 'last_login_at')
+      .orderBy('name')
+
+    if (alreadyIn.length) query.whereNotIn('id', alreadyIn)
+
+    return query
   }
 
   // ── Global view (super admin or global admins only) ────────────────────────
