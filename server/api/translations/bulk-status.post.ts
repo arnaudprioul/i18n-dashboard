@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: 'ids and status are required' })
   }
 
-  const validStatuses = [TRANSLATION_STATUS.DRAFT, TRANSLATION_STATUS.REVIEWED, TRANSLATION_STATUS.APPROVED]
+  const validStatuses = Object.values(TRANSLATION_STATUS)
   if (!validStatuses.includes(status)) {
     throw createError({ statusCode: 400, message: `Status must be one of: ${validStatuses.join(', ')}` })
   }
