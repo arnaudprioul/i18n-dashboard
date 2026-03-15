@@ -77,8 +77,8 @@ export function useProject() {
       await fetchProjects()
       return project
     }
-    catch {
-      return null
+    catch (e) {
+      throw e
     }
     finally {
       saving.value = false

@@ -8,6 +8,10 @@ export default defineEventHandler(async (event) => {
 
   if (!name?.trim()) throw createError({ statusCode: 400, message: 'name is required' })
 
+  const db = getDb()
+  const existing = await db('projects').whereRaw('LOWER(name) = LOWER(?)', [name.trim()]).first()
+  if (existing) throw createError({ statusCode: 409, message: 'project_name_taken' })
+
   let absolutePath = ''
   if (root_path?.trim()) {
     absolutePath = resolve(root_path)
@@ -15,8 +19,6 @@ export default defineEventHandler(async (event) => {
       throw createError({ statusCode: 400, message: `Path does not exist: ${absolutePath}` })
     }
   }
-
-  const db = getDb()
   const [id] = await db('projects').insert({
     name: name.trim(),
     root_path: absolutePath || null,
