@@ -1,7 +1,9 @@
+export type ProfilePeriod = '1d' | '7d' | '30d' | '365d' | 'all'
+
 export interface ProfileStats {
   total: number
-  thisWeek: number
-  thisMonth: number
+  periodCount: number
+  period: ProfilePeriod
 }
 
 export interface ProfileRole {

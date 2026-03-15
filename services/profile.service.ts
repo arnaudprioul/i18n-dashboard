@@ -1,13 +1,13 @@
 import { BaseService } from './base.service'
-import type { UserProfile } from '../server/interfaces/profile.interface'
+import type { UserProfile, ProfilePeriod } from '../server/interfaces/profile.interface'
 
 class ProfileService extends BaseService {
-  async getProfile(): Promise<UserProfile> {
-    return this.get<UserProfile>('/api/profile')
+  async getProfile(period: ProfilePeriod = 'all'): Promise<UserProfile> {
+    return this.get<UserProfile>('/api/profile', { query: { period } })
   }
 
-  async getUserProfile(id: number | string): Promise<UserProfile> {
-    return this.get<UserProfile>(`/api/users/${id}/profile`)
+  async getUserProfile(id: number | string, period: ProfilePeriod = 'all'): Promise<UserProfile> {
+    return this.get<UserProfile>(`/api/users/${id}/profile`, { query: { period } })
   }
 }
 

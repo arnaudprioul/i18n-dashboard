@@ -1,10 +1,20 @@
 import { getDb } from '../../../db/index'
 import { getUserRole } from '../../../utils/auth.util'
-import type { UserProfile } from '../../../interfaces/profile.interface'
+import type { UserProfile, ProfilePeriod } from '../../../interfaces/profile.interface'
+
+const PERIOD_MS: Record<ProfilePeriod, number | null> = {
+  '1d': 24 * 60 * 60 * 1000,
+  '7d': 7 * 24 * 60 * 60 * 1000,
+  '30d': 30 * 24 * 60 * 60 * 1000,
+  '365d': 365 * 24 * 60 * 60 * 1000,
+  'all': null,
+}
 
 export default defineEventHandler(async (event): Promise<UserProfile> => {
   const currentUser = event.context.user
   const targetId = Number(getRouterParam(event, 'id'))
+  const query = getQuery(event)
+  const period = (query.period as ProfilePeriod) || 'all'
   const db = getDb()
 
   const target = await db('users')
@@ -56,13 +66,16 @@ export default defineEventHandler(async (event): Promise<UserProfile> => {
   }
 
   // ── Stats ──────────────────────────────────────────────────────────────────
-  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
-  const monthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+  const ms = PERIOD_MS[period] ?? null
+  const since = ms ? new Date(Date.now() - ms).toISOString() : null
 
-  const [countTotal, countWeek, countMonth] = await Promise.all([
+  const periodQ = since
+    ? db('translation_history').where('changed_by', target.name).where('changed_at', '>=', since)
+    : db('translation_history').where('changed_by', target.name)
+
+  const [countTotal, countPeriod] = await Promise.all([
     db('translation_history').where('changed_by', target.name).count('id as n').first(),
-    db('translation_history').where('changed_by', target.name).where('changed_at', '>=', weekAgo).count('id as n').first(),
-    db('translation_history').where('changed_by', target.name).where('changed_at', '>=', monthAgo).count('id as n').first(),
+    periodQ.count('id as n').first(),
   ])
 
   // ── Recent translations ────────────────────────────────────────────────────
@@ -98,8 +111,8 @@ export default defineEventHandler(async (event): Promise<UserProfile> => {
     roles,
     stats: {
       total: Number(countTotal?.n ?? 0),
-      thisWeek: Number(countWeek?.n ?? 0),
-      thisMonth: Number(countMonth?.n ?? 0),
+      periodCount: Number(countPeriod?.n ?? 0),
+      period,
     },
     languages,
     recentTranslations,
