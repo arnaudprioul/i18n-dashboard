@@ -241,6 +241,15 @@ const {
   visibleProjects: userProjects,
 } = useProject()
 
+const checkName = useDebounceFn(async () => {
+  if (!form.value.name.trim()) { nameError.value = ''; return }
+  const result = await $fetch<{ available: boolean }>('/api/projects/check-name', {
+    query: { name: form.value.name, exclude_id: editingProject.value?.id ?? undefined },
+  })
+  nameError.value = result.available ? '' : t('projects.name_taken', 'This name is already taken')
+}, 400)
+
+watch(() => form.value.name, checkName)
 
 function openAdd() {
   editingProject.value = null
@@ -277,7 +286,7 @@ function projectActions(project: any) {
 }
 
 async function saveProject() {
-  if (!form.value.name) return
+  if (!form.value.name || nameError.value) return
   nameError.value = ''
   if (editingProject.value) {
     const ok = await updateProject(editingProject.value.id, form.value)

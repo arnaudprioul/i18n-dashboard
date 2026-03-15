@@ -3,6 +3,7 @@ import type { CreateUserPayload, RoleEntry } from '../interfaces/user.interface'
 
 export function useUsers(scope: 'project' | 'global' = 'project') {
   const toast = useToast()
+  const { t } = useT()
   const { currentUser } = useAuth()
   const { currentProject } = useProject()
 
@@ -26,8 +27,8 @@ export function useUsers(scope: 'project' | 'global' = 'project') {
     try {
       const result = await userService.create(payload)
       toast.add({
-        title: 'Utilisateur créé',
-        description: `Email d'invitation envoyé à ${payload.email}`,
+        title: t('users.created', 'User created'),
+        description: `${t('users.invitation_sent', 'Invitation sent to')} ${payload.email}`,
         color: 'success',
       })
       await refresh()
@@ -44,7 +45,7 @@ export function useUsers(scope: 'project' | 'global' = 'project') {
     rolesSaving.value = true
     try {
       await userService.updateRoles(userId, roles)
-      toast.add({ title: 'Accès mis à jour', color: 'success' })
+      toast.add({ title: t('users.access_updated', 'Access updated'), color: 'success' })
       await refresh()
       return true
     } catch {
@@ -61,7 +62,7 @@ export function useUsers(scope: 'project' | 'global' = 'project') {
         project_id: scope === 'project' ? currentProject.value?.id : undefined,
       })
       toast.add({
-        title: user.is_active ? 'Utilisateur désactivé' : 'Utilisateur réactivé',
+        title: user.is_active ? t('users.deactivated', 'User deactivated') : t('users.reactivated', 'User reactivated'),
         color: 'success',
       })
       await refresh()
@@ -76,7 +77,7 @@ export function useUsers(scope: 'project' | 'global' = 'project') {
         ? undefined
         : currentProject.value?.id
       await userService.remove(userId, projectId)
-      toast.add({ title: 'Utilisateur supprimé', color: 'success' })
+      toast.add({ title: t('users.deleted', 'User deleted'), color: 'success' })
       await refresh()
       return true
     } catch {

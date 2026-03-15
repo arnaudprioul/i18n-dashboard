@@ -8,6 +8,7 @@ export function useKeys(options: {
   id?: Ref<string | string[]>
 } = {}) {
   const toast = useToast()
+  const { t } = useT()
   const router = useRouter()
   const route = useRoute()
 
@@ -37,7 +38,7 @@ export function useKeys(options: {
     addingKey.value = true
     try {
       await keyService.createKey({ project_id: projectId, key, description })
-      toast.add({ title: 'Clé créée', color: 'success' })
+      toast.add({ title: t('keys.created', 'Key created'), color: 'success' })
       await refresh()
       refreshNuxtData('project-stats')
       return true
@@ -55,10 +56,10 @@ export function useKeys(options: {
     scanning.value = true
     try {
       const result = await scanService.scan(projectId)
-      const langMsg = result.langsAdded > 0 ? ` · ${result.langsAdded} langue(s) ajoutée(s)` : ''
+      const langMsg = result.langsAdded > 0 ? ` · ${result.langsAdded} ${t('scan.langs_added', 'language(s) added')}` : ''
       toast.add({
-        title: 'Scan terminé',
-        description: `${result.keysFound} clés trouvées · ${result.keysAdded} nouvelles${langMsg}`,
+        title: t('scan.toast_title', 'Scan'),
+        description: `${result.keysFound} ${t('scan.keys_found', 'keys found')} · ${result.keysAdded} ${t('scan.keys_added', 'new keys')}${langMsg}`,
         color: 'success',
       })
       await refresh()
@@ -75,8 +76,8 @@ export function useKeys(options: {
     try {
       const result = await scanService.sync(projectId)
       toast.add({
-        title: 'Sync terminée',
-        description: `${result.added} ajoutées · ${result.updated} mises à jour`,
+        title: t('sync.toast_title', 'Sync'),
+        description: `${result.added} ${t('sync.added', 'added')} · ${result.updated} ${t('sync.updated', 'updated')}`,
         color: 'success',
       })
       await refresh()
@@ -93,8 +94,8 @@ export function useKeys(options: {
     try {
       const result = await translationService.batchTranslate(projectId, targetLang)
       toast.add({
-        title: 'Traduction automatique terminée',
-        description: `${result.translated} traduites · ${result.skipped} ignorées · ${result.errors} erreurs`,
+        title: t('keys.translate_done', 'Auto-translate complete'),
+        description: `${result.translated} ${t('keys.translated', 'translated')} · ${result.skipped} ${t('keys.skipped', 'skipped')} · ${result.errors} ${t('common.errors', 'errors')}`,
         color: 'success',
       })
       await refresh()
@@ -152,7 +153,7 @@ export function useKeys(options: {
     try {
       await translationService.save({ key_id: keyData.value.id, language_code: langCode, value })
       await detailRefresh()
-      toast.add({ title: 'Version restaurée', color: 'success' })
+      toast.add({ title: t('keys.version_restored', 'Version restored'), color: 'success' })
     }
     catch {}
   }
@@ -174,7 +175,7 @@ export function useKeys(options: {
     try {
       await keyService.updateKey(keyData.value.id, { description })
       await detailRefresh()
-      toast.add({ title: 'Description mise à jour', color: 'success' })
+      toast.add({ title: t('keys.description_updated', 'Description updated'), color: 'success' })
     }
     catch {}
     finally {
@@ -188,7 +189,7 @@ export function useKeys(options: {
     deleting.value = true
     try {
       await keyService.deleteKey(keyData.value.id)
-      toast.add({ title: 'Clé supprimée', color: 'success' })
+      toast.add({ title: t('keys.deleted', 'Key deleted'), color: 'success' })
       const projectId = route.params.id
       router.push(projectId ? `/projects/${projectId}/translations` : '/projects')
     }
