@@ -219,7 +219,9 @@ const colorMode = useColorMode()
 const { currentProject, projects: projectsData, systemProject, fetchProjects, visibleProjects: userProjects, syncing, syncProject, pending } = useProject()
 
 const appReady = ref(false)
-watch(pending, (val) => { if (!val) appReady.value = true }, { immediate: true })
+// No `immediate` — with server:false, pending starts false before client fetch begins.
+// We only mark ready when pending transitions true→false (i.e. after first real load).
+watch(pending, (val) => { if (!val) appReady.value = true })
 const showScanModal = ref(false)
 const { currentUser, fetchMe, logout, changePassword: changePasswordFn, canManageProject, canApprove } = useAuth()
 const { t, lang: uiLang, setLang, getLangs } = useT()
@@ -255,7 +257,7 @@ const isSuperAdmin = computed(() => currentUser.value?.is_super_admin ?? false)
 
 onMounted(() => {
   fetchMe()
-  fetchProjects()
+  // fetchProjects() is handled automatically by useAsyncData server:false auto-fetch
 })
 
 
