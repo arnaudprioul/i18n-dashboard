@@ -1,6 +1,6 @@
 {
   "name": "i18n-dashboard",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "A web dashboard to manage vue-i18n translation keys with database persistence",
   "type": "module",
   "bin": {
