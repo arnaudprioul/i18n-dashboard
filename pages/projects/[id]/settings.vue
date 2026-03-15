@@ -55,6 +55,10 @@
               </div>
             </UFormField>
           </div>
+          <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+            <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">{{ t('projects.git_repo_title', 'Git repository') }}</p>
+            <GitRepoManager v-model="form.git_repo" />
+          </div>
         </div>
       </UCard>
 
@@ -335,7 +339,7 @@
 
       <!-- Save button -->
       <div class="flex justify-end">
-        <UButton :loading="saving" icon="i-heroicons-check" @click="onSave">
+        <UButton :loading="saving || savingProject" icon="i-heroicons-check" @click="onSave">
           {{ t('settings.save', 'Save') }}
         </UButton>
       </div>
@@ -348,6 +352,7 @@
   const { t } = useT()
   const { currentProject, fetchProjects } = useProject()
   const { settings, pending, saving, saveSettings } = useSettings()
+  const savingProject = ref(false)
   const { projectLanguages } = useLanguages()
 
   const detectedFunctions = [
@@ -359,13 +364,26 @@
     'Bloc <i18n> SFC',
   ]
 
-  const form = ref({
+  const form = ref<{
+    scan_exclude: string
+    google_translate_api_key: string
+    enable_number_formats: boolean
+    enable_datetime_formats: boolean
+    enable_modifiers: boolean
+    name: string
+    root_path: string
+    source_url: string
+    locales_path: string
+    key_separator: string
+    color: string
+    description: string
+    git_repo: { url: string; branch?: string; name?: string; token?: string } | null
+  }>({
     scan_exclude: 'node_modules,dist,.nuxt,.output',
     google_translate_api_key: '',
     enable_number_formats: false,
     enable_datetime_formats: false,
     enable_modifiers: false,
-    // Project fields
     name: '',
     root_path: '',
     source_url: '',
@@ -373,6 +391,7 @@
     key_separator: '.',
     color: '#6366f1',
     description: '',
+    git_repo: null,
   })
 
   watch(settings, (val) => {
@@ -394,6 +413,7 @@
       form.value.key_separator = val.key_separator || '.'
       form.value.color = val.color || '#6366f1'
       form.value.description = val.description || ''
+      form.value.git_repo = val.git_repo ? { ...val.git_repo } : null
     }
   }, { immediate: true })
 
@@ -420,24 +440,30 @@ const i18n = createI18n({
   }
 
   async function onSave () {
-    await saveSettings({ scan_exclude: form.value.scan_exclude, google_translate_api_key: form.value.google_translate_api_key })
-    if (currentProject.value) {
-      await $fetch(`/api/projects/${currentProject.value.id}`, {
-        method: 'PUT',
-        body: {
-          name: form.value.name,
-          root_path: form.value.root_path,
-          source_url: form.value.source_url,
-          locales_path: form.value.locales_path,
-          key_separator: form.value.key_separator,
-          color: form.value.color,
-          description: form.value.description,
-          enable_number_formats: form.value.enable_number_formats,
-          enable_datetime_formats: form.value.enable_datetime_formats,
-          enable_modifiers: form.value.enable_modifiers,
-        },
-      })
-      await fetchProjects()
+    savingProject.value = true
+    try {
+      await saveSettings({ scan_exclude: form.value.scan_exclude, google_translate_api_key: form.value.google_translate_api_key })
+      if (currentProject.value) {
+        await $fetch(`/api/projects/${currentProject.value.id}`, {
+          method: 'PUT',
+          body: {
+            name: form.value.name,
+            root_path: form.value.root_path,
+            source_url: form.value.source_url,
+            locales_path: form.value.locales_path,
+            key_separator: form.value.key_separator,
+            color: form.value.color,
+            description: form.value.description,
+            enable_number_formats: form.value.enable_number_formats,
+            enable_datetime_formats: form.value.enable_datetime_formats,
+            enable_modifiers: form.value.enable_modifiers,
+            git_repo: form.value.git_repo,
+          },
+        })
+        await fetchProjects()
+      }
+    } finally {
+      savingProject.value = false
     }
   }
 

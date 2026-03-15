@@ -30,10 +30,11 @@
 
 ### Scan & Sync
 - **Source scan (local)** — browse your file system with the built-in folder picker, detect all `$t()`, `t()`, `<i18n-t>`, `v-t`, and `<i18n>` block usages across `.vue`, `.ts`, `.js` files
-- **Source scan (Git)** — clone any Git repository (public or private) using a URL, branch, and access token, then scan the source files without needing a local checkout
-- **Source scan (URL)** — fetch `en.json`, `fr.json`… from any remote URL and import all keys
-- **Sync** — import existing `.json` locale files (local path or remote URL) into the database
+- **Source scan (git)** — provide a git repository URL (+ optional branch and access token); the dashboard clones the repo, scans source files, and imports locale files in one step
+- **Sync (local)** — import existing `.json` locale files from a local path into the database
+- **Sync (git)** — clone the configured git repository and import locale JSON files; only fills missing or empty translations — never overwrites existing values
 - **Unused key detection** — keys not found in source files are automatically flagged
+- **Conflict-safe import** — sync and scan never overwrite a translation that already has a value in the database
 
 ### Advanced Formats
 *(enable per project in Settings)*
@@ -43,7 +44,11 @@
 - **Snippet generator** — generates a ready-to-paste `createI18n()` configuration block
 
 ### Projects
-- **Inline settings** — edit project name, root path, source URLs, Git repository info, locales folder, key separator, color, and description directly from the project settings page
+- **3-step creation wizard** — Source → Info → Languages: add a local path or git repo, auto-detect project name, locales folder and existing languages, then pick languages with the built-in BCP 47 picker
+- **Auto-detect on creation** — reads `package.json` for the project name and scans the locale folder to pre-fill languages; works with both local paths and git repos
+- **Auto-scan on creation** — a scan is automatically triggered after project creation so keys are immediately available
+- **Git repository per project** — configure a git URL, branch, and optional access token; used for scan and sync operations without requiring a local clone
+- **Inline settings** — edit project name, root path, git repo, locales folder, key separator, color, and description directly from the project settings page
 - **Folder browser** — navigate your file system visually to pick the project root path
 - **Project snapshot** — export a complete backup (config + languages + all keys + translations) as a single JSON file, import it on any other instance (merge or replace mode)
 
@@ -306,7 +311,7 @@ The `{count}` and `{n}` parameters are always available implicitly.
 
 ### Scan
 
-Click **Scan project** in the sidebar to open the scan modal. Three modes are available:
+Click **Scan project** in the sidebar or on any project card to open the scan modal.
 
 **Local mode** — browse your file system with the folder picker and scan `.vue`, `.ts`, `.js` files for:
 - `$t('key')`, `$tc()`, `$te()`, `$tm()`
@@ -315,13 +320,11 @@ Click **Scan project** in the sidebar to open the scan modal. Three modes are av
 - `v-t="'key'"`
 - `<i18n>` SFC blocks
 
-**Git mode** — provide a repository URL, branch (default: `main`), and a personal access token. The dashboard clones the repo (shallow, depth 1) into a temp directory, scans the source files exactly like local mode, then cleans up automatically. Useful for CI environments or when you don't have a local checkout.
+**Git mode** — enter a git repository URL (and optionally a branch and access token); the scanner clones the repo (shallow, depth 1), scans all source files, and also imports locale JSON files to populate missing translations in one step. Useful for CI environments or when you don't have a local checkout.
 
 > Required token permission: **Contents → Read** (GitHub fine-grained PAT) or **repo** scope (classic PAT).
 
-**URL mode** — enter the base URL of your app; the scanner fetches each configured locale file (`/locale/en.json`, `/locale/fr.json`…) and imports all keys it finds.
-
-Results (keys found, new keys, unused keys, files scanned) are displayed inline.
+Results displayed inline: keys found, new keys, unused keys, files scanned, languages added, translations imported.
 
 ### Settings
 
@@ -577,8 +580,10 @@ POST /api/translations/batch-translate   # Auto-translate all missing for a lang
 ### Scan & Sync
 
 ```http
-POST /api/scan   # body: { project_id, mode: 'local'|'git'|'url', root_path?, url?, git_url?, git_branch?, git_token? }
-POST /api/sync   # body: { project_id }
+POST /api/scan     # body: { project_id, mode: 'local'|'git', root_path?, git_url?, git_branch?, git_token? }
+POST /api/sync     # body: { project_id }  — uses project's configured git repo or local path
+POST /api/projects/detect  # body: { root_path?, git_url?, git_branch?, git_token? }
+GET  /api/projects/check-name?name=&exclude_id=   # Availability check
 ```
 
 ### Project Snapshot

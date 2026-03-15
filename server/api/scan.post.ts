@@ -1,5 +1,5 @@
-import { resolve } from 'path'
-import { mkdtempSync, rmSync } from 'fs'
+import { resolve, extname, basename } from 'path'
+import { mkdtempSync, rmSync, readdirSync, readFileSync, existsSync } from 'fs'
 import { tmpdir } from 'os'
 import { execSync } from 'child_process'
 import { getDb } from '../db/index'
@@ -106,6 +106,23 @@ export default defineEventHandler(async (event) => {
         await db('translation_keys').whereIn('id', unusedIds).update({ is_unused: true, last_scanned_at: now })
       }
 
+      // ── Sync locale JSON files from cloned repo ──────────────────────────
+      let translationsAdded = 0
+      let translationsUpdated = 0
+      const absLocalesPath = resolve(tmpDir, project.locales_path)
+      if (existsSync(absLocalesPath)) {
+        const jsonFiles = readdirSync(absLocalesPath).filter(f => extname(f) === '.json')
+        for (const file of jsonFiles) {
+          const langCode = basename(file, '.json')
+          if (!/^[a-z]{2}(-[a-z]{2,4})?$/i.test(langCode)) continue
+          const raw = JSON.parse(readFileSync(resolve(absLocalesPath, file), 'utf-8'))
+          const flattened = flattenObject(raw, project.key_separator || '.')
+          const result = await upsertTranslations(db, Number(project_id), langCode, flattened)
+          translationsAdded += result.added
+          translationsUpdated += result.updated
+        }
+      }
+
       const totalKeys = await db('translation_keys').where({ project_id: Number(project_id) }).count('* as count').first()
 
       return {
@@ -116,6 +133,8 @@ export default defineEventHandler(async (event) => {
         total: Number((totalKeys as any)?.count || 0),
         langsDetected: detectedLangs.length,
         langsAdded,
+        translationsAdded,
+        translationsUpdated,
         errors: errors.slice(0, 10),
       }
     } finally {
@@ -226,4 +245,42 @@ function flattenObject(obj: Record<string, any>, separator: string, prefix = '')
     }
   }
   return result
+}
+
+/**
+ * Insert translations from locale files only when no value exists.
+ * Never overwrites an existing non-empty translation to avoid conflicts.
+ */
+async function upsertTranslations(
+  db: any,
+  projectId: number,
+  langCode: string,
+  flattened: Record<string, string>,
+): Promise<{ added: number; updated: number }> {
+  let added = 0
+
+  for (const [key, value] of Object.entries(flattened)) {
+    if (!value) continue
+
+    let keyRecord = await db('translation_keys').where({ project_id: projectId, key }).first()
+    if (!keyRecord) {
+      const [id] = await db('translation_keys').insert({ project_id: projectId, key })
+      keyRecord = { id }
+    }
+
+    const existing = await db('translations').where({ key_id: keyRecord.id, language_code: langCode }).first()
+    if (existing) {
+      if (existing.value) continue // already has a value — never overwrite
+      // empty value in DB — fill it
+      await db('translations').where({ id: existing.id }).update({ value, updated_at: db.fn.now() })
+      await db('translation_history').insert({ translation_id: existing.id, old_value: null, new_value: value, changed_by: 'sync' })
+      added++
+    } else {
+      const [id] = await db('translations').insert({ key_id: keyRecord.id, language_code: langCode, value, status: 'draft' })
+      await db('translation_history').insert({ translation_id: id, old_value: null, new_value: value, changed_by: 'sync' })
+      added++
+    }
+  }
+
+  return { added, updated: 0 }
 }

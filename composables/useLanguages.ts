@@ -8,6 +8,7 @@ import type { Language, LanguageItem, CreateLanguagePayload } from '../interface
 
 export function useLanguages() {
   const toast = useToast()
+  const { t } = useT()
   const { currentProject } = useProject()
 
   // ── Static lookup ────────────────────────────────────────────────────────
@@ -67,7 +68,7 @@ export function useLanguages() {
       await languageService.remove(code, currentProject.value.id)
       await refresh()
       refreshNuxtData('project-stats')
-      toast.add({ title: 'Langue supprimée', color: 'success' })
+      toast.add({ title: t('languages.deleted', 'Language deleted'), color: 'success' })
     }
     finally {
       deleting.value = false
@@ -156,8 +157,8 @@ export function useLanguages() {
     const langName = progressLangName.value
 
     const toastRef = toast.add({
-      title: `Traduction ${langName} en cours…`,
-      description: `${progressPercent.value}% — ${progressDone.value} / ${progressTotal.value} clés`,
+      title: `${t('languages.translating', 'Translating')} ${langName}…`,
+      description: `${progressPercent.value}% — ${progressDone.value} / ${progressTotal.value} ${t('scan.keys_found', 'keys')}`,
       duration: 0,
       color: 'info',
     })
@@ -176,8 +177,10 @@ export function useLanguages() {
           _stopPolling()
           toast.remove(toastRef?.id ?? '')
           toast.add({
-            title: job.errors ? `Traduction ${langName} terminée avec erreurs` : `Traduction ${langName} terminée`,
-            description: `${job.done} clés traduites${job.errors ? ` · ${job.errors} erreurs` : ''}`,
+            title: job.errors
+              ? `${t('languages.translate_done', 'Translation complete')} ${langName} ${t('languages.with_errors', 'with errors')}`
+              : `${t('languages.translate_done', 'Translation complete')} ${langName}`,
+            description: `${job.done} ${t('keys.translated', 'translated')}${job.errors ? ` · ${job.errors} ${t('common.errors', 'errors')}` : ''}`,
             color: job.errors ? 'warning' : 'success',
           })
           onDone?.()

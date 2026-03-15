@@ -4,6 +4,7 @@ import { userService } from '../services/user.service'
 
 export function useProfile(userId?: MaybeRefOrGetter<number | string>) {
   const toast = useToast()
+  const { t } = useT()
   const { fetchMe } = useAuth()
 
   // ── Profile data ─────────────────────────────────────────────────────────
@@ -30,7 +31,7 @@ export function useProfile(userId?: MaybeRefOrGetter<number | string>) {
     try {
       await authService.updateMe({ name, email })
       await Promise.all([refresh(), fetchMe()])
-      toast.add({ title: 'Compte mis à jour', color: 'success' })
+      toast.add({ title: t('profile.updated', 'Account updated'), color: 'success' })
       return true
     }
     catch (e: any) {
@@ -51,7 +52,7 @@ export function useProfile(userId?: MaybeRefOrGetter<number | string>) {
     rolesSaving.value = true
     try {
       await userService.updateRoles(Number(targetId.value), roles)
-      toast.add({ title: 'Accès mis à jour', color: 'success' })
+      toast.add({ title: t('profile.access_updated', 'Access updated'), color: 'success' })
       await refresh()
       return true
     }
