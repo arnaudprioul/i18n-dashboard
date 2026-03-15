@@ -444,6 +444,6 @@
   "scan.unused": "unused",
   "scan.files_scanned": "files scanned",
   "scan.errors": "errors",
-  "scan.translations_synced": "translations imported",
-  "scan.run": "Scan"
+  "scan.run": "Scan",
+  "scan.translations_synced": "translations imported"
 }

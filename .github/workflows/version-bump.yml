@@ -1,0 +1,104 @@
+name: Version Bump & Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  bump:
+    # Skip if this is already a version bump commit
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Detect semver indicator
+        id: semver
+        run: |
+          BEFORE="${{ github.event.before }}"
+          AFTER="${{ github.event.after }}"
+
+          if [[ "$BEFORE" == "0000000000000000000000000000000000000000" ]]; then
+            MESSAGES=$(git log --format="%s" "$AFTER")
+          else
+            MESSAGES=$(git log --format="%s" "$BEFORE..$AFTER")
+          fi
+
+          if echo "$MESSAGES" | grep -qE '\[major\]'; then
+            echo "bump=major" >> "$GITHUB_OUTPUT"
+          elif echo "$MESSAGES" | grep -qE '\[minor\]'; then
+            echo "bump=minor" >> "$GITHUB_OUTPUT"
+          elif echo "$MESSAGES" | grep -qE '\[patch\]'; then
+            echo "bump=patch" >> "$GITHUB_OUTPUT"
+          else
+            echo "bump=none" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Skip if no indicator
+        if: steps.semver.outputs.bump == 'none'
+        run: echo "No [major]/[minor]/[patch] found in pushed commits. Skipping."
+
+      - name: Bump version and create tag
+        if: steps.semver.outputs.bump != 'none'
+        run: |
+          npm version ${{ steps.semver.outputs.bump }} --message "chore: bump version to %s [skip ci]"
+          echo "NEW_TAG=$(git describe --tags --abbrev=0)" >> "$GITHUB_ENV"
+
+      - name: Push commit and tag
+        if: steps.semver.outputs.bump != 'none'
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}.git
+          git push origin main --follow-tags
+
+      - name: Install dependencies
+        if: steps.semver.outputs.bump != 'none'
+        run: npm ci
+
+      - name: Build
+        if: steps.semver.outputs.bump != 'none'
+        run: npm run build
+
+      - name: Publish to npm
+        if: steps.semver.outputs.bump != 'none'
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish to GitHub Packages
+        if: steps.semver.outputs.bump != 'none'
+        run: |
+          npm pkg set name="@arnaudprioul/i18n-dashboard"
+          echo "@arnaudprioul:registry=https://npm.pkg.github.com" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> .npmrc
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release
+        if: steps.semver.outputs.bump != 'none'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.NEW_TAG }}
+          generate_release_notes: true

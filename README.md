@@ -1,6 +1,6 @@
 # i18n-dashboard
 
-> A full-featured web dashboard to manage [vue-i18n](https://vue-i18n.intlify.dev/) translation keys — inspired by [Storybook](https://storybook.js.org/): run it alongside your project, manage all your translations in one place, and consume them via a ready-to-use API.
+> A full-featured web dashboard to manage [vue-i18n](https://vue-i18n.intlify.dev/) translation keys. Run it alongside your project, manage all your translations in one place, and consume them via a ready-to-use API.
 
 [![npm version](https://img.shields.io/npm/v/i18n-dashboard)](https://www.npmjs.com/package/i18n-dashboard)
 [![license](https://img.shields.io/npm/l/i18n-dashboard)](./LICENSE)
@@ -61,6 +61,7 @@
 - **Multi-database** — SQLite (default, zero config), PostgreSQL, MySQL/MariaDB
 - **Auto-migration** — schema is created and updated automatically on startup
 - **REST API** — full API for all operations, consume locale JSON from your Vue app
+- **CORS auto-detection** — multiple app URLs per project; all are checked for CORS on `/locale/[lang].json`
 - **Dark mode** — system preference + manual toggle
 
 ---
@@ -319,14 +320,18 @@ Click **Scan project** in the sidebar or on any project card to open the scan mo
 - `v-t="'key'"`
 - `<i18n>` SFC blocks
 
-**Git mode** — enter a git repository URL (and optionally a branch and access token); the scanner clones the repo, scans all source files, and also imports locale JSON files to populate missing translations in one step.
+**Git mode** — enter a git repository URL (and optionally a branch and access token); the scanner clones the repo (shallow, depth 1), scans all source files, and also imports locale JSON files to populate missing translations in one step. Useful for CI environments or when you don't have a local checkout.
+
+> Required token permission: **Contents → Read** (GitHub fine-grained PAT) or **repo** scope (classic PAT).
 
 Results displayed inline: keys found, new keys, unused keys, files scanned, languages added, translations imported.
 
 ### Settings
 
 Per-project settings (editable inline):
-- **Project name, root path, source URL, locales folder, key separator, color, description**
+- **Project name, root path, locales folder, key separator, color, description**
+- **App URLs** — one URL per line; all are accepted for CORS on `/locale/[lang].json`, the first is used for URL-based scan/sync
+- **Git repository** — URL, branch, and access token for Git scan mode (token stored in DB, never exposed in the UI after save)
 - **Advanced features** — enable/disable Number formats, Datetime formats, Custom modifiers pages
 - **Scanner** — configure excluded directories
 - **Google Translate** — optional API key
@@ -710,14 +715,44 @@ npx i18n-dashboard sync
 Contributions are welcome. Please open an issue before submitting a pull request for significant changes.
 
 ```bash
-git clone https://github.com/your-username/i18n-dashboard
+git clone https://github.com/arnaudprioul/i18n-dashboard.git
 cd i18n-dashboard
 npm install
-npm run dev
+
+# Register the project git hooks (one-time, per clone)
+git config core.hooksPath .githooks
 ```
+
+### Commit message convention
+
+Every push to `main` must include at least one commit message with a version bump indicator:
+
+| Indicator | Bump | Example |
+|---|---|---|
+| `[patch]` | `0.3.8 → 0.3.9` | `fix: correct typo in error message [patch]` |
+| `[minor]` | `0.3.8 → 0.4.0` | `feat: add git scan mode [minor]` |
+| `[major]` | `0.3.8 → 1.0.0` | `feat!: breaking API change [major]` |
+
+The pre-push hook will block the push if:
+- No `[major]`, `[minor]`, or `[patch]` indicator is found in the commits
+- `README.md` has not been updated
+
+If both checks pass, the CI automatically bumps `package.json`, creates the git tag, and triggers the npm publish workflow.
+
+---
+
+## Support
+
+If this project saved you time, consider buying me a coffee ☕
+
+[![Donate with PayPal](https://img.shields.io/badge/Donate-PayPal-blue?logo=paypal)](https://www.paypal.com/paypalme/arnaudprioul)
 
 ---
 
 ## License
 
 [MIT](./LICENSE)
+
+---
+
+Made with ❤️ by [arnaudprioul](https://github.com/arnaudprioul)

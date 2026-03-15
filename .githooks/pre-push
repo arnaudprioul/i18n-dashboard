@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REMOTE="$1"
+
+while read local_ref local_sha remote_ref remote_sha; do
+  # Only enforce on pushes to main
+  if [[ "$remote_ref" != "refs/heads/main" ]]; then
+    continue
+  fi
+
+  ZERO="0000000000000000000000000000000000000000"
+
+  # Build commit range
+  if [[ "$remote_sha" == "$ZERO" ]]; then
+    range="$local_sha"
+    commits=$(git rev-list "$range")
+  else
+    range="$remote_sha..$local_sha"
+    commits=$(git rev-list "$range")
+  fi
+
+  # 1. Check for [major], [minor], or [patch] in any commit message
+  indicator=""
+  while IFS= read -r commit; do
+    msg=$(git log -1 --format="%s" "$commit")
+    if echo "$msg" | grep -qE '\[(major|minor|patch)\]'; then
+      indicator=$(echo "$msg" | grep -oE '\[(major|minor|patch)\]' | head -1 | tr -d '[]')
+      break
+    fi
+  done <<< "$commits"
+
+  if [[ -z "$indicator" ]]; then
+    echo ""
+    echo "❌  Push to main blocked: no version bump indicator found."
+    echo "    Add [major], [minor], or [patch] to at least one commit message."
+    echo ""
+    echo "    Examples:"
+    echo "      git commit -m 'feat: new feature [minor]'"
+    echo "      git commit -m 'fix: critical bug [patch]'"
+    echo "      git commit -m 'feat!: breaking change [major]'"
+    echo ""
+    exit 1
+  fi
+
+  # 2. Check README.md was updated in the push range
+  if [[ "$remote_sha" != "$ZERO" ]]; then
+    changed=$(git diff --name-only "$remote_sha" "$local_sha" 2>/dev/null)
+  else
+    changed=$(git diff --name-only HEAD~1 HEAD 2>/dev/null || git show --name-only --format="" "$local_sha")
+  fi
+
+  if ! echo "$changed" | grep -q "README.md"; then
+    echo ""
+    echo "⚠️   Warning: README.md has not been updated in this push."
+    echo ""
+  fi
+
+  echo ""
+  echo "✅  Pre-push checks passed. CI will bump version ($indicator)."
+  echo ""
+done
+
+exit 0
