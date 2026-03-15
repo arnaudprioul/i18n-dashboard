@@ -241,15 +241,17 @@ const {
   visibleProjects: userProjects,
 } = useProject()
 
-const checkName = useDebounceFn(async () => {
-  if (!form.value.name.trim()) { nameError.value = ''; return }
-  const result = await $fetch<{ available: boolean }>('/api/projects/check-name', {
-    query: { name: form.value.name, exclude_id: editingProject.value?.id ?? undefined },
-  })
-  nameError.value = result.available ? '' : t('projects.name_taken', 'This name is already taken')
-}, 400)
-
-watch(() => form.value.name, checkName)
+let _nameCheckTimer: ReturnType<typeof setTimeout> | null = null
+watch(() => form.value.name, (name) => {
+  if (_nameCheckTimer) clearTimeout(_nameCheckTimer)
+  if (!name.trim()) { nameError.value = ''; return }
+  _nameCheckTimer = setTimeout(async () => {
+    const result = await $fetch<{ available: boolean }>('/api/projects/check-name', {
+      query: { name, exclude_id: editingProject.value?.id ?? undefined },
+    })
+    nameError.value = result.available ? '' : t('projects.name_taken', 'This name is already taken')
+  }, 400)
+})
 
 function openAdd() {
   editingProject.value = null
