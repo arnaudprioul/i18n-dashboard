@@ -66,6 +66,7 @@ export function useProject() {
   // ── Mutations ───────────────────────────────────────────────────────────────
 
   const toast = useToast()
+  const { t } = useT()
   const router = useRouter()
 
   const saving = ref(false)
@@ -73,12 +74,12 @@ export function useProject() {
     saving.value = true
     try {
       const project = await projectService.create(payload)
-      toast.add({ title: 'Projet ajouté', color: 'success' })
+      toast.add({ title: t('projects.created', 'Project added'), color: 'success' })
       await fetchProjects()
       return project
     }
-    catch {
-      return null
+    catch (e) {
+      throw e
     }
     finally {
       saving.value = false
@@ -89,7 +90,7 @@ export function useProject() {
     saving.value = true
     try {
       await projectService.update(id, payload)
-      toast.add({ title: 'Projet modifié', color: 'success' })
+      toast.add({ title: t('projects.updated', 'Project updated'), color: 'success' })
       await fetchProjects()
       return true
     }
@@ -106,7 +107,7 @@ export function useProject() {
     deleting.value = true
     try {
       await projectService.remove(id)
-      toast.add({ title: 'Projet supprimé', color: 'success' })
+      toast.add({ title: t('projects.deleted', 'Project deleted'), color: 'success' })
       await fetchProjects()
       router.push('/projects')
       return true
@@ -126,10 +127,10 @@ export function useProject() {
     scanning.value = project.id
     try {
       const result = await scanService.scan(project.id)
-      const langMsg = result.langsAdded > 0 ? ` · ${result.langsAdded} langue(s) ajoutée(s)` : ''
+      const langMsg = result.langsAdded > 0 ? ` · ${result.langsAdded} ${t('scan.langs_added', 'language(s) added')}` : ''
       toast.add({
-        title: `Scan — ${project.name}`,
-        description: `${result.keysFound} clés dans ${result.scannedFiles} fichiers · ${result.keysAdded} nouvelles${langMsg}`,
+        title: `${t('scan.toast_title', 'Scan')} — ${project.name}`,
+        description: `${result.keysFound} ${t('scan.keys_found', 'keys found')} · ${result.scannedFiles} ${t('scan.files_scanned', 'files scanned')} · ${result.keysAdded} ${t('scan.keys_added', 'new keys')}${langMsg}`,
         color: 'success',
       })
       await fetchProjects()
@@ -147,8 +148,8 @@ export function useProject() {
     try {
       const result = await scanService.sync(project.id)
       toast.add({
-        title: `Sync — ${project.name}`,
-        description: `${result.added} ajoutées · ${result.updated} mises à jour · ${result.total} total`,
+        title: `${t('sync.toast_title', 'Sync')} — ${project.name}`,
+        description: `${result.added} ${t('sync.added', 'added')} · ${result.updated} ${t('sync.updated', 'updated')} · ${result.total} ${t('sync.total', 'total')}`,
         color: 'success',
       })
       await fetchProjects()

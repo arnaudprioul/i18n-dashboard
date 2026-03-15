@@ -3,6 +3,7 @@ import type { SettingsPayload } from '../interfaces/settings.interface'
 
 export function useSettings() {
   const toast = useToast()
+  const { t } = useT()
 
   const { data, pending, refresh } = useAsyncData(
     'settings',
@@ -17,10 +18,10 @@ export function useSettings() {
     saving.value = true
     try {
       await settingsService.saveSettings(payload)
-      toast.add({ title: 'Paramètres enregistrés', color: 'success' })
+      toast.add({ title: t('settings.saved', 'Settings saved'), color: 'success' })
       await refresh()
     } catch (e: any) {
-      toast.add({ title: 'Erreur', description: e.message, color: 'error' })
+      toast.add({ title: t('common.error', 'Error'), description: e.message, color: 'error' })
     } finally {
       saving.value = false
     }

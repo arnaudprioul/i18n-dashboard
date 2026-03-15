@@ -134,8 +134,8 @@
     <UModal v-model:open="showModal" :title="editingProject ? t('projects.edit_modal_title', 'Edit project') : t('projects.add_modal_title', 'Add a project')">
       <template #body>
         <div class="space-y-4">
-          <UFormField :label="t('projects.name_label', 'Project name')" required>
-            <UInput v-model="form.name" class="w-full" :placeholder="t('projects.name_placeholder', 'My Vue App')"/>
+          <UFormField :label="t('projects.name_label', 'Project name')" required :error="nameError">
+            <UInput v-model="form.name" class="w-full" :placeholder="t('projects.name_placeholder', 'My Vue App')" @input="nameError = ''"/>
           </UFormField>
 
           <UFormField :hint="t('projects.local_path_hint', 'Absolute path on the server where the dashboard runs')" :label="t('projects.local_path_label', 'Local path (optional)')">
@@ -205,6 +205,7 @@ const showModal = ref(false)
 const showDeleteConfirm = ref(false)
 const editingProject = ref<any>(null)
 const deletingProject = ref<any>(null)
+const nameError = ref('')
 
 const form = ref({
   name: '',
@@ -240,9 +241,21 @@ const {
   visibleProjects: userProjects,
 } = useProject()
 
+let _nameCheckTimer: ReturnType<typeof setTimeout> | null = null
+watch(() => form.value.name, (name) => {
+  if (_nameCheckTimer) clearTimeout(_nameCheckTimer)
+  if (!name.trim()) { nameError.value = ''; return }
+  _nameCheckTimer = setTimeout(async () => {
+    const result = await $fetch<{ available: boolean }>('/api/projects/check-name', {
+      query: { name, exclude_id: editingProject.value?.id ?? undefined },
+    })
+    nameError.value = result.available ? '' : t('projects.name_taken', 'This name is already taken')
+  }, 400)
+})
 
 function openAdd() {
   editingProject.value = null
+  nameError.value = ''
   form.value = { name: '', root_path: '', locales_path: 'src/locales', key_separator: '.', color: 'primary', description: '' }
   showModal.value = true
 }
@@ -275,15 +288,22 @@ function projectActions(project: any) {
 }
 
 async function saveProject() {
-  if (!form.value.name) return
+  if (!form.value.name || nameError.value) return
+  nameError.value = ''
   if (editingProject.value) {
     const ok = await updateProject(editingProject.value.id, form.value)
     if (ok) showModal.value = false
   } else {
-    const newProject = await createProject(form.value)
-    if (newProject) {
-      showModal.value = false
-      await router.push(`/projects/${newProject.id}`)
+    try {
+      const newProject = await createProject(form.value)
+      if (newProject) {
+        showModal.value = false
+        await router.push(`/projects/${newProject.id}`)
+      }
+    } catch (e: any) {
+      if (e?.data?.message === 'project_name_taken') {
+        nameError.value = t('projects.name_taken', 'This name is already taken')
+      }
     }
   }
 }

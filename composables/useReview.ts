@@ -12,6 +12,7 @@ export interface ReviewItem {
 
 export function useReview() {
   const toast = useToast()
+  const { t } = useT()
   const { currentProject } = useProject()
 
   const data = ref<any>(null)
@@ -70,8 +71,8 @@ export function useReview() {
       await translationService.bulkStatus(ids, TRANSLATION_STATUS.REVIEWED)
       const n = ids.length
       toast.add({
-        title: 'Relues',
-        description: `${n} traduction${n > 1 ? 's' : ''} marquée${n > 1 ? 's' : ''} comme relue${n > 1 ? 's' : ''}`,
+        title: t('review.marked_reviewed', 'Marked as reviewed'),
+        description: `${n} ${t('review.translations_reviewed', 'translation(s) marked as reviewed')}`,
         color: 'success',
       })
       await refresh()
