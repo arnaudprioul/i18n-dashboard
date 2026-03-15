@@ -6,6 +6,10 @@ class UserService extends BaseService {
     return this.get<UserItem[]>('/api/users', { query })
   }
 
+  async getAvailableUsers(excludeProjectId: number): Promise<UserItem[]> {
+    return this.get<UserItem[]>('/api/users', { query: { exclude_project_id: excludeProjectId }, skipErrorToast: true })
+  }
+
   async create(data: CreateUserPayload): Promise<{ id: number; tempPassword: string; email: string; name: string }> {
     return this.post('/api/users', { body: data, skipDedup: true })
   }
