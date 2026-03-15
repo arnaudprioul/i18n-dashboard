@@ -4,8 +4,8 @@
     <!-- Loading -->
     <div v-if="pending" class="space-y-4">
       <USkeleton class="h-24" />
-      <div class="grid grid-cols-3 gap-4">
-        <USkeleton v-for="i in 3" :key="i" class="h-20" />
+      <div class="grid grid-cols-2 gap-4">
+        <USkeleton v-for="i in 2" :key="i" class="h-20" />
       </div>
     </div>
 
@@ -51,18 +51,27 @@
       </div>
 
       <!-- Stats -->
-      <div class="grid grid-cols-3 gap-4">
-        <UCard v-for="stat in statCards" :key="stat.label">
-          <div class="flex items-center gap-3">
-            <div class="p-2 rounded-lg" :class="stat.bg">
-              <UIcon :name="stat.icon" class="text-xl" :class="stat.color" />
+      <div class="flex items-center justify-between gap-4">
+        <div class="grid grid-cols-2 gap-4 flex-1">
+          <UCard v-for="stat in statCards" :key="stat.label">
+            <div class="flex items-center gap-3">
+              <div class="p-2 rounded-lg" :class="stat.bg">
+                <UIcon :name="stat.icon" class="text-xl" :class="stat.color" />
+              </div>
+              <div>
+                <p class="text-xs text-gray-500 dark:text-gray-400">{{ stat.label }}</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ stat.value }}</p>
+              </div>
             </div>
-            <div>
-              <p class="text-xs text-gray-500 dark:text-gray-400">{{ stat.label }}</p>
-              <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ stat.value }}</p>
-            </div>
-          </div>
-        </UCard>
+          </UCard>
+        </div>
+        <USelect
+          v-model="period"
+          :items="periodOptions"
+          class="w-52 shrink-0"
+          value-key="value"
+          label-key="label"
+        />
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
@@ -258,7 +267,7 @@ const { projects } = useProject()
 const { t } = useT()
 
 const userId = computed(() => Number(route.params.id))
-const { profile, pending, refresh, editSaving: selfEditSaving, editError, updateProfile, rolesSaving, saveRoles } = useProfile(userId)
+const { profile, period, pending, refresh, editSaving: selfEditSaving, editError, updateProfile, rolesSaving, saveRoles } = useProfile(userId)
 
 const isSelf = computed(() => currentUser.value?.id === userId.value)
 
@@ -355,6 +364,16 @@ async function doSaveRoles() {
 }
 
 // ── Stats ──────────────────────────────────────────────────────────────────────
+const periodOptions = computed(() => [
+  { label: t('profile.period_1d', 'Last 24 hours'), value: '1d' },
+  { label: t('profile.period_7d', 'Last 7 days'), value: '7d' },
+  { label: t('profile.period_30d', 'Last 30 days'), value: '30d' },
+  { label: t('profile.period_365d', 'Last year'), value: '365d' },
+  { label: t('profile.period_all', 'Since account creation'), value: 'all' },
+])
+
+const periodLabel = computed(() => periodOptions.value.find(o => o.value === period.value)?.label ?? '')
+
 const statCards = computed(() => [
   {
     label: t('profile.total_translations', 'Total translations'),
@@ -364,18 +383,11 @@ const statCards = computed(() => [
     bg: 'bg-primary-50 dark:bg-primary-900/20',
   },
   {
-    label: t('profile.this_month', 'This month'),
-    value: profile.value?.stats.thisMonth ?? 0,
+    label: periodLabel.value,
+    value: profile.value?.stats.periodCount ?? 0,
     icon: 'i-heroicons-calendar-days',
     color: 'text-blue-600',
     bg: 'bg-blue-50 dark:bg-blue-900/20',
-  },
-  {
-    label: t('profile.this_week', 'This week'),
-    value: profile.value?.stats.thisWeek ?? 0,
-    icon: 'i-heroicons-bolt',
-    color: 'text-green-600',
-    bg: 'bg-green-50 dark:bg-green-900/20',
   },
 ])
 

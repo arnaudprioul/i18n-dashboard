@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
         translation_id: existing.id,
         old_value: oldValue,
         new_value: value,
-        changed_by: 'user',
+        changed_by: event.context.user?.name ?? 'user',
       })
     }
 
