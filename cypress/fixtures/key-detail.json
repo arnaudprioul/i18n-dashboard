@@ -1,0 +1,48 @@
+{
+  "id": 1,
+  "project_id": 1,
+  "key": "home.title",
+  "description": "Homepage title",
+  "is_unused": false,
+  "created_at": "2026-01-01T00:00:00.000Z",
+  "last_scanned_at": "2026-01-15T00:00:00.000Z",
+  "languages": [
+    { "id": 1, "project_id": 1, "code": "en", "name": "English", "is_default": true, "created_at": "2026-01-01T00:00:00.000Z" },
+    { "id": 2, "project_id": 1, "code": "fr", "name": "Français", "is_default": false, "created_at": "2026-01-01T00:00:00.000Z" },
+    { "id": 3, "project_id": 1, "code": "de", "name": "Deutsch", "is_default": false, "created_at": "2026-01-01T00:00:00.000Z" }
+  ],
+  "translations": {
+    "en": {
+      "id": 10,
+      "key_id": 1,
+      "language_code": "en",
+      "value": "Welcome",
+      "status": "approved",
+      "updated_at": "2026-01-01T00:00:00.000Z",
+      "history": [
+        { "id": 100, "old_value": "Hi", "new_value": "Welcome", "changed_by": "Admin User", "changed_at": "2026-01-02T10:00:00.000Z" }
+      ]
+    },
+    "fr": {
+      "id": 11,
+      "key_id": 1,
+      "language_code": "fr",
+      "value": "Bienvenue",
+      "status": "approved",
+      "updated_at": "2026-01-01T00:00:00.000Z",
+      "history": []
+    },
+    "de": {
+      "id": 12,
+      "key_id": 1,
+      "language_code": "de",
+      "value": "",
+      "status": "draft",
+      "updated_at": "2026-01-01T00:00:00.000Z",
+      "history": []
+    }
+  },
+  "usages": [
+    { "file_path": "src/views/Home.vue", "line_number": 12, "detected_function": "t" }
+  ]
+}

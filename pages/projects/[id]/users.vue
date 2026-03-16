@@ -2,12 +2,12 @@
   <div class="p-6">
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ t('users.title', 'Users') }}</h1>
-        <p class="text-gray-500 dark:text-gray-400 mt-0.5 text-sm">
+        <h1 data-cy="project-users-title" class="text-2xl font-bold text-gray-900 dark:text-white">{{ t('users.title', 'Users') }}</h1>
+        <p data-cy="project-users-subtitle" class="text-gray-500 dark:text-gray-400 mt-0.5 text-sm">
           {{ t('users.project_members', 'Members of project') }} <strong>{{ currentProject?.name }}</strong>
         </p>
       </div>
-      <UButton icon="i-heroicons-plus" @click="openAdd">{{ t('users.add', 'Add a user') }}</UButton>
+      <UButton data-cy="users-add-btn" icon="i-heroicons-plus" @click="openAdd">{{ t('users.add', 'Add a user') }}</UButton>
     </div>
 
     <!-- Users table -->
@@ -61,13 +61,14 @@
     </UCard>
 
     <!-- Add user modal -->
-    <UModal v-model:open="showModal" :title="addModalTitle">
+    <UModal data-cy="add-user-modal" v-model:open="showModal" :title="addModalTitle">
       <template #body>
 
         <!-- ── Mode: select existing ──────────────────────────────────────── -->
         <div v-if="addMode === 'select'" class="space-y-4">
           <!-- Search -->
           <UInput
+            data-cy="user-search-input"
             v-model="search"
             :placeholder="t('users.search_placeholder', 'Search by name or email…')"
             icon="i-heroicons-magnifying-glass"
@@ -129,7 +130,7 @@
             <div class="flex-1 border-t border-gray-200 dark:border-gray-700" />
           </div>
 
-          <UButton block color="neutral" variant="outline" icon="i-heroicons-user-plus" @click="switchToCreate">
+          <UButton data-cy="create-new-user-btn" block color="neutral" variant="outline" icon="i-heroicons-user-plus" @click="switchToCreate">
             {{ t('users.create_new_user', 'Create a new user') }}
           </UButton>
         </div>
@@ -138,10 +139,10 @@
         <div v-else class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <UFormField :label="t('users.full_name', 'Full name')" required>
-              <UInput v-model="form.name" placeholder="Marie Dupont" class="w-full" />
+              <UInput data-cy="user-form-name" v-model="form.name" placeholder="Marie Dupont" class="w-full" />
             </UFormField>
             <UFormField :label="t('login.email', 'Email')" required>
-              <UInput v-model="form.email" type="email" placeholder="marie@example.com" class="w-full" />
+              <UInput data-cy="user-form-email" v-model="form.email" type="email" placeholder="marie@example.com" class="w-full" />
             </UFormField>
           </div>
 
@@ -177,6 +178,7 @@
         <div class="flex items-center justify-between gap-3">
           <!-- Back button in create mode -->
           <UButton
+            data-cy="add-user-back-btn"
             v-if="addMode === 'create' && !createdTempPassword"
             color="neutral"
             variant="ghost"
@@ -188,7 +190,7 @@
           <div v-else class="flex-1" />
 
           <div class="flex gap-3">
-            <UButton color="neutral" variant="ghost" @click="closeModal">
+            <UButton data-cy="add-user-cancel-btn" color="neutral" variant="ghost" @click="closeModal">
               {{ createdTempPassword ? t('common.close', 'Close') : t('common.cancel', 'Cancel') }}
             </UButton>
             <!-- Select mode: add existing user -->
@@ -264,8 +266,8 @@ const { currentUser } = useAuth()
 const { currentProject } = useProject()
 const { t } = useT()
 
-// Guard: requires project context
-watch(currentProject, (p) => { if (!p) navigateTo('/projects') }, { immediate: true })
+// Guard: requires project context (client-only — server: false on projects prevents SSR redirect)
+watch(currentProject, (p) => { if (import.meta.client && !p) navigateTo('/projects') })
 
 // ── Modal state ────────────────────────────────────────────────────────────────
 const showModal = ref(false)

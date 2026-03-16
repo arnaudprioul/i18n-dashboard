@@ -2,10 +2,10 @@
   <div class="p-6">
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ t('languages.title', 'Languages') }}</h1>
+        <h1 data-cy="languages-title" class="text-2xl font-bold text-gray-900 dark:text-white">{{ t('languages.title', 'Languages') }}</h1>
         <p class="text-gray-500 dark:text-gray-400 mt-0.5 text-sm">{{ t('languages.subtitle', 'Manage project languages') }}</p>
       </div>
-      <UButton icon="i-heroicons-plus" @click="showAdd = true">{{ t('languages.add', 'Add a language') }}</UButton>
+      <UButton data-cy="languages-add-btn" icon="i-heroicons-plus" @click="showAdd = true">{{ t('languages.add', 'Add a language') }}</UButton>
     </div>
 
     <!-- Skeleton -->
@@ -28,6 +28,7 @@
       <UCard
           v-for="lang in languages"
           :key="lang.code"
+          :data-cy="'language-card-' + lang.code"
           class="relative"
       >
         <div class="flex items-start justify-between">
@@ -42,7 +43,7 @@
           </div>
 
           <div class="flex items-center gap-2">
-            <UBadge v-if="lang.is_default" color="primary" size="xs">{{ t('languages.default_badge', 'Default') }}</UBadge>
+            <UBadge v-if="lang.is_default" :data-cy="'lang-default-badge-' + lang.code" color="primary" size="xs">{{ t('languages.default_badge', 'Default') }}</UBadge>
             <UDropdownMenu :items="getLangActions(lang)">
               <UButton color="neutral" icon="i-heroicons-ellipsis-vertical" size="xs" variant="ghost"/>
             </UDropdownMenu>
@@ -52,7 +53,7 @@
         <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
           <div class="flex items-center justify-between text-sm">
             <span class="text-gray-500">{{ t('languages.coverage', 'Coverage') }}</span>
-            <span class="font-medium text-gray-700 dark:text-gray-300">
+            <span :data-cy="'lang-coverage-' + lang.code" class="font-medium text-gray-700 dark:text-gray-300">
               {{ getCoverage(lang.code) }}%
             </span>
           </div>
@@ -98,11 +99,12 @@
     </div>
 
     <!-- Add Language modal -->
-    <UModal v-model:open="showAdd" :title="t('languages.add_modal_title', 'Add a language')">
+    <UModal data-cy="add-language-modal" v-model:open="showAdd" :title="t('languages.add_modal_title', 'Add a language')">
       <template #body>
         <div class="space-y-4">
           <UFormField :label="t('languages.language_label', 'Language')" required>
             <UInput
+              data-cy="lang-search-input"
               v-model="langSearch"
               :placeholder="t('onboarding.languages_search', 'Search for a language...')"
               icon="i-heroicons-magnifying-glass"
@@ -164,7 +166,7 @@
       </template>
       <template #footer>
         <div class="flex justify-end gap-3">
-          <UButton color="neutral" variant="ghost" @click="showAdd = false">{{ t('common.cancel', 'Cancel') }}</UButton>
+          <UButton data-cy="add-language-cancel-btn" color="neutral" variant="ghost" @click="showAdd = false">{{ t('common.cancel', 'Cancel') }}</UButton>
           <UButton :loading="adding" :disabled="!newLang.code" @click="addLanguage">{{ t('languages.add', 'Add') }}</UButton>
         </div>
       </template>

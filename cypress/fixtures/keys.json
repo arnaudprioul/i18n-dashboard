@@ -1,0 +1,56 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "project_id": 1,
+      "key": "home.title",
+      "description": "Homepage title",
+      "is_unused": false,
+      "translations": {
+        "en": { "id": 10, "key_id": 1, "language_code": "en", "value": "Welcome", "status": "approved" },
+        "fr": { "id": 11, "key_id": 1, "language_code": "fr", "value": "Bienvenue", "status": "approved" },
+        "de": { "id": 12, "key_id": 1, "language_code": "de", "value": "", "status": "draft" }
+      }
+    },
+    {
+      "id": 2,
+      "project_id": 1,
+      "key": "home.subtitle",
+      "description": "Homepage subtitle",
+      "is_unused": false,
+      "translations": {
+        "en": { "id": 13, "key_id": 2, "language_code": "en", "value": "Start your journey", "status": "reviewed" },
+        "fr": { "id": 14, "key_id": 2, "language_code": "fr", "value": "Commencez votre voyage", "status": "draft" },
+        "de": { "id": 15, "key_id": 2, "language_code": "de", "value": "", "status": "draft" }
+      }
+    },
+    {
+      "id": 3,
+      "project_id": 1,
+      "key": "nav.home",
+      "description": "Navigation home link",
+      "is_unused": false,
+      "translations": {
+        "en": { "id": 16, "key_id": 3, "language_code": "en", "value": "Home", "status": "approved" },
+        "fr": { "id": 17, "key_id": 3, "language_code": "fr", "value": "Accueil", "status": "approved" },
+        "de": { "id": 18, "key_id": 3, "language_code": "de", "value": "Startseite", "status": "approved" }
+      }
+    },
+    {
+      "id": 4,
+      "project_id": 1,
+      "key": "nav.about",
+      "description": null,
+      "is_unused": true,
+      "translations": {
+        "en": { "id": 19, "key_id": 4, "language_code": "en", "value": "About", "status": "approved" },
+        "fr": { "id": 20, "key_id": 4, "language_code": "fr", "value": "", "status": "draft" },
+        "de": { "id": 21, "key_id": 4, "language_code": "de", "value": "", "status": "draft" }
+      }
+    }
+  ],
+  "total": 4,
+  "page": 1,
+  "limit": 50,
+  "languages": ["en", "fr", "de"]
+}

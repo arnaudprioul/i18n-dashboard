@@ -66,6 +66,8 @@
 - **CORS auto-detection** — multiple app URLs per project; all are checked for CORS on `/locale/[lang].json`
 - **Global loading overlay** — a full-page loading screen prevents interaction before data is ready, including on direct page load (F5) for any route
 - **Dark mode** — system preference + manual toggle
+- **Cypress E2E test suite** — full test coverage across all pages (auth, dashboard, projects, translations, languages, users, review, settings); CI-ready with GitHub Actions
+- **GitHub Actions CI** — E2E tests run automatically on every push to `develop` and `main`; Cypress screenshots uploaded as artifacts on failure
 
 ---
 
@@ -723,6 +725,7 @@ npx i18n-dashboard sync
 | [@vitalets/google-translate-api](https://github.com/vitalets/google-translate-api) | 9.x | Google Translate (free tier) |
 | [Commander.js](https://github.com/tj/commander.js) | 13.x | CLI |
 | [bcryptjs](https://github.com/dcodeIO/bcrypt.js) | 2.x | Password hashing |
+| [Cypress](https://www.cypress.io/) | 13.x | E2E test suite |
 
 ---
 

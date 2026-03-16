@@ -5,7 +5,7 @@
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ t('nav.projects', 'Projects') }}</h1>
         <p class="text-gray-500 dark:text-gray-400 mt-0.5 text-sm">{{ t('projects.subtitle', 'Manage your Vue.js projects') }}</p>
       </div>
-      <UButton icon="i-heroicons-plus" :disabled="pending" @click="openAdd">{{ t('projects.add', 'Add a project') }}</UButton>
+      <UButton data-cy="projects-add-btn" icon="i-heroicons-plus" :disabled="pending" @click="openAdd">{{ t('projects.add', 'Add a project') }}</UButton>
     </div>
 
     <!-- Skeleton -->
@@ -42,6 +42,7 @@
       <div
           v-for="project in userProjects"
           :key="project.id"
+          :data-cy="'project-card-' + project.id"
           class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5 flex flex-col gap-4 hover:border-primary-300 dark:hover:border-primary-700 transition-colors cursor-pointer"
           @click="router.push(`/projects/${project.id}`)"
       >
@@ -53,13 +54,13 @@
               <UIcon :class="`text-${project.color || 'primary'}-600`" class="text-xl" name="i-heroicons-folder"/>
             </div>
             <div class="min-w-0">
-              <h3 class="font-semibold text-gray-900 dark:text-white truncate">{{ project.name }}</h3>
+              <h3 :data-cy="'project-name-' + project.id" class="font-semibold text-gray-900 dark:text-white truncate">{{ project.name }}</h3>
               <p v-if="project.description" class="text-xs text-gray-400 truncate mt-0.5">{{ project.description }}</p>
               <p v-else class="text-xs text-gray-300 dark:text-gray-600 truncate mt-0.5 italic">{{ t('projects.no_description', 'No description') }}</p>
             </div>
           </div>
           <UDropdownMenu :items="projectActions(project)" @click.stop>
-            <UButton color="neutral" icon="i-heroicons-ellipsis-vertical" size="xs" variant="ghost" @click.stop/>
+            <UButton :data-cy="'project-menu-btn-' + project.id" color="neutral" icon="i-heroicons-ellipsis-vertical" size="xs" variant="ghost" @click.stop/>
           </UDropdownMenu>
         </div>
 
@@ -67,7 +68,7 @@
         <div class="grid grid-cols-2 gap-3">
           <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-3">
             <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ project.key_count }}</p>
-            <p class="text-xs text-gray-400 mt-0.5">{{ t('projects.keys_stat', 'Translation keys') }}</p>
+            <p :data-cy="'project-keys-stat-' + project.id" class="text-xs text-gray-400 mt-0.5">{{ t('projects.keys_stat', 'Translation keys') }}</p>
           </div>
           <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-3">
             <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ project.language_count }}</p>
@@ -121,7 +122,7 @@
               </UButton>
             </UTooltip>
           </template>
-          <UButton class="ml-auto" color="primary" size="xs" @click.stop="router.push(`/projects/${project.id}`)">
+          <UButton :data-cy="'project-open-btn-' + project.id" class="ml-auto" color="primary" size="xs" @click.stop="router.push(`/projects/${project.id}`)">
             {{ t('projects.open', 'Open') }}
           </UButton>
         </div>
@@ -129,7 +130,7 @@
     </div>
 
     <!-- Add / Edit modal -->
-    <UModal v-model:open="showModal" :title="editingProject ? t('projects.edit_modal_title', 'Edit project') : t('projects.add_modal_title', 'Add a project')" :ui="{ width: 'max-w-2xl' }">
+    <UModal v-model:open="showModal" data-cy="project-modal" :title="editingProject ? t('projects.edit_modal_title', 'Edit project') : t('projects.add_modal_title', 'Add a project')" :ui="{ width: 'max-w-2xl' }">
       <template #body>
         <!-- Step indicator (creation only) -->
         <div v-if="!editingProject" class="flex items-center gap-2 mb-5">
@@ -153,7 +154,7 @@
         </div>
 
         <!-- Creation: Step 1 — Source -->
-        <div v-if="!editingProject && step === 1" class="space-y-4">
+        <div v-if="!editingProject && step === 1" data-cy="project-step-source" class="space-y-4">
           <p class="text-sm text-gray-500 dark:text-gray-400">{{ t('projects.step_source_hint', 'Enter a local path and/or a git repository to auto-detect project configuration.') }}</p>
           <UFormField :label="t('projects.local_path_label', 'Local path (optional)')">
             <PathPicker v-model="form.root_path" class="w-full" />
@@ -247,7 +248,7 @@
         <div v-if="!editingProject" class="flex justify-between gap-3">
           <!-- Step 1 -->
           <template v-if="step === 1">
-            <UButton color="neutral" variant="ghost" @click="showModal = false">{{ t('common.cancel', 'Cancel') }}</UButton>
+            <UButton data-cy="modal-cancel-btn" color="neutral" variant="ghost" @click="showModal = false">{{ t('common.cancel', 'Cancel') }}</UButton>
             <UButton
               :disabled="!form.root_path && !form.git_repo?.url"
               :loading="detecting"
@@ -304,15 +305,17 @@
     <!-- Delete confirm -->
     <UModal v-model:open="showDeleteConfirm" :title="t('projects.delete_title', 'Delete project')">
       <template #body>
+        <div data-cy="project-delete-modal">
         <p class="text-gray-600 dark:text-gray-400">
           {{ t('projects.delete_confirm', 'Delete') }} <strong>{{ deletingProject?.name }}</strong>? {{ t('projects.delete_warning', 'All keys, translations and history will be deleted.') }}
         </p>
-        <p class="text-red-500 text-sm mt-2 font-medium">{{ t('common.irreversible', 'This action is irreversible.') }}</p>
+        <p data-cy="delete-irreversible-text" class="text-red-500 text-sm mt-2 font-medium">{{ t('common.irreversible', 'This action is irreversible.') }}</p>
+        </div>
       </template>
       <template #footer>
         <div class="flex justify-end gap-3">
           <UButton color="neutral" variant="ghost" @click="showDeleteConfirm = false">{{ t('common.cancel', 'Cancel') }}</UButton>
-          <UButton :loading="deleting" color="error" @click="deleteProject">{{ t('common.delete', 'Delete') }}</UButton>
+          <UButton data-cy="project-delete-confirm-btn" :loading="deleting" color="error" @click="deleteProject">{{ t('common.delete', 'Delete') }}</UButton>
         </div>
       </template>
     </UModal>
@@ -429,12 +432,12 @@ function projectActions(project: any) {
   return [
     [
       { label: t('common.edit', 'Edit'), icon: 'i-heroicons-pencil', onSelect: () => openEdit(project) },
-      {
+      ...(!project.is_system ? [{
         label: t('common.delete', 'Delete'),
         icon: 'i-heroicons-trash',
         color: 'error' as const,
         onSelect: () => { deletingProject.value = project; showDeleteConfirm.value = true },
-      },
+      }] : []),
     ],
   ]
 }
