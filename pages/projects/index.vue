@@ -429,12 +429,12 @@ function projectActions(project: any) {
   return [
     [
       { label: t('common.edit', 'Edit'), icon: 'i-heroicons-pencil', onSelect: () => openEdit(project) },
-      {
+      ...(!project.is_system ? [{
         label: t('common.delete', 'Delete'),
         icon: 'i-heroicons-trash',
         color: 'error' as const,
         onSelect: () => { deletingProject.value = project; showDeleteConfirm.value = true },
-      },
+      }] : []),
     ],
   ]
 }
