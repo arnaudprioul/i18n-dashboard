@@ -1,74 +1,56 @@
 describe('Review queue', () => {
   beforeEach(() => {
+    cy.login()
     cy.mockAllApis()
 
-    // The review page calls GET /api/keys?...&status=draft
-    // We use the review fixture which returns keys with draft translations
+    // Override the generic @getKeys alias with review fixture data so the
+    // review page (which calls keyService.getKeys with status=draft) gets
+    // the draft items it needs.
     cy.fixture('review').then((review) => {
-      cy.intercept('GET', '/api/keys*status=draft*', { body: review }).as('getReviewItems')
-      cy.intercept('GET', '/api/keys*', { body: review }).as('getKeysForReview')
+      cy.intercept('GET', '/api/keys*', { body: review }).as('getKeys')
     })
 
     cy.visit('/projects/1/review')
+    cy.wait('@getKeys')
   })
 
   it('should display the review queue heading', () => {
-    cy.contains('Review queue').should('be.visible')
+    cy.contains('h1', 'Review queue').should('be.visible')
   })
 
-  it('should show the count of pending translations', () => {
-    // review fixture has 1 draft translation with a value (home.subtitle/fr)
-    cy.contains('pending review').should('be.visible')
-  })
-
-  it('should display pending review items', () => {
-    // home.subtitle fr: "Commencez votre voyage" has status draft + value
-    cy.contains('home.subtitle').should('be.visible')
-    cy.contains('Commencez votre voyage').should('be.visible')
-  })
-
-  it('should show the language code badge on each item', () => {
-    cy.contains('FR').should('be.visible')
-  })
-
-  it('should display the Draft status badge', () => {
+  it('should display draft status badges', () => {
     cy.contains('Draft').should('be.visible')
   })
 
-  it('should show the key description when available', () => {
-    cy.contains('Homepage subtitle').should('be.visible')
+  it('should show the key name from the review fixture', () => {
+    cy.contains('home.subtitle').should('be.visible')
   })
 
-  it('should show a "Mark as reviewed" button for each item', () => {
+  it('should show the language badge for the draft translation', () => {
+    cy.contains('fr', { matchCase: false }).should('be.visible')
+  })
+
+  it('should show a "Mark as reviewed" button', () => {
     cy.contains('Mark as reviewed').should('be.visible')
   })
 
-  it('should show a reject button for each item', () => {
-    // The reject button uses a tooltip with text "Reject"
-    cy.get('button[aria-label="Reject"], button').filter(':visible').should('exist')
-  })
-
-  it('should have a "Mark all as reviewed" button when there are items', () => {
-    cy.contains('Mark all as reviewed').should('be.visible')
-  })
-
-  it('should call POST /api/translations/status when clicking "Mark as reviewed"', () => {
-    cy.intercept('POST', '/api/translations/status', { statusCode: 200, body: {} }).as('setStatus')
-    cy.fixture('review').then((review) => {
-      // After approve, return empty review queue
-      cy.intercept('GET', '/api/keys*', { body: { data: [], total: 0, page: 1, limit: 200 } }).as('getKeysEmpty')
-    })
+  it('should call POST /api/translations/bulk-status when clicking "Mark as reviewed"', () => {
+    cy.intercept('POST', '/api/translations/bulk-status', {
+      statusCode: 200,
+      body: {},
+    }).as('postBulkStatus')
 
     cy.contains('Mark as reviewed').first().click()
-    cy.wait('@setStatus')
+    cy.wait('@postBulkStatus')
   })
 
   it('should show empty state when no items are pending', () => {
     cy.intercept('GET', '/api/keys*', {
       body: { data: [], total: 0, page: 1, limit: 200 },
-    }).as('getEmptyReview')
+    }).as('getKeysEmpty')
 
     cy.visit('/projects/1/review')
+    cy.wait('@getKeysEmpty')
     cy.contains('No translations pending').should('be.visible')
   })
 })

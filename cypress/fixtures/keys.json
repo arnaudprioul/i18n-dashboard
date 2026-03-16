@@ -1,5 +1,5 @@
 {
-  "keys": [
+  "data": [
     {
       "id": 1,
       "project_id": 1,
@@ -7,9 +7,9 @@
       "description": "Homepage title",
       "is_unused": false,
       "translations": {
-        "en": { "value": "Welcome", "status": "approved" },
-        "fr": { "value": "Bienvenue", "status": "approved" },
-        "de": { "value": "", "status": "draft" }
+        "en": { "id": 10, "key_id": 1, "language_code": "en", "value": "Welcome", "status": "approved" },
+        "fr": { "id": 11, "key_id": 1, "language_code": "fr", "value": "Bienvenue", "status": "approved" },
+        "de": { "id": 12, "key_id": 1, "language_code": "de", "value": "", "status": "draft" }
       }
     },
     {
@@ -19,9 +19,9 @@
       "description": "Homepage subtitle",
       "is_unused": false,
       "translations": {
-        "en": { "value": "Start your journey", "status": "reviewed" },
-        "fr": { "value": "Commencez votre voyage", "status": "draft" },
-        "de": { "value": "", "status": "draft" }
+        "en": { "id": 13, "key_id": 2, "language_code": "en", "value": "Start your journey", "status": "reviewed" },
+        "fr": { "id": 14, "key_id": 2, "language_code": "fr", "value": "Commencez votre voyage", "status": "draft" },
+        "de": { "id": 15, "key_id": 2, "language_code": "de", "value": "", "status": "draft" }
       }
     },
     {
@@ -31,9 +31,9 @@
       "description": "Navigation home link",
       "is_unused": false,
       "translations": {
-        "en": { "value": "Home", "status": "approved" },
-        "fr": { "value": "Accueil", "status": "approved" },
-        "de": { "value": "Startseite", "status": "approved" }
+        "en": { "id": 16, "key_id": 3, "language_code": "en", "value": "Home", "status": "approved" },
+        "fr": { "id": 17, "key_id": 3, "language_code": "fr", "value": "Accueil", "status": "approved" },
+        "de": { "id": 18, "key_id": 3, "language_code": "de", "value": "Startseite", "status": "approved" }
       }
     },
     {
@@ -43,13 +43,14 @@
       "description": null,
       "is_unused": true,
       "translations": {
-        "en": { "value": "About", "status": "approved" },
-        "fr": { "value": "", "status": "draft" },
-        "de": { "value": "", "status": "draft" }
+        "en": { "id": 19, "key_id": 4, "language_code": "en", "value": "About", "status": "approved" },
+        "fr": { "id": 20, "key_id": 4, "language_code": "fr", "value": "", "status": "draft" },
+        "de": { "id": 21, "key_id": 4, "language_code": "de", "value": "", "status": "draft" }
       }
     }
   ],
   "total": 4,
   "page": 1,
-  "limit": 50
+  "limit": 50,
+  "languages": ["en", "fr", "de"]
 }

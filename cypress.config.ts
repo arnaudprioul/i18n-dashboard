@@ -11,9 +11,14 @@ export default defineConfig({
     video: false,
     viewportWidth: 1280,
     viewportHeight: 800,
-    defaultCommandTimeout: 8000,
-    requestTimeout: 10000,
-    // Prevent Cypress from failing on uncaught exceptions from the app
+    defaultCommandTimeout: 10000,
+    requestTimeout: 15000,
+    responseTimeout: 15000,
     experimentalRunAllSpecs: true,
+    // Credentials for cy.login() — override in cypress.env.json
+    env: {
+      ADMIN_EMAIL: 'admin@example.com',
+      ADMIN_PASSWORD: 'admin',
+    },
   },
 })

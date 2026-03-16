@@ -264,8 +264,8 @@ const { currentUser } = useAuth()
 const { currentProject } = useProject()
 const { t } = useT()
 
-// Guard: requires project context
-watch(currentProject, (p) => { if (!p) navigateTo('/projects') }, { immediate: true })
+// Guard: requires project context (client-only — server: false on projects prevents SSR redirect)
+watch(currentProject, (p) => { if (import.meta.client && !p) navigateTo('/projects') }, { immediate: true })
 
 // ── Modal state ────────────────────────────────────────────────────────────────
 const showModal = ref(false)

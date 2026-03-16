@@ -417,7 +417,8 @@
     }
   }, { immediate: true })
 
-  const apiAddress = document.location.origin
+  const reqUrl = useRequestURL()
+  const apiAddress = reqUrl.origin
 
   const apiExamples = computed(() => [
     { label: t('settings.api_example_english', 'English translations'), url: `${apiAddress}/locale/en.json` },

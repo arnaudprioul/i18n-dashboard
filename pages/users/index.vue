@@ -197,8 +197,8 @@
   const { currentUser } = useAuth()
   const { t } = useT()
 
-  // Guard: super admin only
-  watch(() => currentUser.value?.is_super_admin, (ok) => { if (ok === false) navigateTo('/') }, { immediate: true })
+  // Guard: super admin only (client-only to avoid SSR redirect before auth is loaded)
+  watch(() => currentUser.value?.is_super_admin, (ok) => { if (import.meta.client && ok === false) navigateTo('/') }, { immediate: true })
 
   const showModal = ref(false)
   const showDeleteConfirm = ref(false)

@@ -95,7 +95,7 @@ const { t } = useT()
 const hasAccess = computed(() =>
   currentProject.value ? canApprove(currentProject.value.id) : false,
 )
-watch(hasAccess, (ok) => { if (!ok) navigateTo('/') }, { immediate: true })
+watch(hasAccess, (ok) => { if (import.meta.client && !ok) navigateTo('/') }, { immediate: true })
 
 const {
   reviewItems,

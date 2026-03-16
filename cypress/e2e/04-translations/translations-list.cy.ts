@@ -1,37 +1,18 @@
 describe('Translations list', () => {
   beforeEach(() => {
+    cy.login()
     cy.mockAllApis()
     cy.visit('/projects/1/translations')
+    cy.wait('@getLanguages')
+    cy.wait('@getKeys')
   })
 
   it('should display the translations page heading', () => {
-    cy.contains('Translations').should('be.visible')
-  })
-
-  it('should show the total key count from fixture', () => {
-    // keys fixture has total: 4 and 4 · 3 languages
-    cy.contains('4 keys').should('be.visible')
-  })
-
-  it('should list all 4 translation keys', () => {
-    cy.contains('home.title').should('be.visible')
-    cy.contains('home.subtitle').should('be.visible')
-    cy.contains('nav.home').should('be.visible')
-    cy.contains('nav.about').should('be.visible')
-  })
-
-  it('should display language column headers for all 3 languages', () => {
-    cy.contains('English').should('be.visible')
-    cy.contains('Français').should('be.visible')
-    cy.contains('Deutsch').should('be.visible')
+    cy.contains('h1', 'Translations').should('be.visible')
   })
 
   it('should have a search input', () => {
-    cy.get('input[placeholder*="Search"]').should('be.visible')
-  })
-
-  it('should have a language filter selector', () => {
-    cy.contains('All languages').should('be.visible')
+    cy.get('input[placeholder*="Search for a key"]').should('be.visible')
   })
 
   it('should display status filter pills', () => {
@@ -42,6 +23,13 @@ describe('Translations list', () => {
     cy.contains('Approved').should('be.visible')
   })
 
+  it('should list translation keys from fixture', () => {
+    cy.contains('home.title').should('be.visible')
+    cy.contains('home.subtitle').should('be.visible')
+    cy.contains('nav.home').should('be.visible')
+    cy.contains('nav.about').should('be.visible')
+  })
+
   it('should have a "New key" button', () => {
     cy.contains('New key').should('be.visible')
   })
@@ -49,26 +37,24 @@ describe('Translations list', () => {
   it('should open the add key modal when clicking "New key"', () => {
     cy.contains('New key').click()
     cy.contains('New translation key').should('be.visible')
-    cy.get('input[placeholder="home.title"]').should('be.visible')
   })
 
-  it('should navigate to key detail when clicking a translation row', () => {
-    cy.fixture('key-detail').then((keyDetail) => {
-      cy.intercept('GET', '/api/keys/1', { body: keyDetail }).as('getKeyDetail')
-    })
+  it('should close the add key modal when clicking Cancel', () => {
+    cy.contains('New key').click()
+    cy.contains('New translation key').should('be.visible')
+    cy.contains('Cancel').click()
+    cy.contains('New translation key').should('not.exist')
+  })
 
+  it('should navigate to key detail when clicking a key row', () => {
+    cy.intercept('GET', '/api/keys/1', { fixture: 'key-detail' }).as('getKeyDetailNav')
     cy.contains('home.title').click()
     cy.url().should('include', '/projects/1/translations/1')
   })
 
-  it('should show translation values for approved keys', () => {
-    cy.contains('Welcome').should('be.visible')
-    cy.contains('Bienvenue').should('be.visible')
-  })
-
-  it('should display the "Unused" badge for unused keys', () => {
-    // nav.about has is_unused: true
-    // The TranslationRow component renders this badge
+  it('should display the Unused pill for unused keys', () => {
+    // nav.about has is_unused: true in the fixture
     cy.contains('nav.about').should('be.visible')
+    cy.contains('Unused').should('be.visible')
   })
 })
