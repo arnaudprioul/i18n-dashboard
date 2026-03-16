@@ -1,0 +1,33 @@
+[
+  {
+    "id": 1,
+    "name": "Admin User",
+    "email": "admin@example.com",
+    "is_active": true,
+    "is_super_admin": true,
+    "last_login_at": "2026-03-16T08:00:00.000Z",
+    "roles": []
+  },
+  {
+    "id": 2,
+    "name": "Jane Translator",
+    "email": "jane@example.com",
+    "is_active": true,
+    "is_super_admin": false,
+    "last_login_at": "2026-03-15T14:30:00.000Z",
+    "roles": [
+      { "role": "translator", "project_id": 1, "project_name": "My App", "project_color": "primary" }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Bob Moderator",
+    "email": "bob@example.com",
+    "is_active": true,
+    "is_super_admin": false,
+    "last_login_at": null,
+    "roles": [
+      { "role": "moderator", "project_id": 1, "project_name": "My App", "project_color": "primary" }
+    ]
+  }
+]

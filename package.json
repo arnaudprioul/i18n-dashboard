@@ -15,7 +15,9 @@
     "start:detach": "node bin/cli.mjs start --detach",
     "stop": "node bin/cli.mjs stop",
     "init": "node bin/cli.mjs init",
-    "sync": "node bin/cli.mjs sync"
+    "sync": "node bin/cli.mjs sync",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run"
   },
   "dependencies": {
     "@nuxt/ui": "^3.3.7",
@@ -84,6 +86,7 @@
   "license": "MIT",
   "devDependencies": {
     "@iconify-json/heroicons": "^1.2.3",
-    "@types/node": "^25.3.5"
+    "@types/node": "^25.3.5",
+    "cypress": "^15.12.0"
   }
 }
