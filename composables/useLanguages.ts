@@ -38,11 +38,24 @@ export function useLanguages() {
 
   // ── Project languages (API) ──────────────────────────────────────────────
 
-  const { data, pending, refresh } = useAsyncData<LanguageItem[]>(
-    'project-languages',
-    () => languageService.getLanguages(currentProject.value?.id),
-    { watch: [() => currentProject.value?.id], default: () => [] },
-  )
+  const data = ref<LanguageItem[]>([])
+  const pending = ref(false)
+
+  async function refresh() {
+    pending.value = true
+    try {
+      data.value = await languageService.getLanguages(currentProject.value?.id)
+    }
+    catch {
+      data.value = []
+    }
+    finally {
+      pending.value = false
+    }
+  }
+
+  onMounted(refresh)
+  watch(() => currentProject.value?.id, (id) => { if (id) refresh() })
 
   const projectLanguages = computed(() => data.value ?? [])
 

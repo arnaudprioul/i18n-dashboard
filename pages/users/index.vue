@@ -2,10 +2,10 @@
   <div class="p-6">
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ t('users.all_title', 'All users') }}</h1>
+        <h1 data-cy="all-users-title" class="text-2xl font-bold text-gray-900 dark:text-white">{{ t('users.all_title', 'All users') }}</h1>
         <p class="text-gray-500 dark:text-gray-400 mt-0.5 text-sm">{{ t('users.subtitle', 'Manage dashboard access') }}</p>
       </div>
-      <UButton icon="i-heroicons-plus" @click="openAdd">{{ t('users.add', 'Add a user') }}</UButton>
+      <UButton data-cy="global-users-add-btn" icon="i-heroicons-plus" @click="openAdd">{{ t('users.add', 'Add a user') }}</UButton>
     </div>
 
     <!-- Users table -->
@@ -21,6 +21,7 @@
         <div
             v-for="user in users"
             :key="user.id"
+            :data-cy="'user-row-' + user.id"
             class="flex items-center justify-between py-3 gap-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg px-2 -mx-2 transition-colors"
             @click="router.push(`/users/${user.id}/profile`)"
         >
@@ -32,11 +33,11 @@
             </div>
             <div class="min-w-0">
               <div class="flex items-center gap-2">
-                <p class="font-medium text-gray-900 dark:text-white text-sm truncate">{{ user.name }}</p>
+                <p :data-cy="'user-name-' + user.id" class="font-medium text-gray-900 dark:text-white text-sm truncate">{{ user.name }}</p>
                 <UBadge v-if="user.is_super_admin" size="xs" color="error">Super Admin</UBadge>
                 <UBadge v-if="!user.is_active" size="xs" color="neutral" variant="outline">{{ t('users.inactive', 'Inactive') }}</UBadge>
               </div>
-              <p class="text-xs text-gray-400 truncate">{{ user.email }}</p>
+              <p :data-cy="'user-email-' + user.id" class="text-xs text-gray-400 truncate">{{ user.email }}</p>
             </div>
           </div>
 
@@ -72,7 +73,7 @@
     </UCard>
 
     <!-- Add user modal -->
-    <UModal v-model:open="showModal" :title="t('users.add_user_title', 'Add a user')">
+    <UModal data-cy="global-add-user-modal" v-model:open="showModal" :title="t('users.add_user_title', 'Add a user')">
       <template #body>
         <div class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
@@ -124,7 +125,7 @@
       </template>
       <template #footer>
         <div class="flex justify-end gap-3">
-          <UButton color="neutral" variant="ghost" @click="closeModal">
+          <UButton data-cy="global-add-user-cancel-btn" color="neutral" variant="ghost" @click="closeModal">
             {{ createdTempPassword ? t('common.close', 'Close') : t('common.cancel', 'Cancel') }}
           </UButton>
           <UButton v-if="!createdTempPassword" :loading="saving" @click="saveUser">{{ t('common.create', 'Create') }}</UButton>

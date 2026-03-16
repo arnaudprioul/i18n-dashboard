@@ -3,9 +3,7 @@ describe('Review queue', () => {
     cy.login()
     cy.mockAllApis()
 
-    // Override the generic @getKeys alias with review fixture data so the
-    // review page (which calls keyService.getKeys with status=draft) gets
-    // the draft items it needs.
+    // Override the generic @getKeys with review fixture data (status=draft items)
     cy.fixture('review').then((review) => {
       cy.intercept('GET', '/api/keys*', { body: review }).as('getKeys')
     })
@@ -15,7 +13,7 @@ describe('Review queue', () => {
   })
 
   it('should display the review queue heading', () => {
-    cy.contains('h1', 'Review queue').should('be.visible')
+    cy.get('[data-cy="review-title"]').should('be.visible')
   })
 
   it('should display draft status badges', () => {
@@ -31,7 +29,7 @@ describe('Review queue', () => {
   })
 
   it('should show a "Mark as reviewed" button', () => {
-    cy.contains('Mark as reviewed').should('be.visible')
+    cy.get('[data-cy="mark-reviewed-btn"]').first().should('be.visible')
   })
 
   it('should call POST /api/translations/bulk-status when clicking "Mark as reviewed"', () => {
@@ -40,7 +38,7 @@ describe('Review queue', () => {
       body: {},
     }).as('postBulkStatus')
 
-    cy.contains('Mark as reviewed').first().click()
+    cy.get('[data-cy="mark-reviewed-btn"]').first().click()
     cy.wait('@postBulkStatus')
   })
 
@@ -51,6 +49,6 @@ describe('Review queue', () => {
 
     cy.visit('/projects/1/review')
     cy.wait('@getKeysEmpty')
-    cy.contains('No translations pending').should('be.visible')
+    cy.get('[data-cy="review-empty-state"]').should('be.visible')
   })
 })

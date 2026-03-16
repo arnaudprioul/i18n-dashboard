@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="flex items-center justify-between mb-5">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ t('translations.title', 'Translations') }}</h1>
+        <h1 data-cy="translations-title" class="text-2xl font-bold text-gray-900 dark:text-white">{{ t('translations.title', 'Translations') }}</h1>
         <p class="text-gray-500 dark:text-gray-400 mt-0.5 text-sm">
           {{ data?.total || 0 }} {{ t('translations.keys_count', 'keys') }} · {{ languages.length }} {{ t('translations.langs_count', 'languages') }}
         </p>
@@ -19,7 +19,7 @@
         >
           {{ t('translations.translate_all', 'Translate all') }} ({{ filterLangs[0].toUpperCase() }})
         </UButton>
-        <UButton v-if="userCanManage" icon="i-heroicons-plus" @click="showAddKey = true">{{ t('translations.add_key', 'New key') }}</UButton>
+        <UButton v-if="userCanManage" data-cy="new-key-btn" icon="i-heroicons-plus" @click="showAddKey = true">{{ t('translations.add_key', 'New key') }}</UButton>
       </div>
     </div>
 
@@ -27,6 +27,7 @@
     <div class="flex flex-col sm:flex-row gap-3 mb-5">
       <UInput
         v-model="search"
+        data-cy="translations-search"
         icon="i-heroicons-magnifying-glass"
         :placeholder="t('translations.search', 'Search for a key...')"
         class="flex-1"
@@ -48,6 +49,7 @@
       <button
         v-for="s in statusFilters"
         :key="s.value"
+        :data-cy="'filter-' + s.value"
         class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all"
         :class="filterStatus === s.value
           ? `${s.activeBg} ${s.activeText} border-transparent`
@@ -129,7 +131,7 @@
     <!-- Add Key modal -->
     <UModal v-model:open="showAddKey" :title="t('translations.add_key_title', 'New translation key')">
       <template #body>
-        <div class="space-y-4">
+        <div data-cy="add-key-modal" class="space-y-4">
           <UFormField :label="t('translations.key_label', 'Key')" :hint="t('translations.key_hint', 'Example: home.title or nav.menu.about')" required>
             <UInput v-model="newKey.key" placeholder="home.title" class="w-full font-mono" />
           </UFormField>
@@ -140,8 +142,8 @@
       </template>
       <template #footer>
         <div class="flex justify-end gap-3">
-          <UButton variant="ghost" color="neutral" @click="showAddKey = false">{{ t('common.cancel', 'Cancel') }}</UButton>
-          <UButton :loading="addingKey" @click="addKey">{{ t('common.create', 'Create') }}</UButton>
+          <UButton data-cy="add-key-cancel-btn" variant="ghost" color="neutral" @click="showAddKey = false">{{ t('common.cancel', 'Cancel') }}</UButton>
+          <UButton data-cy="add-key-create-btn" :loading="addingKey" @click="addKey">{{ t('common.create', 'Create') }}</UButton>
         </div>
       </template>
     </UModal>

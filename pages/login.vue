@@ -6,7 +6,7 @@
           <UIcon name="i-heroicons-language" class="text-white text-lg" />
         </div>
         <div>
-          <h1 class="text-lg font-bold text-gray-900 dark:text-white">i18n Dashboard</h1>
+          <h1 data-cy="login-title" class="text-lg font-bold text-gray-900 dark:text-white">i18n Dashboard</h1>
           <p class="text-xs text-gray-400">{{ t('login.title', 'Log in') }}</p>
         </div>
       </div>
@@ -21,6 +21,7 @@
           class="w-full"
           autocomplete="email"
           autofocus
+          data-cy="login-email"
         />
       </UFormField>
 
@@ -31,15 +32,16 @@
           placeholder="••••••••"
           class="w-full"
           autocomplete="current-password"
+          data-cy="login-password"
         />
       </UFormField>
 
-      <p v-if="error" class="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2">
+      <p v-if="error" data-cy="login-error" class="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2">
         <UIcon name="i-heroicons-exclamation-circle" class="inline mr-1" />
         {{ error }}
       </p>
 
-      <UButton type="submit" block :loading="loading" class="mt-2">
+      <UButton type="submit" block :loading="loading" class="mt-2" data-cy="login-submit">
         {{ t('login.submit', 'Sign in') }}
       </UButton>
     </form>

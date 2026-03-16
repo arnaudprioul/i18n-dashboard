@@ -25,29 +25,29 @@ describe('Translation detail', () => {
   })
 
   it('should display a status badge on a translation', () => {
-    cy.contains('Approved').should('be.visible')
+    cy.get('[data-cy="translation-status-en"]').should('be.visible')
   })
 
   it('should display the key description in the right panel', () => {
-    cy.contains('Homepage title').should('be.visible')
+    cy.get('[data-cy="key-description"]').should('be.visible').and('contain', 'Homepage title')
   })
 
   it('should show file usage in the right panel', () => {
-    cy.contains('src/views/Home.vue').should('be.visible')
+    cy.get('[data-cy="key-usages"]').should('contain', 'src/views/Home.vue')
   })
 
   it('should display a History section', () => {
-    cy.contains('History').should('be.visible')
+    cy.get('[data-cy="history-section"]').should('be.visible')
   })
 
   it('should have a back link to the translations list', () => {
-    cy.get('a[href="/projects/1/translations"]').should('exist')
+    cy.get('[data-cy="key-back-link"]').should('exist')
   })
 
   it('should allow editing a translation by clicking on the value', () => {
-    cy.contains('Welcome').click()
-    cy.get('textarea').should('be.visible')
-    cy.contains('Save').should('be.visible')
-    cy.contains('Cancel').should('be.visible')
+    cy.get('[data-cy="translation-value-en"]').click()
+    cy.get('[data-cy="translation-textarea-en"]').should('be.visible')
+    cy.get('[data-cy="save-translation-btn-en"]').should('be.visible')
+    cy.get('[data-cy="cancel-translation-btn-en"]').should('be.visible')
   })
 })

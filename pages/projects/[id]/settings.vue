@@ -1,7 +1,7 @@
 <template>
   <div class="p-6">
     <div class="mb-6">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ t('settings.title', 'Settings') }}</h1>
+      <h1 data-cy="settings-title" class="text-2xl font-bold text-gray-900 dark:text-white">{{ t('settings.title', 'Settings') }}</h1>
       <p class="text-gray-500 dark:text-gray-400 mt-1">{{ t('settings.subtitle', 'Global dashboard configuration') }}</p>
     </div>
 
@@ -87,6 +87,7 @@
               :label="t('settings.scan_exclude', 'Folders excluded from scan')"
           >
             <UInput
+                data-cy="settings-scan-exclude"
                 v-model="form.scan_exclude"
                 class="w-full"
                 placeholder="node_modules,dist,.nuxt,.output"
@@ -227,6 +228,7 @@
               <p class="text-xs text-gray-400">{{ t('settings.export_all_languages_hint', 'A single JSON file with all languages') }}</p>
             </div>
             <UButton
+                data-cy="settings-export-all-btn"
                 color="neutral"
                 icon="i-heroicons-arrow-down-tray"
                 size="sm"
@@ -251,6 +253,7 @@
                 <UBadge v-if="lang.is_default" color="primary" size="xs" variant="soft">{{ t('languages.default_badge', 'Default') }}</UBadge>
               </div>
               <UButton
+                  :data-cy="'export-lang-btn-' + lang.code"
                   color="neutral"
                   icon="i-heroicons-arrow-down-tray"
                   size="xs"
@@ -339,7 +342,7 @@
 
       <!-- Save button -->
       <div class="flex justify-end">
-        <UButton :loading="saving || savingProject" icon="i-heroicons-check" @click="onSave">
+        <UButton data-cy="settings-save-btn" :loading="saving || savingProject" icon="i-heroicons-check" @click="onSave">
           {{ t('settings.save', 'Save') }}
         </UButton>
       </div>

@@ -25,15 +25,15 @@
         </div>
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ profile.user.name }}</h1>
+            <h1 data-cy="profile-username" class="text-2xl font-bold text-gray-900 dark:text-white">{{ profile.user.name }}</h1>
             <UBadge v-if="profile.user.is_super_admin" color="warning" variant="soft">
               <UIcon name="i-heroicons-star" class="mr-1" />
               Super Admin
             </UBadge>
           </div>
-          <p class="text-sm text-gray-400 mt-0.5">{{ profile.user.email }}</p>
+          <p data-cy="profile-email" class="text-sm text-gray-400 mt-0.5">{{ profile.user.email }}</p>
           <div class="flex items-center gap-3 mt-1 text-xs text-gray-400 flex-wrap">
-            <span class="flex items-center gap-1">
+            <span data-cy="profile-member-since" class="flex items-center gap-1">
               <UIcon name="i-heroicons-calendar" />
               {{ t('profile.member_since', 'Member since') }} {{ formatDate(profile.user.created_at) }}
             </span>
@@ -61,6 +61,7 @@
         <div class="flex items-center justify-between gap-4">
           <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">{{ t('profile.stats_title', 'Activity') }}</p>
           <USelect
+            data-cy="profile-period-select"
             v-model="period"
             :items="periodOptions"
             class="w-52"
@@ -69,14 +70,14 @@
           />
         </div>
         <div class="grid grid-cols-2 gap-4">
-          <UCard v-for="stat in statCards" :key="stat.label">
+          <UCard v-for="(stat, idx) in statCards" :key="stat.label">
             <div class="flex items-center gap-3">
               <div class="p-2 rounded-lg" :class="stat.bg">
                 <UIcon :name="stat.icon" class="text-xl" :class="stat.color" />
               </div>
               <div>
                 <p class="text-xs text-gray-500 dark:text-gray-400">{{ stat.label }}</p>
-                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ stat.value }}</p>
+                <p :data-cy="idx === 0 ? 'profile-stat-translations' : undefined" class="text-2xl font-bold text-gray-900 dark:text-white">{{ stat.value }}</p>
               </div>
             </div>
           </UCard>
@@ -93,7 +94,7 @@
             <template #header>
               <div class="flex items-center gap-2">
                 <UIcon name="i-heroicons-briefcase" class="text-gray-400" />
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">{{ t('profile.projects_roles', 'Projects & Roles') }}</p>
+                <p data-cy="profile-projects-roles" class="text-xs font-semibold text-gray-400 uppercase tracking-wide">{{ t('profile.projects_roles', 'Projects & Roles') }}</p>
               </div>
             </template>
             <div v-if="!profile.roles.length" class="text-sm text-gray-400 italic">{{ t('profile.no_roles', 'No role assigned') }}</div>
@@ -157,7 +158,7 @@
             <template #header>
               <div class="flex items-center gap-2">
                 <UIcon name="i-heroicons-clock" class="text-gray-400" />
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">{{ t('dashboard.recent_activity', 'Recent activity') }}</p>
+                <p data-cy="profile-recent-activity" class="text-xs font-semibold text-gray-400 uppercase tracking-wide">{{ t('dashboard.recent_activity', 'Recent activity') }}</p>
               </div>
             </template>
 
@@ -170,6 +171,7 @@
               <NuxtLink
                 v-for="tr in profile.recentTranslations"
                 :key="tr.id"
+                data-cy="profile-activity-item"
                 :to="tr.project_id ? `/projects/${tr.project_id}/translations/${tr.key_id}` : `/projects`"
                 class="flex items-start gap-3 px-2 py-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors group"
               >

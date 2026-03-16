@@ -11,53 +11,47 @@ describe('Projects list', () => {
   })
 
   it('should list the projects from the fixture', () => {
-    cy.contains('My App').should('be.visible')
-    cy.contains('Admin Panel').should('be.visible')
-    cy.contains('Dashboard UI').should('be.visible')
+    cy.get('[data-cy="project-name-1"]').should('be.visible')
+    cy.get('[data-cy="project-name-2"]').should('be.visible')
+    cy.get('[data-cy="project-name-99"]').should('be.visible')
   })
 
   it('should show key counts for a project', () => {
-    cy.contains('Translation keys').should('be.visible')
+    cy.get('[data-cy="project-keys-stat-1"]').should('be.visible')
   })
 
   it('should have an "Add a project" button', () => {
-    cy.contains('Add a project').should('be.visible')
+    cy.get('[data-cy="projects-add-btn"]').should('be.visible')
   })
 
   it('should open the add project modal on click', () => {
-    cy.contains('Add a project').first().click()
-    // Modal step 1 shows "Source" step label
-    cy.contains('Source').should('be.visible')
+    cy.get('[data-cy="projects-add-btn"]').click()
+    cy.get('[data-cy="project-step-source"]').should('be.visible')
   })
 
   it('should close the add modal on Cancel', () => {
-    cy.contains('Add a project').first().click()
-    cy.contains('Source').should('be.visible')
-    cy.contains('Cancel').click()
-    cy.contains('Source').should('not.exist')
+    cy.get('[data-cy="projects-add-btn"]').click()
+    cy.get('[data-cy="project-step-source"]').should('be.visible')
+    cy.get('[data-cy="modal-cancel-btn"]').click()
+    cy.get('[data-cy="project-step-source"]').should('not.exist')
   })
 
   it('should open a delete confirmation modal for a non-system project', () => {
-    // Click the ellipsis dropdown of "My App"
-    cy.contains('.bg-white, [class*="rounded-xl"]', 'My App').within(() => {
-      cy.get('button').last().click({ force: true })
-    })
+    cy.get('[data-cy="project-menu-btn-1"]').click({ force: true })
     cy.contains('Delete').click()
-    cy.contains('Delete project').should('be.visible')
-    cy.contains('This action is irreversible').should('be.visible')
+    cy.get('[data-cy="project-delete-modal"]').should('be.visible')
+    cy.get('[data-cy="delete-irreversible-text"]').should('be.visible')
   })
 
   it('should cancel the delete confirmation', () => {
-    cy.contains('.bg-white, [class*="rounded-xl"]', 'My App').within(() => {
-      cy.get('button').last().click({ force: true })
-    })
+    cy.get('[data-cy="project-menu-btn-1"]').click({ force: true })
     cy.contains('Delete').click()
-    cy.contains('Delete project').should('be.visible')
+    cy.get('[data-cy="project-delete-modal"]').should('be.visible')
     cy.contains('Cancel').click()
     cy.contains('Delete project').should('not.exist')
   })
 
   it('should have an Open button to navigate to a project', () => {
-    cy.contains('Open').should('be.visible')
+    cy.get('[data-cy="project-open-btn-1"]').should('be.visible')
   })
 })

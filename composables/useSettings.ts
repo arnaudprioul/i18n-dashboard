@@ -5,11 +5,23 @@ export function useSettings() {
   const toast = useToast()
   const { t } = useT()
 
-  const { data, pending, refresh } = useAsyncData(
-    'settings',
-    () => settingsService.getSettings(),
-    { default: () => ({} as Record<string, string>) },
-  )
+  const data = ref<Record<string, string>>({})
+  const pending = ref(false)
+
+  async function refresh() {
+    pending.value = true
+    try {
+      data.value = await settingsService.getSettings()
+    }
+    catch {
+      data.value = {}
+    }
+    finally {
+      pending.value = false
+    }
+  }
+
+  onMounted(refresh)
 
   const settings = computed(() => data.value ?? {})
 

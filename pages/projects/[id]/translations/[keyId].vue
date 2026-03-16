@@ -44,10 +44,10 @@
 
     <!-- Header -->
     <div class="flex items-start gap-3">
-      <UButton icon="i-heroicons-arrow-left" color="neutral" variant="ghost" size="xs" :to="`/projects/${projectId}/translations`" class="mt-0.5 shrink-0" />
+      <UButton data-cy="key-back-link" icon="i-heroicons-arrow-left" color="neutral" variant="ghost" size="xs" :to="`/projects/${projectId}/translations`" class="mt-0.5 shrink-0" />
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2 flex-wrap">
-          <h1 class="text-lg font-mono font-bold text-gray-900 dark:text-white break-all">{{ keyData.key }}</h1>
+          <h1 data-cy="key-title" class="text-lg font-mono font-bold text-gray-900 dark:text-white break-all">{{ keyData.key }}</h1>
           <UBadge v-if="keyData.is_unused" color="warning" variant="subtle" size="xs">
             <UIcon name="i-heroicons-exclamation-triangle" class="mr-1" />
             {{ t('status.unused', 'Unused') }}
@@ -76,7 +76,7 @@
                 <UBadge v-if="lang.is_default" color="primary" variant="soft" size="xs">{{ t('languages.default_badge', 'Default') }}</UBadge>
               </div>
               <div class="flex items-center gap-1">
-                <UBadge :color="statusColor(lang.code)" variant="soft" size="xs">{{ statusLabel(lang.code) }}</UBadge>
+                <UBadge :data-cy="'translation-status-' + lang.code" :color="statusColor(lang.code)" variant="soft" size="xs">{{ statusLabel(lang.code) }}</UBadge>
                 <UTooltip :text="sourceText ? `${t('translations.translate_to', 'Translate to')} ${findLanguage(lang.code)?.nativeName || lang.name}` : t('translations.no_source', 'No source available')">
                   <UButton
                     icon="i-heroicons-sparkles"
@@ -111,6 +111,7 @@
               <!-- Single textarea -->
               <div v-else :ref="el => activeTextareaWrapper = el as HTMLElement">
                 <UTextarea
+                  :data-cy="'translation-textarea-' + lang.code"
                   v-model="editValue"
                   :rows="3"
                   autofocus
@@ -167,10 +168,10 @@
 
               <!-- Actions row -->
               <div class="flex items-center gap-2 mt-2 flex-wrap">
-                <UButton size="xs" :loading="saving === lang.code" @click="saveTranslation(lang.code)">
+                <UButton :data-cy="'save-translation-btn-' + lang.code" size="xs" :loading="saving === lang.code" @click="saveTranslation(lang.code)">
                   {{ t('translations.save', 'Save') }}
                 </UButton>
-                <UButton size="xs" color="neutral" variant="ghost" @click="editingLang = null">
+                <UButton :data-cy="'cancel-translation-btn-' + lang.code" size="xs" color="neutral" variant="ghost" @click="editingLang = null">
                   {{ t('translations.cancel', 'Cancel') }}
                 </UButton>
                 <div class="ml-auto flex items-center gap-1.5">
@@ -194,6 +195,7 @@
               <!-- Plural display -->
               <div
                 v-if="getTranslationValue(lang.code) && getPluralForms(lang.code).length > 1"
+                :data-cy="'translation-value-' + lang.code"
                 class="cursor-pointer group"
                 @click="startEdit(lang)"
               >
@@ -216,11 +218,13 @@
               <!-- Single value display -->
               <p
                 v-else-if="getTranslationValue(lang.code)"
+                :data-cy="'translation-value-' + lang.code"
                 class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 whitespace-pre-wrap px-2 py-1.5 rounded hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors"
                 @click="startEdit(lang)"
               >{{ getTranslationValue(lang.code) }}</p>
               <button
                 v-else
+                :data-cy="'translation-value-' + lang.code"
                 class="text-sm text-gray-400 italic hover:text-primary-500 transition-colors px-2 py-1.5"
                 @click="startEdit(lang)"
               >
@@ -294,7 +298,7 @@
             </div>
           </template>
           <template v-else>
-            <p v-if="keyData.description" class="text-sm text-gray-700 dark:text-gray-300 cursor-pointer hover:text-primary-500 transition-colors" @click="startEditDescription">
+            <p data-cy="key-description" v-if="keyData.description" class="text-sm text-gray-700 dark:text-gray-300 cursor-pointer hover:text-primary-500 transition-colors" @click="startEditDescription">
               {{ keyData.description }}
             </p>
             <button v-else class="text-sm text-gray-400 italic hover:text-primary-500 transition-colors" @click="startEditDescription">
@@ -329,12 +333,12 @@
           <template #header>
             <div class="flex items-center gap-2">
               <UIcon name="i-heroicons-code-bracket" class="text-gray-400 shrink-0" />
-              <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+              <p data-cy="history-section" class="text-xs font-semibold text-gray-400 uppercase tracking-wide">
                 {{ keyData.usages.length }} {{ keyData.usages.length > 1 ? t('translations.references_plural', 'references') : t('translations.references', 'reference') }}
               </p>
             </div>
           </template>
-          <div class="space-y-3">
+          <div data-cy="key-usages" class="space-y-3">
             <div v-for="(usage, i) in keyData.usages" :key="i" class="text-xs">
               <p class="font-mono text-gray-600 dark:text-gray-400 truncate" :title="usage.file_path">{{ usage.file_path }}</p>
               <div class="flex items-center gap-2 text-gray-400 mt-0.5">

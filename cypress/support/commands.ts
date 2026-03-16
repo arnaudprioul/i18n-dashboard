@@ -47,6 +47,12 @@ Cypress.Commands.add('login', () => {
  * Write operations (POST/PUT/DELETE) are mocked to prevent DB changes.
  */
 Cypress.Commands.add('mockAllApis', (_projectId = 1) => {
+  // Auth endpoints called by middleware + BaseService on every authenticated page
+  cy.fixture('auth').then((auth) => {
+    cy.intercept('GET', '/api/auth/status', { body: auth.status }).as('authStatus')
+    cy.intercept('GET', '/api/auth/me', { body: auth.me }).as('authMe')
+  })
+
   cy.fixture('projects').then((projects) => {
     cy.intercept('GET', '/api/projects', { body: projects }).as('getProjects')
     cy.intercept('GET', '/api/projects/check-name*', { body: { available: true } }).as('checkProjectName')

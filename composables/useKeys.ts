@@ -114,11 +114,26 @@ export function useKeys(options: {
     return Array.isArray(v) ? v[0] : v
   })
 
-  const { data: keyData, pending: detailPending, refresh: detailRefresh } = useAsyncData(
-    `key-${keyId.value ?? 'none'}`,
-    () => keyId.value ? keyService.getKey(keyId.value) : Promise.resolve(null),
-    { watch: [keyId] },
-  )
+  const keyData = ref<Awaited<ReturnType<typeof keyService.getKey>> | null>(null)
+  const detailPending = ref(false)
+
+  async function detailRefresh() {
+    const id = keyId.value
+    if (!id) { keyData.value = null; return }
+    detailPending.value = true
+    try {
+      keyData.value = await keyService.getKey(id)
+    }
+    catch {
+      keyData.value = null
+    }
+    finally {
+      detailPending.value = false
+    }
+  }
+
+  onMounted(detailRefresh)
+  watch(keyId, (id) => { if (id) detailRefresh() })
 
   const savingLang = ref<string | null>(null)
   async function saveTranslation(langCode: string, value: string): Promise<void> {

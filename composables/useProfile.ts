@@ -12,13 +12,26 @@ export function useProfile(userId?: MaybeRefOrGetter<number | string>) {
   const targetId = computed(() => userId ? toValue(userId) : null)
   const period = ref<ProfilePeriod>('all')
 
-  const { data: profile, pending, refresh } = useAsyncData(
-    () => targetId.value ? `user-profile-${targetId.value}-${period.value}` : `user-profile-${period.value}`,
-    () => targetId.value
-      ? profileService.getUserProfile(targetId.value, period.value)
-      : profileService.getProfile(period.value),
-    { watch: [targetId, period], server: false },
-  )
+  const profile = ref<any>(null)
+  const pending = ref(false)
+
+  async function refresh() {
+    pending.value = true
+    try {
+      profile.value = targetId.value
+        ? await profileService.getUserProfile(targetId.value, period.value)
+        : await profileService.getProfile(period.value)
+    }
+    catch {
+      profile.value = null
+    }
+    finally {
+      pending.value = false
+    }
+  }
+
+  onMounted(refresh)
+  watch([targetId, period], refresh)
 
   // ── Own account editing (current logged-in user) ─────────────────────────
 

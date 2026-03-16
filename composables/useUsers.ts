@@ -11,11 +11,26 @@ export function useUsers(scope: 'project' | 'global' = 'project') {
     scope === 'global' ? {} : { project_id: currentProject.value?.id },
   )
 
-  const { data, pending, refresh } = useAsyncData(
-    scope === 'global' ? 'users-global' : 'users',
-    () => userService.getUsers(usersQuery.value),
-    { watch: [usersQuery], default: () => [] },
-  )
+  const data = ref<any[]>([])
+  const pending = ref(false)
+
+  async function refresh() {
+    pending.value = true
+    try {
+      data.value = await userService.getUsers(usersQuery.value)
+    }
+    catch {
+      data.value = []
+    }
+    finally {
+      pending.value = false
+    }
+  }
+
+  onMounted(refresh)
+  watch(usersQuery, (q) => {
+    if (scope === 'global' || q.project_id) refresh()
+  })
 
   const users = computed(() => data.value ?? [])
 

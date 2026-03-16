@@ -7,7 +7,7 @@ describe('Settings', () => {
   })
 
   it('should display the settings page heading', () => {
-    cy.contains('h1', 'Settings').should('be.visible')
+    cy.get('[data-cy="settings-title"]').should('be.visible')
   })
 
   it('should display the vue-i18n Scanner section', () => {
@@ -15,17 +15,16 @@ describe('Settings', () => {
   })
 
   it('should show the scan_exclude input', () => {
-    // Input has placeholder "node_modules,dist,.nuxt,.output"
-    cy.get('input[placeholder*="node_modules"]').should('exist')
+    cy.get('[data-cy="settings-scan-exclude"]').should('exist')
   })
 
   it('should have a Save button', () => {
-    cy.contains('Save').should('be.visible')
+    cy.get('[data-cy="settings-save-btn"]').should('be.visible')
   })
 
   it('should call POST /api/settings when clicking Save', () => {
     cy.intercept('POST', '/api/settings', { statusCode: 200, body: {} }).as('saveSettings')
-    cy.contains('Save').click()
+    cy.get('[data-cy="settings-save-btn"]').click()
     cy.wait('@saveSettings')
   })
 
@@ -34,13 +33,13 @@ describe('Settings', () => {
   })
 
   it('should show an "Export all" button', () => {
-    cy.contains('Export all').should('be.visible')
+    cy.get('[data-cy="settings-export-all-btn"]').should('be.visible')
   })
 
   it('should show per-language export buttons', () => {
     cy.wait('@getLanguages')
-    cy.contains('en.json').should('be.visible')
-    cy.contains('fr.json').should('be.visible')
-    cy.contains('de.json').should('be.visible')
+    cy.get('[data-cy="export-lang-btn-en"]').should('be.visible')
+    cy.get('[data-cy="export-lang-btn-fr"]').should('be.visible')
+    cy.get('[data-cy="export-lang-btn-de"]').should('be.visible')
   })
 })

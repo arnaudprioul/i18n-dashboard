@@ -7,7 +7,7 @@ describe('Languages', () => {
   })
 
   it('should display the languages page heading', () => {
-    cy.contains('h1', 'Languages').should('be.visible')
+    cy.get('[data-cy="languages-title"]').should('be.visible')
   })
 
   it('should list the 3 languages from the fixture', () => {
@@ -23,27 +23,26 @@ describe('Languages', () => {
   })
 
   it('should display a "Default" badge for the default language', () => {
-    // English (en) has is_default: true in the fixture
-    cy.contains('Default').should('be.visible')
+    cy.get('[data-cy="lang-default-badge-en"]').should('be.visible')
   })
 
   it('should show coverage percentages', () => {
-    cy.contains('100%').should('be.visible')
+    cy.get('[data-cy="lang-coverage-en"]').should('be.visible')
   })
 
   it('should have an "Add a language" button', () => {
-    cy.contains('Add a language').should('be.visible')
+    cy.get('[data-cy="languages-add-btn"]').should('be.visible')
   })
 
   it('should open the add language modal with a search input', () => {
-    cy.contains('Add a language').click()
+    cy.get('[data-cy="languages-add-btn"]').click()
     cy.contains('Add a language').should('be.visible')
-    cy.get('input[placeholder*="Search"]').should('be.visible')
+    cy.get('[data-cy="lang-search-input"]').should('be.visible')
   })
 
   it('should close the add language modal when clicking Cancel', () => {
-    cy.contains('Add a language').click()
-    cy.contains('Cancel').click()
-    cy.get('input[placeholder*="Search"]').should('not.exist')
+    cy.get('[data-cy="languages-add-btn"]').click()
+    cy.get('[data-cy="add-language-cancel-btn"]').click()
+    cy.get('[data-cy="lang-search-input"]').should('not.exist')
   })
 })

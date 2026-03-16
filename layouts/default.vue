@@ -9,7 +9,7 @@
   <div class="min-h-screen bg-gray-50 dark:bg-gray-950 flex">
 
     <!-- ── Sidebar ─────────────────────────────────────────────────────────── -->
-    <aside class="w-56 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col shrink-0">
+    <aside data-cy="main-sidebar" class="w-56 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col shrink-0">
 
       <!-- Logo -->
       <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-800">
@@ -89,6 +89,7 @@
             <NuxtLink
               v-for="project in userProjects"
               :key="project.id"
+              :data-cy="'sidebar-project-' + project.id"
               :to="`/projects/${project.id}`"
               class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm transition-colors text-left"
               :class="'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'"
@@ -115,6 +116,7 @@
       <div v-if="isSuperAdmin" class="p-2 border-t border-gray-200 dark:border-gray-800">
         <p class="text-xs text-gray-400 font-medium px-2 mb-1.5 uppercase tracking-wide">{{ t('nav.administration', 'Administration') }}</p>
         <NuxtLink
+          data-cy="sidebar-all-users-link"
           to="/users"
           class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors"
           :class="isActive('/users')

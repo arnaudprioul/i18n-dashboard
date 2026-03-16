@@ -2,7 +2,7 @@
   <div class="p-6">
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ t('review.title', 'Review queue') }}</h1>
+        <h1 data-cy="review-title" class="text-2xl font-bold text-gray-900 dark:text-white">{{ t('review.title', 'Review queue') }}</h1>
         <p class="text-gray-500 dark:text-gray-400 mt-0.5 text-sm">
           {{ reviewItems.length }} {{ t('review.pending_count', 'translation') }}{{ reviewItems.length > 1 ? t('review.pending_count_plural', 's') : '' }} {{ t('review.pending_label', 'pending review') }}
         </p>
@@ -23,7 +23,7 @@
     </div>
 
     <!-- Empty -->
-    <div v-else-if="!reviewItems.length" class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 py-16 text-center">
+    <div v-else-if="!reviewItems.length" data-cy="review-empty-state" class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 py-16 text-center">
       <UIcon name="i-heroicons-check-badge" class="text-5xl text-green-400 mb-3" />
       <p class="text-gray-600 dark:text-gray-400 font-medium">{{ t('review.empty_title', 'No translations pending') }}</p>
       <p class="text-gray-400 text-sm mt-1">{{ t('review.empty_hint', 'All reviewed translations have already been approved.') }}</p>
@@ -34,6 +34,7 @@
       <div
         v-for="item in reviewItems"
         :key="item.id"
+        :data-cy="'review-item-' + item.id"
         class="bg-white dark:bg-gray-900 rounded-xl border border-blue-200 dark:border-blue-800/60 overflow-hidden"
       >
         <div class="flex items-start gap-4 p-4">
@@ -70,6 +71,7 @@
               />
             </UTooltip>
             <UButton
+              data-cy="mark-reviewed-btn"
               icon="i-heroicons-check"
               color="success"
               size="sm"

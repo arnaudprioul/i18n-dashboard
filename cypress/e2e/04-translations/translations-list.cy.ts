@@ -8,19 +8,19 @@ describe('Translations list', () => {
   })
 
   it('should display the translations page heading', () => {
-    cy.contains('h1', 'Translations').should('be.visible')
+    cy.get('[data-cy="translations-title"]').should('be.visible')
   })
 
   it('should have a search input', () => {
-    cy.get('input[placeholder*="Search for a key"]').should('be.visible')
+    cy.get('[data-cy="translations-search"]').should('be.visible')
   })
 
   it('should display status filter pills', () => {
-    cy.contains('All').should('be.visible')
-    cy.contains('Missing').should('be.visible')
-    cy.contains('Draft').should('be.visible')
-    cy.contains('Reviewed').should('be.visible')
-    cy.contains('Approved').should('be.visible')
+    cy.get('[data-cy="filter-all"]').should('be.visible')
+    cy.get('[data-cy="filter-missing"]').should('be.visible')
+    cy.get('[data-cy="filter-draft"]').should('be.visible')
+    cy.get('[data-cy="filter-reviewed"]').should('be.visible')
+    cy.get('[data-cy="filter-approved"]').should('be.visible')
   })
 
   it('should list translation keys from fixture', () => {
@@ -31,19 +31,19 @@ describe('Translations list', () => {
   })
 
   it('should have a "New key" button', () => {
-    cy.contains('New key').should('be.visible')
+    cy.get('[data-cy="new-key-btn"]').should('be.visible')
   })
 
   it('should open the add key modal when clicking "New key"', () => {
-    cy.contains('New key').click()
-    cy.contains('New translation key').should('be.visible')
+    cy.get('[data-cy="new-key-btn"]').click()
+    cy.get('[data-cy="add-key-modal"]').should('be.visible')
   })
 
   it('should close the add key modal when clicking Cancel', () => {
-    cy.contains('New key').click()
-    cy.contains('New translation key').should('be.visible')
-    cy.contains('Cancel').click()
-    cy.contains('New translation key').should('not.exist')
+    cy.get('[data-cy="new-key-btn"]').click()
+    cy.get('[data-cy="add-key-modal"]').should('be.visible')
+    cy.get('[data-cy="add-key-cancel-btn"]').click()
+    cy.get('[data-cy="add-key-modal"]').should('not.exist')
   })
 
   it('should navigate to key detail when clicking a key row', () => {
@@ -53,7 +53,6 @@ describe('Translations list', () => {
   })
 
   it('should display the Unused pill for unused keys', () => {
-    // nav.about has is_unused: true in the fixture
     cy.contains('nav.about').should('be.visible')
     cy.contains('Unused').should('be.visible')
   })

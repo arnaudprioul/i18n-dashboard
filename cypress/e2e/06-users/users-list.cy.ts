@@ -7,7 +7,7 @@ describe('Users list', () => {
   })
 
   it('should display the users page heading', () => {
-    cy.contains('h1', 'All users').should('be.visible')
+    cy.get('[data-cy="all-users-title"]').should('be.visible')
   })
 
   it('should list all users from the fixture', () => {
@@ -23,16 +23,16 @@ describe('Users list', () => {
   })
 
   it('should have an "Add a user" button', () => {
-    cy.contains('Add a user').should('be.visible')
+    cy.get('[data-cy="global-users-add-btn"]').should('be.visible')
   })
 
   it('should open the add user modal when clicking "Add a user"', () => {
-    cy.contains('Add a user').click()
+    cy.get('[data-cy="global-users-add-btn"]').click()
     cy.contains('Add a user').should('be.visible')
   })
 
   it('should navigate to user profile when clicking on a user row', () => {
-    cy.contains('Jane Translator').click()
+    cy.get('[data-cy="user-row-2"]').click()
     cy.url().should('include', '/users/2/profile')
   })
 })
