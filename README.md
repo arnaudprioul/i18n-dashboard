@@ -68,7 +68,8 @@
 - **Dark mode** — system preference + manual toggle
 - **Cypress E2E test suite** — full test coverage across all pages (auth, dashboard, projects, translations, languages, users, review, settings); CI-ready with GitHub Actions
 - **GitHub Actions CI** — E2E tests run automatically on every push to `develop` and `main`; Cypress screenshots uploaded as artifacts on failure
-
+- **Vitest unit test suite** — 344 unit tests covering all composables, services, and server utilities; runs in under 2 minutes with zero infrastructure required
+- **Dual CI pipelines** — unit tests (`unit.yml`) and E2E tests (`e2e.yml`) run in parallel on every push; any regression blocks the pipeline
 ---
 
 ## Requirements
@@ -726,7 +727,7 @@ npx i18n-dashboard sync
 | [Commander.js](https://github.com/tj/commander.js) | 13.x | CLI |
 | [bcryptjs](https://github.com/dcodeIO/bcrypt.js) | 2.x | Password hashing |
 | [Cypress](https://www.cypress.io/) | 13.x | E2E test suite |
-
+| [Vitest](https://vitest.dev/) | 4.x | Unit test suite (composables, services, server utils) |
 ---
 
 ## Contributing
