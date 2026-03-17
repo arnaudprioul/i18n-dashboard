@@ -1017,4 +1017,18 @@ export async function initDb(): Promise<void> {
   await addColumnIfMissing(db, 'projects', 'git_repos', (t) =>
     t.text('git_repos').nullable(),
   )
+
+  // ── refresh_tokens ────────────────────────────────────────────────────────
+  const hasRefreshTokens = await db.schema.hasTable('refresh_tokens')
+  if (!hasRefreshTokens) {
+    await db.schema.createTable('refresh_tokens', (table) => {
+      table.increments('id').primary()
+      table.integer('user_id').notNullable().references('id').inTable('users').onDelete('CASCADE')
+      table.string('token_hash', 64).notNullable() // SHA-256 hex of the raw token
+      table.timestamp('expires_at').notNullable()
+      table.timestamp('created_at').defaultTo(db.fn.now())
+      table.index(['user_id'])
+      table.index(['token_hash'])
+    })
+  }
 }
