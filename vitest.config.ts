@@ -4,8 +4,8 @@ import { resolve } from 'path'
 export default defineConfig({
   resolve: {
     alias: {
-      '~/': `${resolve(__dirname)}/`,
-      '@/': `${resolve(__dirname)}/`,
+      '~/': `${resolve(__dirname)}/src/`,
+      '@/': `${resolve(__dirname)}/src/`,
       '#imports': resolve(__dirname, 'tests/__mocks__/nuxt-imports.ts'),
       '#app': resolve(__dirname, 'tests/__mocks__/nuxt-imports.ts'),
     },
@@ -22,10 +22,10 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],
       include: [
-        'composables/**',
-        'services/**',
-        'server/utils/**',
-        'utils/**',
+        'src/composables/**',
+        'src/services/**',
+        'src/server/utils/**',
+        'src/utils/**',
       ],
       exclude: [
         '**/*.d.ts',

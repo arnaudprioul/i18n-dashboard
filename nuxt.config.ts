@@ -3,6 +3,9 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
   devtools: { enabled: false },
 
+  srcDir: 'src',
+  serverDir: 'src/server',
+
   modules: ['@nuxt/ui'],
 
   css: ['~/assets/css/main.css'],
@@ -51,7 +54,7 @@ export default defineNuxtConfig({
     serverAssets: [
       {
         baseName: 'locales',
-        dir: './assets/locales',
+        dir: './src/assets/locales',
       },
     ],
   },
