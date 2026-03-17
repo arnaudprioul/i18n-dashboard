@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs'
 import { getDb } from '../db/index'
-import { getSession } from '../utils/auth.util'
+import { getSession, createRefreshToken } from '../utils/auth.util'
 
 export default defineEventHandler(async (event) => {
   const db = getDb()
@@ -29,9 +29,10 @@ export default defineEventHandler(async (event) => {
     is_active: true,
   })
 
-  // Auto-login
+  // Auto-login: session (15 min) + refresh token (7 days)
   const session = await getSession(event)
   await session.update({ userId: id })
+  await createRefreshToken(event, id)
 
   console.log(`[i18n-dashboard] Super admin créé : ${email}`)
 

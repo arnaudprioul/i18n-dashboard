@@ -1,17 +1,25 @@
+import { randomBytes, createHash } from 'node:crypto'
 import type { H3Event } from 'h3'
-import { useSession } from 'h3'
+import { useSession, getCookie, setCookie, deleteCookie } from 'h3'
 import { useRuntimeConfig } from '#imports'
 
 import { getDb } from '../db/index'
 import { ROLES } from '../enums/auth.enum'
 import type { Role } from '../types/auth.type'
 
+// ── Constants ─────────────────────────────────────────────────────────────────
+
+const REFRESH_COOKIE = 'i18n-refresh-token'
+const REFRESH_TTL_SECONDS = 60 * 60 * 24 * 7 // 7 days
+
+// ── Session (access token) ─────────────────────────────────────────────────────
+
 export function sessionConfig() {
   const config = useRuntimeConfig()
   return {
     password: config.sessionSecret as string,
     name: 'i18n-dashboard-session',
-    maxAge: 60 * 60 * 24 * 7, // 7 days
+    maxAge: 60 * 15, // 15 minutes
   }
 }
 
@@ -32,6 +40,94 @@ export async function requireAuth(event: H3Event) {
 
   return user
 }
+
+// ── Refresh token helpers ──────────────────────────────────────────────────────
+
+function hashToken(token: string): string {
+  return createHash('sha256').update(token).digest('hex')
+}
+
+/**
+ * Issue a new refresh token for a user.
+ * Stores the SHA-256 hash in DB and sets an HttpOnly cookie.
+ * Also removes expired tokens for that user (housekeeping).
+ */
+export async function createRefreshToken(event: H3Event, userId: number): Promise<void> {
+  const db = getDb()
+  const token = randomBytes(32).toString('hex')
+  const hash = hashToken(token)
+  const expiresAt = new Date(Date.now() + REFRESH_TTL_SECONDS * 1000)
+
+  // Housekeeping: remove expired tokens for this user
+  await db('refresh_tokens')
+    .where({ user_id: userId })
+    .where('expires_at', '<', new Date())
+    .delete()
+
+  await db('refresh_tokens').insert({
+    user_id: userId,
+    token_hash: hash,
+    expires_at: expiresAt,
+  })
+
+  setCookie(event, REFRESH_COOKIE, token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: REFRESH_TTL_SECONDS,
+    path: '/',
+  })
+}
+
+/**
+ * Verify the refresh token cookie, rotate it (delete old, issue new),
+ * and return the associated userId.
+ * Throws 401 if invalid or expired.
+ */
+export async function verifyAndRotateRefreshToken(event: H3Event): Promise<number> {
+  const token = getCookie(event, REFRESH_COOKIE)
+  if (!token) throw createError({ statusCode: 401, message: 'Refresh token manquant' })
+
+  const hash = hashToken(token)
+  const db = getDb()
+  const row = await db('refresh_tokens')
+    .where({ token_hash: hash })
+    .where('expires_at', '>', new Date())
+    .first()
+
+  if (!row) throw createError({ statusCode: 401, message: 'Refresh token invalide ou expiré' })
+
+  // Rotation: delete consumed token immediately
+  await db('refresh_tokens').where({ id: row.id }).delete()
+
+  const userId = row.user_id
+
+  // Issue new session + new refresh token
+  const session = await getSession(event)
+  await session.update({ userId })
+  await createRefreshToken(event, userId)
+
+  return userId
+}
+
+/**
+ * Delete all refresh tokens for a user and clear the cookie.
+ */
+export async function clearRefreshToken(event: H3Event, userId?: number): Promise<void> {
+  const db = getDb()
+  if (userId) {
+    await db('refresh_tokens').where({ user_id: userId }).delete()
+  } else {
+    // Best-effort: delete by hash from cookie
+    const token = getCookie(event, REFRESH_COOKIE)
+    if (token) {
+      await db('refresh_tokens').where({ token_hash: hashToken(token) }).delete()
+    }
+  }
+  deleteCookie(event, REFRESH_COOKIE, { path: '/' })
+}
+
+// ── Role helpers ───────────────────────────────────────────────────────────────
 
 /** Get effective role for a user on a specific project. Returns null if no access. */
 export async function getUserRole(userId: number, projectId: number): Promise<Role | null> {
