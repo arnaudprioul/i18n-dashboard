@@ -1,6 +1,6 @@
 {
   "name": "i18n-dashboard",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "A web dashboard to manage vue-i18n translation keys with database persistence",
   "type": "module",
   "bin": {
@@ -50,22 +50,8 @@
     "node": ">=18.0.0"
   },
   "files": [
-    "assets/",
+    "src/",
     "bin/",
-    "components/",
-    "composables/",
-    "consts/",
-    "enums/",
-    "interfaces/",
-    "layouts/",
-    "middleware/",
-    "pages/",
-    "plugins/",
-    "server/",
-    "services/",
-    "types/",
-    "utils/",
-    "app.vue",
     "nuxt.config.ts",
     "tsconfig.json",
     "i18n-dashboard.config.example.js"
