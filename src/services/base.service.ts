@@ -39,7 +39,7 @@ export abstract class BaseService {
 
   private async _tryRefresh(): Promise<boolean> {
     if (_refreshing) return _refreshing
-    _refreshing = $fetch('/api/auth/me')
+    _refreshing = $fetch('/api/auth/refresh', { method: 'POST' })
       .then(() => true)
       .catch(() => false)
       .finally(() => { _refreshing = null })

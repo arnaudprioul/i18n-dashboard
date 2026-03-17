@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs'
 import { getDb } from '../../db/index'
-import { getSession } from '../../utils/auth.util'
+import { getSession, createRefreshToken } from '../../utils/auth.util'
 
 export default defineEventHandler(async (event) => {
   const { email, password } = await readBody(event)
@@ -19,9 +19,10 @@ export default defineEventHandler(async (event) => {
   // Update last login
   await db('users').where({ id: user.id }).update({ last_login_at: db.fn.now() })
 
-  // Set session
+  // Issue session (15 min) + refresh token (7 days, HttpOnly cookie)
   const session = await getSession(event)
   await session.update({ userId: user.id })
+  await createRefreshToken(event, user.id)
 
   const { password_hash, ...safeUser } = user
   return safeUser
