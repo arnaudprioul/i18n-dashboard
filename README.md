@@ -70,6 +70,7 @@
 - **GitHub Actions CI** — E2E tests run automatically on every push to `develop` and `main`; Cypress screenshots uploaded as artifacts on failure
 - **Vitest unit test suite** — 344 unit tests covering all composables, services, and server utilities; runs in under 2 minutes with zero infrastructure required
 - **Dual CI pipelines** — unit tests (`unit.yml`) and E2E tests (`e2e.yml`) run in parallel on every push; any regression blocks the pipeline
+- **`src/` layout** — all source files live under `src/` (components, composables, pages, server, services, etc.) for a clean project root
 ---
 
 ## Requirements
