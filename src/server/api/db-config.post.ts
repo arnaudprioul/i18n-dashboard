@@ -44,7 +44,10 @@ export default defineEventHandler(async (event) => {
     }
   } catch (e: any) {
     await testDb.destroy().catch(() => {})
-    throw createError({ statusCode: 400, message: 'Connection failed: ' + (e.message || String(e)) })
+    // Log the full error server-side only — never expose DB host, port,
+    // credentials hints, or driver internals to the client.
+    console.error('[i18n-dashboard] DB connection test failed:', e.message)
+    throw createError({ statusCode: 400, message: 'Database connection failed. Please check your settings.' })
   }
   await testDb.destroy()
 

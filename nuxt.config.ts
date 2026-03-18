@@ -1,4 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
+// Warn at build/start time if SESSION_SECRET is still the insecure default.
+// A weak, publicly known secret allows anyone to forge session tokens.
+const DEFAULT_SECRET = 'i18n-dashboard-default-secret-change-me-in-production!!'
+if (!process.env.SESSION_SECRET || process.env.SESSION_SECRET === DEFAULT_SECRET) {
+  console.warn(
+    '\n⚠️  [i18n-dashboard] SESSION_SECRET is not set or is using the default value.\n' +
+    '   Set a strong random secret in your environment:\n' +
+    '   SESSION_SECRET=$(openssl rand -hex 32)\n',
+  )
+}
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
   devtools: { enabled: false },
@@ -27,8 +39,8 @@ export default defineNuxtConfig({
     // Only set when the CLI passes I18N_PROJECT_ROOT explicitly (not defaulted)
     projectRoot: process.env.I18N_PROJECT_ROOT || '',
     localesPath: process.env.I18N_LOCALES_PATH || 'src/locales',
-    // Auth
-    sessionSecret: process.env.SESSION_SECRET || 'i18n-dashboard-default-secret-change-me-in-production!!',
+    // Auth — set SESSION_SECRET to a strong random value in production
+    sessionSecret: process.env.SESSION_SECRET || DEFAULT_SECRET,
     // Email (SMTP) — optional
     smtpHost: process.env.SMTP_HOST || '',
     smtpPort: process.env.SMTP_PORT || '587',
@@ -57,6 +69,26 @@ export default defineNuxtConfig({
         dir: './src/assets/locales',
       },
     ],
+    // ── Security headers ─────────────────────────────────────────────────────
+    // Applied to every response from the Nitro server.
+    routeRules: {
+      '/**': {
+        headers: {
+          // Prevent the dashboard from being embedded in iframes (clickjacking)
+          'X-Frame-Options': 'DENY',
+          // Stop browsers from MIME-sniffing away from the declared content-type
+          'X-Content-Type-Options': 'nosniff',
+          // Disable legacy XSS auditor (modern browsers use CSP instead)
+          'X-XSS-Protection': '0',
+          // Remove the server fingerprint
+          'Server': '',
+          // Don't leak the referrer when navigating to external sites
+          'Referrer-Policy': 'strict-origin-when-cross-origin',
+          // Restrict powerful browser features
+          'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+        },
+      },
+    },
   },
 
   typescript: {

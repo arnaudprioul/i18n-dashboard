@@ -1,7 +1,7 @@
 import { resolve, extname, basename } from 'path'
 import { readdirSync, readFileSync, existsSync, mkdtempSync, rmSync } from 'fs'
 import { tmpdir } from 'os'
-import { execSync } from 'child_process'
+import { spawnSync } from 'child_process'
 import { getDb } from '../db/index'
 
 function flattenObject(obj: Record<string, any>, separator: string, prefix = ''): Record<string, string> {
@@ -119,8 +119,15 @@ export default defineEventHandler(async (event) => {
         parsed.password = gitRepo.token
         cloneUrl = parsed.toString()
       }
-      const branchArgs = gitRepo.branch ? `--branch ${gitRepo.branch} ` : ''
-      execSync(`git clone --depth 1 ${branchArgs}-- "${cloneUrl}" "${tmpDir}"`, { timeout: 60_000, stdio: 'pipe' })
+      // Use spawnSync with an argument array — never concatenate user-supplied
+      // branch names into a shell string (command injection risk).
+      const gitArgs = ['clone', '--depth', '1']
+      if (gitRepo.branch) gitArgs.push('--branch', gitRepo.branch)
+      gitArgs.push('--', cloneUrl, tmpDir)
+      const gitResult = spawnSync('git', gitArgs, { timeout: 60_000, stdio: 'pipe' })
+      if (gitResult.status !== 0) {
+        throw new Error(gitResult.stderr?.toString().trim() || 'git clone failed')
+      }
 
       const localesDirPath = resolve(tmpDir, project.locales_path || 'src/locales')
       const { added, skipped, files } = await syncFromDir(db, Number(project_id), localesDirPath, separator)
@@ -128,7 +135,8 @@ export default defineEventHandler(async (event) => {
       const total = await db('translation_keys').where({ project_id: Number(project_id) }).count('* as count').first()
       return { added, skipped, updated: 0, total: Number((total as any)?.count || 0), files }
     } catch (e: any) {
-      throw createError({ statusCode: 400, message: `Git sync failed: ${e.message ?? 'unknown'}` })
+      console.error('[i18n-dashboard] git sync error:', e.message)
+      throw createError({ statusCode: 400, message: 'Git sync failed. Check the URL, branch, and access token.' })
     } finally {
       rmSync(tmpDir, { recursive: true, force: true })
     }
