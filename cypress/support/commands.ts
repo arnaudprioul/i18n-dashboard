@@ -8,42 +8,20 @@ declare global {
 }
 
 /**
- * Establishes a real server session via cy.request().
- * Uses ADMIN_EMAIL / ADMIN_PASSWORD env vars (cypress.env.json) with fallbacks.
- * The session is cached across tests in the same spec file.
+ * Mocks the auth layer so every test starts in a logged-in state.
+ * No real HTTP request, no env vars required.
  */
 Cypress.Commands.add('login', () => {
-  cy.session(
-    'admin-session',
-    () => {
-      cy.request({
-        method: 'POST',
-        url: '/api/auth/login',
-        body: {
-          email: Cypress.env('ADMIN_EMAIL') || 'admin@example.com',
-          password: Cypress.env('ADMIN_PASSWORD') || 'admin',
-        },
-        failOnStatusCode: false,
-      }).then((res) => {
-        expect(
-          res.status,
-          'Login failed — set ADMIN_EMAIL and ADMIN_PASSWORD in cypress.env.json',
-        ).to.eq(200)
-      })
-    },
-    {
-      validate() {
-        cy.request({ url: '/api/auth/status', failOnStatusCode: false })
-          .its('body.isLoggedIn')
-          .should('eq', true)
-      },
-    },
-  )
+  cy.fixture('auth').then((auth) => {
+    cy.intercept('POST', '/api/auth/login', { statusCode: 200, body: auth.me }).as('loginOk')
+    cy.intercept('GET', '/api/auth/status', { body: auth.status }).as('authStatus')
+    cy.intercept('GET', '/api/auth/me', { body: auth.me }).as('authMe')
+  })
 })
 
 /**
  * Intercepts all client-side data API calls with fixture data.
- * Auth (status/me) is NOT mocked here — the real session handles it.
+ * Auth intercepts are handled by cy.login() — these reinforce them.
  * Write operations (POST/PUT/DELETE) are mocked to prevent DB changes.
  */
 Cypress.Commands.add('mockAllApis', (_projectId = 1) => {
