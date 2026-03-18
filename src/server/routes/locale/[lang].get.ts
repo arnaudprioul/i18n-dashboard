@@ -76,13 +76,16 @@ async function loadTranslations(
   projectId: number,
   langCode: string,
 ): Promise<Record<string, string>> {
+  // Only serve the `approved_value` — the value frozen at last approval.
+  // Translations that have never been approved (approved_value IS NULL) are
+  // intentionally excluded so that drafts/reviews never leak to end-users.
   const rows = await db('translations as t')
     .join('translation_keys as k', 't.key_id', 'k.id')
     .where('t.language_code', langCode)
     .where('k.project_id', projectId)
-    .whereNotNull('t.value')
-    .where('t.value', '!=', '')
-    .select('k.key', 't.value')
+    .whereNotNull('t.approved_value')
+    .where('t.approved_value', '!=', '')
+    .select('k.key', 't.approved_value as value')
 
   const flat: Record<string, string> = {}
   for (const row of rows) flat[row.key] = row.value

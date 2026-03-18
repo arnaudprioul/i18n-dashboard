@@ -16,9 +16,17 @@ export default defineEventHandler(async (event) => {
   }
 
   const db = getDb()
-  await db('translations')
-    .whereIn('id', ids)
-    .update({ status, updated_at: db.fn.now() })
+  if (status === TRANSLATION_STATUS.APPROVED) {
+    // Freeze approved_value for each translation individually so we capture
+    // its current working value at approval time.
+    await db('translations')
+      .whereIn('id', ids)
+      .update({ status, approved_value: db.ref('value'), updated_at: db.fn.now() })
+  } else {
+    await db('translations')
+      .whereIn('id', ids)
+      .update({ status, updated_at: db.fn.now() })
+  }
 
   return { updated: ids.length }
 })

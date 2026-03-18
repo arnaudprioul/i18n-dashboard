@@ -1018,6 +1018,19 @@ export async function initDb(): Promise<void> {
     t.text('git_repos').nullable(),
   )
 
+  // ── migration: approved_value column on translations ────────────────────
+  // Stores the last approved value independently from the working `value`.
+  // The locale JSON endpoint serves this column so that in-progress drafts
+  // are never exposed to end-users; only explicitly approved content is published.
+  await addColumnIfMissing(db, 'translations', 'approved_value', (t) =>
+    t.text('approved_value').nullable(),
+  )
+  // Backfill: seed approved_value for translations that are already approved
+  await db('translations')
+    .where('status', 'approved')
+    .whereNull('approved_value')
+    .update({ approved_value: db.ref('value') })
+
   // ── refresh_tokens ────────────────────────────────────────────────────────
   const hasRefreshTokens = await db.schema.hasTable('refresh_tokens')
   if (!hasRefreshTokens) {
