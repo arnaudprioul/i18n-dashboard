@@ -553,17 +553,16 @@
       <div class="hero-inner">
         <div class="hero-badge" aria-label="Latest version">
           <span class="hero-badge-dot" aria-hidden="true"></span>
-          v0.12.0 — Now with token rotation
+          v0.13.1 — Now with token rotation
         </div>
-        <h1 id="hero-heading">
-          The missing<br/>
-          <span class="hero-gradient-text">translation manager</span><br/>
-          for Vue.js
-        </h1>
-        <p>
-          A full-featured web dashboard for managing <strong>vue-i18n</strong> translation keys.
-          Edit, review, and ship translations across all your projects — from one place.
-        </p>
+          <h1 id="hero-heading">
+              Stop editing<br/>
+              <span class="hero-gradient-text">Vue i18n JSON files</span>
+          </h1>
+          <p>
+              Edit your translations live, directly in your app — <strong>no migration required</strong>.
+              Works with your existing vue-i18n setup, locally or as a full translation platform.
+          </p>
         <div class="hero-actions">
           <a href="#quickstart" class="btn-primary">
             <span aria-hidden="true">⚡</span> Get started
@@ -597,6 +596,14 @@
         </div>
       </div>
     </div>
+  </section>
+
+  <section style="padding:40px 0 20px;">
+      <div class="container text-center">
+          <p style="color:var(--text-2); max-width:700px; margin:0 auto; font-size:1rem;">
+              Works with your existing <strong>vue-i18n</strong> setup — no migration, no lock-in, no external service.
+          </p>
+      </div>
   </section>
 
   <!-- ─── Stats ─────────────────────────────────────────────────────── -->
@@ -744,7 +751,10 @@
         <article class="ways-card">
           <span class="ways-card-icon" aria-hidden="true">💻</span>
           <h3>Local mode</h3>
-          <p>Run directly on your machine. Point it at your project folder and start translating. Perfect for solo developers or small teams.</p>
+            <p>
+                Run it directly inside your project. Scan your code, edit translations, and export JSON files — no API required.
+                Perfect for solo developers or small teams.
+            </p>
           <ul class="ways-bullets">
             <li>No server needed — runs on localhost</li>
             <li>Direct access to your local filesystem</li>
@@ -756,7 +766,10 @@
         <article class="ways-card">
           <span class="ways-card-icon" aria-hidden="true">🖥️</span>
           <h3>Server / Team mode</h3>
-          <p>Deploy on your own infrastructure and give your whole team access. Works with Docker, VMs, or any Node.js hosting.</p>
+            <p>
+                Use it as a centralized translation platform. Manage multiple projects, sync with Git, and serve translations via API instead of JSON files.
+                Ideal for teams and scalable setups.
+            </p>
           <ul class="ways-bullets">
             <li>Multi-user with role-based access</li>
             <li>Connect via PostgreSQL or MySQL for production</li>
@@ -766,6 +779,25 @@
 
       </div>
     </div>
+  </section>
+
+  <section style="padding:60px 0;">
+      <div class="container text-center">
+          <div class="section-tag">Why this tool</div>
+          <h2>No migration. No lock-in.</h2>
+
+          <p style="max-width:600px;margin:0 auto;color:var(--text-2);">
+              Unlike most i18n tools, i18n-dashboard works directly with vue-i18n.
+              You keep full control over your translations, your data, and your workflow.
+          </p>
+
+          <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+              <span class="tech-badge">vue-i18n compatible</span>
+              <span class="tech-badge">Self-hosted</span>
+              <span class="tech-badge">No SaaS</span>
+              <span class="tech-badge">Git workflow</span>
+          </div>
+      </div>
   </section>
 
   <!-- ─── Two ways to scan ─────────────────────────────────────────── -->
