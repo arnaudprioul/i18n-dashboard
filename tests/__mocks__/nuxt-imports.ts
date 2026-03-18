@@ -12,6 +12,16 @@ export const createError = ({ statusCode, message }: { statusCode: number; messa
   return e
 }
 
+// ── H3 event handler utilities ────────────────────────────────────────────────
+// defineEventHandler: just return the inner function so tests can call it directly
+export const defineEventHandler = (fn: Function) => fn
+export const readBody = (event: any) => Promise.resolve(event?._body ?? {})
+export const getQuery = (event: any) => event?._query ?? {}
+export const getHeader = (event: any, name: string) => event?._headers?.[name] ?? ''
+export const getRouterParam = (event: any, name: string) => event?._params?.[name] ?? ''
+export const setHeader = () => {}
+export const getRequestURL = (event: any) => ({ pathname: event?._path ?? '' })
+
 export const useSession = () => ({
   data: {},
   update: async () => {},

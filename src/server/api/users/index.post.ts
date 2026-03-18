@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs'
+import { randomBytes } from 'crypto'
 import { getDb } from '../../db/index'
 import { getUserRole, canManageUsers } from '../../utils/auth.util'
 import { sendEmail, inviteEmailHtml } from '../../utils/mailer.util'
@@ -6,7 +7,8 @@ import { useRuntimeConfig } from '#imports'
 
 function generateTempPassword(): string {
   const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789'
-  return Array.from({ length: 12 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
+  const bytes = randomBytes(12)
+  return Array.from(bytes, (b) => chars[b % chars.length]).join('')
 }
 
 export default defineEventHandler(async (event) => {
@@ -85,5 +87,8 @@ export default defineEventHandler(async (event) => {
     console.warn('[i18n-dashboard] Email non envoyé:', e.message)
   }
 
-  return { id: userId, email: email.toLowerCase().trim(), name, tempPassword }
+  // Never return the temporary password in the API response — it was already
+  // sent via email. Returning it here would expose it in browser DevTools,
+  // proxy logs, and any API monitoring tool.
+  return { id: userId, email: email.toLowerCase().trim(), name }
 })

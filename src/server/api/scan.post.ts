@@ -1,7 +1,7 @@
 import { resolve, extname, basename } from 'path'
 import { mkdtempSync, rmSync, readdirSync, readFileSync, existsSync } from 'fs'
 import { tmpdir } from 'os'
-import { execSync } from 'child_process'
+import { spawnSync } from 'child_process'
 import { getDb } from '../db/index'
 import { scanProject, detectLanguages } from '../utils/scanner.uti'
 
@@ -30,11 +30,21 @@ export default defineEventHandler(async (event) => {
         parsed.password = gitToken
         cloneUrl = parsed.toString()
       }
-      const branchArgs = gitBranch ? `--branch ${gitBranch} ` : ''
-      execSync(`git clone --depth 1 ${branchArgs}-- "${cloneUrl}" "${tmpDir}"`, { timeout: 60_000, stdio: 'pipe' })
+      // Use spawnSync with an argument array — never concatenate user-supplied
+      // branch names into a shell string (command injection risk).
+      const gitArgs = ['clone', '--depth', '1']
+      if (gitBranch) gitArgs.push('--branch', gitBranch)
+      gitArgs.push('--', cloneUrl, tmpDir)
+      const gitResult = spawnSync('git', gitArgs, { timeout: 60_000, stdio: 'pipe' })
+      if (gitResult.status !== 0) {
+        throw new Error(gitResult.stderr?.toString().trim() || 'git clone failed')
+      }
     } catch (e: any) {
       rmSync(tmpDir, { recursive: true, force: true })
-      throw createError({ statusCode: 400, message: `Git clone failed: ${e.message ?? 'unknown error'}` })
+      // Log the full error server-side; return a generic message to the client
+      // to avoid leaking git URL, token hints, or server paths.
+      console.error('[i18n-dashboard] git clone error:', e.message)
+      throw createError({ statusCode: 400, message: 'Git clone failed. Check the URL, branch, and access token.' })
     }
 
     try {

@@ -8,6 +8,7 @@ export default defineConfig({
       '@/': `${resolve(__dirname)}/src/`,
       '#imports': resolve(__dirname, 'tests/__mocks__/nuxt-imports.ts'),
       '#app': resolve(__dirname, 'tests/__mocks__/nuxt-imports.ts'),
+      '#server/': `${resolve(__dirname)}/src/server/`,
     },
   },
   test: {

@@ -2,14 +2,28 @@ import { readdirSync, statSync, existsSync } from 'fs'
 import { resolve, join, dirname, sep } from 'path'
 import { homedir } from 'os'
 
+// Allowed root anchors — browsing is limited to the user's home directory and
+// any filesystem root. This prevents authenticated users from enumerating
+// arbitrary paths outside their working area (e.g. /etc, /proc, /var/...).
+function isAllowedPath(absolutePath: string): boolean {
+  const home = homedir()
+  // Allow: anything under home, filesystem roots (/  or C:\), and /tmp
+  const allowedRoots = [home, sep, resolve('/tmp')]
+  return allowedRoots.some(root => absolutePath === root || absolutePath.startsWith(root + sep))
+}
+
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   const rawPath = query.path && String(query.path).trim() ? String(query.path).trim() : homedir()
 
   const absolutePath = resolve(rawPath)
 
+  if (!isAllowedPath(absolutePath)) {
+    throw createError({ statusCode: 403, message: 'Access to this path is not allowed.' })
+  }
+
   if (!existsSync(absolutePath)) {
-    throw createError({ statusCode: 404, message: `Path not found: ${absolutePath}` })
+    throw createError({ statusCode: 404, message: 'Path not found.' })
   }
 
   const stat = statSync(absolutePath)

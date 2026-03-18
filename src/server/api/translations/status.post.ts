@@ -22,9 +22,16 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, message: 'Translation not found' })
   }
 
+  const updates: Record<string, any> = { status, updated_at: db.fn.now() }
+  // Freeze the approved value so the locale API can serve it even if the
+  // translation is later edited back to draft.
+  if (status === TRANSLATION_STATUS.APPROVED) {
+    updates.approved_value = existing.value
+  }
+
   await db('translations')
     .where({ id: existing.id })
-    .update({ status, updated_at: db.fn.now() })
+    .update(updates)
 
   return db('translations').where({ id: existing.id }).first()
 })
