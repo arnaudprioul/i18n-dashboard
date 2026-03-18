@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 vi.mock('h3', () => ({ useSession: vi.fn() }))
 vi.mock('~/server/db/index', () => ({ getDb: vi.fn() }))
-vi.mock('~/server/utils/auth.util', () => ({
+vi.mock('~/utils/auth.util', () => ({
   sessionConfig: vi.fn(() => ({})),
   canEdit: vi.fn(),
   canApprove: vi.fn(),

@@ -2,7 +2,7 @@
 import type { PropType } from 'vue'
 import type { TWidgetSize } from '~/types/dashboard.type'
 import type { IWidgetDataSource } from '~/interfaces/dashboard.interface'
-import { TRANSLATION_STATUS } from '~/server/enums/translation.enum'
+import { TRANSLATION_STATUS } from '~/enums/translation.enum'
 
 const props = defineProps({
   id: {

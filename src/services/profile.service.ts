@@ -1,5 +1,5 @@
 import { SBase } from './base.service'
-import type { IUserProfile, ProfilePeriod } from '../server/interfaces/profile.interface'
+import type { IUserProfile, ProfilePeriod } from '~/interfaces/profile.interface'
 
 class SProfile extends SBase {
   async getProfile(period: ProfilePeriod = 'all'): Promise<IUserProfile> {

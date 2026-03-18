@@ -1,6 +1,6 @@
 import { getDb } from '../../../db/index'
-import { getUserRole } from '../../../utils/auth.util'
-import type { IUserProfile, ProfilePeriod } from '../../../interfaces/profile.interface'
+import { getUserRole } from '~/utils/auth.util'
+import type { IUserProfile, ProfilePeriod } from '~/interfaces/profile.interface'
 
 const PERIOD_MS: Record<ProfilePeriod, number | null> = {
   '1d': 24 * 60 * 60 * 1000,

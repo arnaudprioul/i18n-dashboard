@@ -3,9 +3,9 @@ import type { H3Event } from 'h3'
 import { useSession, getCookie, setCookie, deleteCookie } from 'h3'
 import { useRuntimeConfig } from '#imports'
 
-import { getDb } from '../db/index'
-import { ROLES } from '../enums/auth.enum'
-import type { TRole } from '../types/auth.type'
+import { getDb } from '~/server/db/index'
+import { ROLES } from '~/enums/auth.enum'
+import type { TRole } from '~/types/auth.type'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 

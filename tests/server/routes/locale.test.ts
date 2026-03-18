@@ -2,13 +2,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 vi.mock('~/server/db/index', () => ({ getDb: vi.fn() }))
-vi.mock('#server/utils/lang-api.util', () => ({
+vi.mock('~/utils/lang-api.util', () => ({
   // passthrough: let us verify the flat object that was built before unflattening
   unflattenObject: vi.fn((flat: Record<string, string>) => flat),
 }))
 
 import { getDb } from '~/server/db/index'
-import { unflattenObject } from '#server/utils/lang-api.util'
+import { unflattenObject } from '~/utils/lang-api.util'
 import handler from '~/server/routes/locale/[lang].get'
 
 // ── DB mock factory ────────────────────────────────────────────────────────────

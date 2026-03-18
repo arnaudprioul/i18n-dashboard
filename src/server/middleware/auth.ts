@@ -1,8 +1,8 @@
 import { useSession } from 'h3'
 
 import { getDb } from '../db/index'
-import { sessionConfig } from '../utils/auth.util'
-import { PUBLIC_ROUTES, SETUP_ONLY_ROUTES } from '../consts/commons.const'
+import { sessionConfig } from '../../utils/auth.util'
+import { PUBLIC_ROUTES, SETUP_ONLY_ROUTES } from '../../consts/commons.const'
 
 export default defineEventHandler(async (event) => {
 	const path = event.path || ''

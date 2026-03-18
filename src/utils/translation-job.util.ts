@@ -1,9 +1,9 @@
 import { translate } from '@vitalets/google-translate-api'
 import type { Knex } from 'knex'
 
-import { JOB_STATUS } from '../enums/translation-job.enum'
-import { JOB_BATCH_SIZE, JOB_BATCH_DELAY_MS } from '../consts/translation-job.const'
-import type { ITranslationJob } from '../interfaces/translation-job.interface'
+import { JOB_STATUS } from '~/enums/translation-job.enum'
+import { JOB_BATCH_SIZE, JOB_BATCH_DELAY_MS } from '~/consts/translation-job.const'
+import type { ITranslationJob } from '~/interfaces/translation-job.interface'
 
 // ── In-memory job store ───────────────────────────────────────────────────────
 const _jobs = new Map<string, ITranslationJob>()

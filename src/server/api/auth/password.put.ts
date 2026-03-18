@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs'
 import { getDb } from '../../db/index'
-import { requireAuth } from '../../utils/auth.util'
+import { requireAuth } from '~/utils/auth.util'
 
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event)

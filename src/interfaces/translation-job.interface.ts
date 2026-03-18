@@ -1,4 +1,4 @@
-import type { JOB_STATUS } from '../enums/translation-job.enum'
+import type { JOB_STATUS } from '~/enums/translation-job.enum'
 
 export interface ITranslationJob {
   id: string

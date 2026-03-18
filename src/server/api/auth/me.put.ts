@@ -1,5 +1,5 @@
 import { getDb } from '../../db/index'
-import { getUserProfile } from '../../utils/auth.util'
+import { getUserProfile } from '~/utils/auth.util'
 
 export default defineEventHandler(async (event) => {
   const user = event.context.user
