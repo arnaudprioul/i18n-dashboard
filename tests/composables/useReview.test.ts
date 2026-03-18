@@ -24,7 +24,7 @@ vi.mock('~/services/translation.service', () => ({
 import { useReview } from '~/composables/useReview'
 import { keyService } from '~/services/key.service'
 import { translationService } from '~/services/translation.service'
-import { TRANSLATION_STATUS } from '~/server/enums/translation.enum'
+import { TRANSLATION_STATUS } from '~/enums/translation.enum'
 
 const mockProject = { id: 5, name: 'Test', root_path: '/test', locales_path: 'locales', key_separator: '.', color: '#000' }
 

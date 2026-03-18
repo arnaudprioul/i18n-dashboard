@@ -2,11 +2,11 @@ import { existsSync, readFileSync } from 'fs'
 import { resolve } from 'path'
 import { useRuntimeConfig } from '#imports'
 
-import type { DashboardConfig } from '../interfaces/project-config.interface'
+import type { IDashboardConfig } from '~/interfaces/project-config.interface'
 
-let _cachedConfig: DashboardConfig | null = null
+let _cachedConfig: IDashboardConfig | null = null
 
-export function readProjectConfig(): DashboardConfig {
+export function readProjectConfig(): IDashboardConfig {
   if (_cachedConfig) return _cachedConfig
 
   const config = useRuntimeConfig()

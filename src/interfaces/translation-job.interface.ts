@@ -1,8 +1,8 @@
-import type { JobStatus } from '../consts/translation-job.const'
+import type { JOB_STATUS } from '~/enums/translation-job.enum'
 
-export interface TranslationJob {
+export interface ITranslationJob {
   id: string
-  status: JobStatus
+  status: JOB_STATUS
   projectId: number
   languageCode: string
   languageName: string

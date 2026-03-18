@@ -1,9 +1,9 @@
 import { readdirSync, readFileSync, statSync, existsSync } from 'fs'
 import { resolve, extname, relative, basename } from 'path'
 
-import type { DetectedLanguage, KeyUsage, ScanResult } from '../interfaces/scanner.interface'
-import { AVAILABLE_LOCALES_PATTERN, LOCALE_ARRAY_PATTERN, LOCALE_SINGLE_PATTERN } from '../consts/scanner.const'
-import { LANGUAGES } from '../../consts/languages.const'
+import type { IDetectedLanguage, IKeyUsage, IScanResult } from '~/interfaces/scanner.interface'
+import { AVAILABLE_LOCALES_PATTERN, LOCALE_ARRAY_PATTERN, LOCALE_SINGLE_PATTERN } from '~/consts/scanner.const'
+import { LANGUAGES } from '~/consts/languages.const'
 
 function langName(code: string): string {
   return LANGUAGES[code.toLowerCase()] || code.toUpperCase()
@@ -21,9 +21,9 @@ function extractCodesFromArray(str: string): string[] {
 export function detectLanguages(options: {
   projectRoot: string
   localesPath: string
-}): DetectedLanguage[] {
+}): IDetectedLanguage[] {
   const { projectRoot, localesPath } = options
-  const found = new Map<string, DetectedLanguage>()
+  const found = new Map<string, IDetectedLanguage>()
 
   // ── 1. Locale JSON files ──────────────────────────────────────────────
   const absLocalesPath = resolve(projectRoot, localesPath)
@@ -143,8 +143,8 @@ function looksLikeI18nKey(value: string): boolean {
  * and return those that match the i18n key heuristic.
  * This handles: variable assignments, ternaries, arrays, objects, prop defaults, etc.
  */
-function extractVariableKeyStrings(content: string, filePath: string): KeyUsage[] {
-  const usages: KeyUsage[] = []
+function extractVariableKeyStrings(content: string, filePath: string): IKeyUsage[] {
+  const usages: IKeyUsage[] = []
 
   // Only run if the file has at least one t(variable) call
   T_VARIABLE_PATTERN.lastIndex = 0
@@ -167,8 +167,8 @@ function extractVariableKeyStrings(content: string, filePath: string): KeyUsage[
 /**
  * Parse an <i18n> custom block from a .vue SFC and extract all keys
  */
-function extractI18nBlock(content: string, filePath: string): KeyUsage[] {
-  const usages: KeyUsage[] = []
+function extractI18nBlock(content: string, filePath: string): IKeyUsage[] {
+  const usages: IKeyUsage[] = []
   const i18nBlockRegex = /<i18n(?:\s[^>]*)?>[\s\S]*?<\/i18n>/g
   const blockMatch = i18nBlockRegex.exec(content)
 
@@ -215,8 +215,8 @@ function extractI18nBlock(content: string, filePath: string): KeyUsage[] {
 /**
  * Extract all vue-i18n key usages from a single file
  */
-function scanFile(filePath: string, content: string): KeyUsage[] {
-  const usages: KeyUsage[] = []
+function scanFile(filePath: string, content: string): IKeyUsage[] {
+  const usages: IKeyUsage[] = []
   const lines = content.split('\n')
   const hasUseI18n = USE_I18N_PATTERN.test(content)
 
@@ -320,14 +320,14 @@ export function scanProject(options: {
   projectRoot: string
   excludeDirs?: string[]
   extensions?: string[]
-}): ScanResult {
+}): IScanResult {
   const {
     projectRoot,
     excludeDirs = ['node_modules', 'dist', '.nuxt', '.output', '.git', 'coverage'],
     extensions = ['.vue', '.ts', '.js', '.mts', '.mjs'],
   } = options
 
-  const usages: KeyUsage[] = []
+  const usages: IKeyUsage[] = []
   const errors: string[] = []
 
   const files = collectFiles(projectRoot, excludeDirs, extensions)

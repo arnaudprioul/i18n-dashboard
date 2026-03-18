@@ -1,14 +1,14 @@
-import { BaseService } from './base.service'
-import type { SettingsPayload } from '../interfaces/settings.interface'
+import { SBase } from './base.service'
+import type { ISettingsPayload } from '../interfaces/settings.interface'
 
-class SettingsService extends BaseService {
+class SSettings extends SBase {
   async getSettings(): Promise<Record<string, string>> {
     return this.get<Record<string, string>>('/api/settings')
   }
 
-  async saveSettings(data: SettingsPayload): Promise<void> {
+  async saveSettings(data: ISettingsPayload): Promise<void> {
     return this.post('/api/settings', { body: data, skipDedup: true })
   }
 }
 
-export const settingsService = new SettingsService()
+export const settingsService = new SSettings()

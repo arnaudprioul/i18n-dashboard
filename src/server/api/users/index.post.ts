@@ -1,8 +1,8 @@
 import bcrypt from 'bcryptjs'
 import { randomBytes } from 'crypto'
 import { getDb } from '../../db/index'
-import { getUserRole, canManageUsers } from '../../utils/auth.util'
-import { sendEmail, inviteEmailHtml } from '../../utils/mailer.util'
+import { getUserRole, canManageUsers } from '~/server/utils/auth.util'
+import { sendEmail, inviteEmailHtml } from '~/server/utils/mailer.util'
 import { useRuntimeConfig } from '#imports'
 
 function generateTempPassword(): string {

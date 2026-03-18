@@ -240,7 +240,7 @@
     .section-title p { color: var(--text-2); font-size: 1.05rem; max-width: 540px; margin: 0 auto; }
 
     /* ─── Features bento grid ───────────────────────────────────── */
-    .features { padding: 100px 0; }
+    .features { padding: 100px 0 60px; }
     .bento {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -309,6 +309,83 @@
     .locale-dot.active { background: var(--primary); }
     .locale-count { font-size: 2.5rem; font-weight: 900; color: #fff; letter-spacing: -0.04em; margin-top: 8px; }
     .locale-sub { font-size: 0.8rem; color: var(--text-3); }
+
+    /* ─── Two-ways sections ─────────────────────────────────────── */
+    .two-ways { padding: 60px 0; }
+    .two-ways-header {
+      display: flex; align-items: center; gap: 16px; margin-bottom: 40px;
+    }
+    .two-ways-header-line {
+      flex: 1; height: 1px; background: var(--border);
+    }
+    .two-ways-label {
+      display: inline-block; padding: 4px 12px; border-radius: 999px;
+      background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.2);
+      color: var(--primary-l); font-size: 0.75rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap;
+    }
+    .two-ways-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    .ways-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      transition: border-color 0.25s, background 0.25s, transform 0.2s, box-shadow 0.25s;
+      backdrop-filter: blur(10px);
+      position: relative; overflow: hidden;
+    }
+    .ways-card::before {
+      content: ''; position: absolute; inset: 0; border-radius: inherit;
+      background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(99,102,241,0.07) 0%, transparent 60%);
+      opacity: 0; transition: opacity 0.3s; pointer-events: none;
+    }
+    .ways-card:hover { border-color: var(--border-h); background: var(--surface-h); transform: translateY(-3px); box-shadow: 0 20px 60px rgba(0,0,0,0.3), var(--glow-sm); }
+    .ways-card:hover::before { opacity: 1; }
+    .ways-card-icon {
+      font-size: 2rem; margin-bottom: 14px; display: block;
+    }
+    .ways-card h3 {
+      font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 10px; letter-spacing: -0.02em;
+    }
+    .ways-card > p {
+      font-size: 0.875rem; color: var(--text-2); line-height: 1.65; margin-bottom: 20px;
+    }
+    .ways-bullets {
+      list-style: none; display: flex; flex-direction: column; gap: 9px;
+    }
+    .ways-bullets li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 0.85rem; color: var(--text-2); line-height: 1.5;
+    }
+    .ways-bullets li::before {
+      content: ''; flex-shrink: 0; width: 5px; height: 5px; border-radius: 50%;
+      background: var(--primary-l); margin-top: 7px;
+    }
+    .ways-bullets code {
+      background: rgba(255,255,255,0.07); padding: 1px 6px; border-radius: 5px;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--primary-l);
+    }
+    .ways-code-snippet {
+      margin-top: 20px;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      line-height: 1.7;
+      color: var(--text-2);
+      overflow-x: auto;
+    }
+    .ways-code-snippet .c-prompt { color: var(--primary-l); user-select: none; }
+    .ways-code-snippet .c-cmd    { color: #e2e8f0; }
+    .ways-code-snippet .c-kw     { color: var(--primary-l); }
+    .ways-code-snippet .c-flag   { color: var(--accent); }
+    .ways-code-snippet .c-str    { color: #68d391; }
+    .ways-code-snippet .c-dim    { color: #4a5568; }
+    .ways-code-snippet .c-comment{ color: #4a5568; }
 
     /* ─── Quick start ───────────────────────────────────────────── */
     .quickstart { padding: 100px 0; }
@@ -432,6 +509,7 @@
       .hero-actions { flex-direction: column; align-items: center; }
       .hero { padding: 100px 0 60px; }
       .footer-inner { flex-direction: column; align-items: flex-start; }
+      .two-ways-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 480px) {
       .stats-grid { grid-template-columns: 1fr 1fr; }
@@ -530,16 +608,16 @@
           <div class="stat-label">BCP 47 locales</div>
         </div>
         <div class="stat-item">
-          <div class="stat-value">3</div>
-          <div class="stat-label">Database backends</div>
+          <div class="stat-value">0</div>
+          <div class="stat-label">Cloud dependency</div>
         </div>
         <div class="stat-item">
-          <div class="stat-value">344</div>
-          <div class="stat-label">Unit tests</div>
+          <div class="stat-value">Free</div>
+          <div class="stat-label">Auto-translate</div>
         </div>
         <div class="stat-item">
-          <div class="stat-value">MIT</div>
-          <div class="stat-label">Open source</div>
+          <div class="stat-value">Git+local</div>
+          <div class="stat-label">Scan sources</div>
         </div>
       </div>
     </div>
@@ -574,7 +652,7 @@
         <article class="bento-card tall" role="listitem">
           <div class="bento-icon" aria-hidden="true">✅</div>
           <h3>Review workflow</h3>
-          <p>Built-in approval pipeline keeps translation quality high. Every key has a traceable status.</p>
+          <p>Built-in approval pipeline keeps translation quality high. Only <strong style="color:#4ade80">Approved</strong> translations are served to your app.</p>
           <div class="workflow-steps" aria-label="Workflow stages: Draft, Reviewed, Approved">
             <span class="step-pill draft">Draft</span>
             <span class="step-pill arrow" aria-hidden="true">→</span>
@@ -582,7 +660,7 @@
             <span class="step-pill arrow" aria-hidden="true">→</span>
             <span class="step-pill approved">Approved</span>
           </div>
-          <p style="margin-top:20px">Reviewers get a dedicated queue. Translators see only what needs their attention.</p>
+          <p style="margin-top:20px">Reviewers get a dedicated queue. Translators see only what needs their attention. Unapproved keys are never exposed via the API.</p>
         </article>
 
         <!-- Translation editor -->
@@ -614,11 +692,11 @@
           </div>
         </article>
 
-        <!-- File scanning -->
+        <!-- Local & Git scanning -->
         <article class="bento-card" role="listitem">
           <div class="bento-icon" aria-hidden="true">🔍</div>
-          <h3>File system scan</h3>
-          <p>Detects <code style="background:rgba(255,255,255,0.07);padding:0 5px;border-radius:4px;font-family:monospace;font-size:0.78rem">$t()</code>, <code style="background:rgba(255,255,255,0.07);padding:0 5px;border-radius:4px;font-family:monospace;font-size:0.78rem">$tc()</code>, <code style="background:rgba(255,255,255,0.07);padding:0 5px;border-radius:4px;font-family:monospace;font-size:0.78rem">v-t</code> and more. Flags unused keys automatically.</p>
+          <h3>Local &amp; Git scanning</h3>
+          <p>Detects <code style="background:rgba(255,255,255,0.07);padding:0 5px;border-radius:4px;font-family:monospace;font-size:0.78rem">$t()</code>, <code style="background:rgba(255,255,255,0.07);padding:0 5px;border-radius:4px;font-family:monospace;font-size:0.78rem">$tc()</code>, <code style="background:rgba(255,255,255,0.07);padding:0 5px;border-radius:4px;font-family:monospace;font-size:0.78rem">useI18n()</code> calls from a local path or a Git URL. Flags unused keys automatically.</p>
         </article>
 
         <!-- Audit trail -->
@@ -643,8 +721,87 @@
         <!-- REST API + Number/Datetime -->
         <article class="bento-card" role="listitem">
           <div class="bento-icon" aria-hidden="true">🔌</div>
-          <h3>REST API & format presets</h3>
+          <h3>REST API &amp; format presets</h3>
           <p>Full REST API for all operations. Define <code style="background:rgba(255,255,255,0.07);padding:0 5px;border-radius:4px;font-family:monospace;font-size:0.78rem">$n()</code> number and <code style="background:rgba(255,255,255,0.07);padding:0 5px;border-radius:4px;font-family:monospace;font-size:0.78rem">$d()</code> datetime presets with live preview.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Two ways to run ──────────────────────────────────────────── -->
+  <section class="two-ways" aria-labelledby="two-ways-run-heading">
+    <div class="container">
+      <div class="two-ways-header" aria-hidden="true">
+        <div class="two-ways-header-line"></div>
+        <div class="two-ways-label">Two ways to run</div>
+        <div class="two-ways-header-line"></div>
+      </div>
+      <h2 id="two-ways-run-heading" class="sr-only">Two ways to run</h2>
+      <div class="two-ways-grid">
+
+        <!-- Local mode -->
+        <article class="ways-card">
+          <span class="ways-card-icon" aria-hidden="true">💻</span>
+          <h3>Local mode</h3>
+          <p>Run directly on your machine. Point it at your project folder and start translating. Perfect for solo developers or small teams.</p>
+          <ul class="ways-bullets">
+            <li>No server needed — runs on localhost</li>
+            <li>Direct access to your local filesystem</li>
+            <li>Instant setup with <code>npx i18n-dashboard init</code></li>
+          </ul>
+        </article>
+
+        <!-- Server mode -->
+        <article class="ways-card">
+          <span class="ways-card-icon" aria-hidden="true">🖥️</span>
+          <h3>Server / Team mode</h3>
+          <p>Deploy on your own infrastructure and give your whole team access. Works with Docker, VMs, or any Node.js hosting.</p>
+          <ul class="ways-bullets">
+            <li>Multi-user with role-based access</li>
+            <li>Connect via PostgreSQL or MySQL for production</li>
+            <li>REST API for CI/CD integration</li>
+          </ul>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Two ways to scan ─────────────────────────────────────────── -->
+  <section class="two-ways" style="padding-top:20px;" aria-labelledby="two-ways-scan-heading">
+    <div class="container">
+      <div class="two-ways-header" aria-hidden="true">
+        <div class="two-ways-header-line"></div>
+        <div class="two-ways-label">Two ways to scan</div>
+        <div class="two-ways-header-line"></div>
+      </div>
+      <h2 id="two-ways-scan-heading" class="sr-only">Two ways to scan</h2>
+      <div class="two-ways-grid">
+
+        <!-- Local files scan -->
+        <article class="ways-card">
+          <span class="ways-card-icon" aria-hidden="true">📁</span>
+          <h3>Scan local files</h3>
+          <p>Point to any Vue.js project on your filesystem. i18n-dashboard walks through your source files and finds every <code style="background:rgba(255,255,255,0.07);padding:1px 5px;border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:0.78rem">$t()</code>, <code style="background:rgba(255,255,255,0.07);padding:1px 5px;border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:0.78rem">$tc()</code>, <code style="background:rgba(255,255,255,0.07);padding:1px 5px;border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:0.78rem">useI18n()</code> call.</p>
+          <div class="ways-code-snippet" aria-label="Scan local files command">
+            <span class="c-prompt">$</span> <span class="c-cmd">npx i18n-dashboard scan</span> <span class="c-flag">--path</span> <span class="c-str">./my-project</span>
+          </div>
+        </article>
+
+        <!-- Git scan -->
+        <article class="ways-card">
+          <span class="ways-card-icon" aria-hidden="true">🔗</span>
+          <h3>Scan from Git</h3>
+          <p>Provide a Git URL (with optional branch and access token) and i18n-dashboard clones the repo, scans it, and cleans up — without touching your local setup.</p>
+          <div class="ways-code-snippet" aria-label="Scan from Git command example">
+            <span class="c-comment"># Git URL (required)</span><br/>
+            <span class="c-dim">url:</span>    <span class="c-str">https://github.com/you/my-project</span><br/>
+            <span class="c-comment"># Branch (optional, default: main)</span><br/>
+            <span class="c-dim">branch:</span> <span class="c-str">develop</span><br/>
+            <span class="c-comment"># Token (optional, for private repos)</span><br/>
+            <span class="c-dim">token:</span>  <span class="c-str">ghp_••••••••••••</span>
+          </div>
         </article>
 
       </div>
@@ -825,7 +982,7 @@
             <div class="footer-brand-icon" aria-hidden="true">i</div>
             <span class="footer-brand-name">i18n-dashboard</span>
           </a>
-          <p class="footer-copy">Released under the MIT License. Copyright © 2026.</p>
+          <p class="footer-copy">Released under the MIT License. Copyright &copy; 2026.</p>
         </div>
         <div class="footer-tech" aria-label="Built with">
           <span style="font-size:0.78rem;color:var(--text-3);margin-right:4px;">Built with</span>
@@ -880,7 +1037,7 @@
     }
 
     // ─── Bento card glow on mouse move ────────────────────────────
-    document.querySelectorAll('.bento-card').forEach(function(card) {
+    document.querySelectorAll('.bento-card, .ways-card').forEach(function(card) {
       card.addEventListener('mousemove', function(e) {
         var rect = card.getBoundingClientRect();
         var x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);

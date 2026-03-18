@@ -1,4 +1,4 @@
-export interface DashboardConfig {
+export interface IDashboardConfig {
 	uiLanguages?: string[]        // e.g. ["fr", "en", "es"]
 	defaultUiLanguage?: string    // e.g. "fr"
 	project?: {

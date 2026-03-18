@@ -1,36 +1,10 @@
 import { getDb } from '../db/index'
-
-interface SnapshotKey {
-  key: string
-  description?: string | null
-  translations: Record<string, { value: string; status?: string } | string>
-}
-
-interface SnapshotLanguage {
-  code: string
-  name: string
-  is_default?: boolean
-  fallback_code?: string | null
-}
-
-interface ProjectSnapshot {
-  version: number
-  project: {
-    name: string
-    locales_path: string
-    key_separator: string
-    color?: string | null
-    description?: string | null
-    source_url?: string | null
-  }
-  languages: SnapshotLanguage[]
-  keys: SnapshotKey[]
-}
+import type { IProjectSnapshot } from '~/interfaces/project-snapshot.interface'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   const { snapshot, project_id, mode = 'merge' } = body as {
-    snapshot: ProjectSnapshot
+    snapshot: IProjectSnapshot
     project_id?: number
     mode?: 'merge' | 'replace'
   }

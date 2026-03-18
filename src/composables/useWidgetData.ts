@@ -1,7 +1,7 @@
 import type { Ref } from 'vue'
-import type { WidgetDataSource } from '~/types/dashboard.type'
+import type { IWidgetDataSource } from '~/interfaces/dashboard.interface'
 
-export function useWidgetData(widgetId: string, dataSource: Ref<WidgetDataSource | undefined>) {
+export function useWidgetData(widgetId: string, dataSource: Ref<IWidgetDataSource | undefined>) {
   const { currentProject, projects } = useProject()
 
   const effectiveSource = computed(() => dataSource.value ?? { type: 'global' as const })

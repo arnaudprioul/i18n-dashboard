@@ -3,9 +3,9 @@ import type { H3Event } from 'h3'
 import { useSession, getCookie, setCookie, deleteCookie } from 'h3'
 import { useRuntimeConfig } from '#imports'
 
-import { getDb } from '../db/index'
-import { ROLES } from '../enums/auth.enum'
-import type { Role } from '../types/auth.type'
+import { getDb } from '~/server/db/index'
+import { ROLES } from '~/enums/auth.enum'
+import type { TRole } from '~/types/auth.type'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -130,42 +130,42 @@ export async function clearRefreshToken(event: H3Event, userId?: number): Promis
 // ── Role helpers ───────────────────────────────────────────────────────────────
 
 /** Get effective role for a user on a specific project. Returns null if no access. */
-export async function getUserRole(userId: number, projectId: number): Promise<Role | null> {
+export async function getUserRole(userId: number, projectId: number): Promise<TRole | null> {
   const db = getDb()
 
   // Specific project role takes priority
   const specific = await db('user_project_roles')
     .where({ user_id: userId, project_id: projectId })
     .first()
-  if (specific) return specific.role as Role
+  if (specific) return specific.role as TRole
 
   // Global role (project_id IS NULL) — access to all projects
   const global_ = await db('user_project_roles')
     .where({ user_id: userId })
     .whereNull('project_id')
     .first()
-  if (global_) return global_.role as Role
+  if (global_) return global_.role as TRole
 
   return null
 }
 
 /** Check if user can edit translations (translator+) */
-export function canEdit(role: Role | null, isSuperAdmin: boolean) {
+export function canEdit(role: TRole | null, isSuperAdmin: boolean) {
   return isSuperAdmin || role !== null
 }
 
 /** Check if user can approve translations (moderator+) */
-export function canApprove(role: Role | null, isSuperAdmin: boolean) {
+export function canApprove(role: TRole | null, isSuperAdmin: boolean) {
   return isSuperAdmin || role === ROLES.MODERATOR || role === ROLES.ADMIN
 }
 
 /** Check if user can manage project settings, scan, sync (admin+) */
-export function canManageProject(role: Role | null, isSuperAdmin: boolean) {
+export function canManageProject(role: TRole | null, isSuperAdmin: boolean) {
   return isSuperAdmin || role === ROLES.ADMIN
 }
 
 /** Check if user can manage users (admin+ of that project, or super_admin) */
-export function canManageUsers(role: Role | null, isSuperAdmin: boolean) {
+export function canManageUsers(role: TRole | null, isSuperAdmin: boolean) {
   return isSuperAdmin || role === ROLES.ADMIN
 }
 

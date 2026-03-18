@@ -1,4 +1,4 @@
-import { verifyAndRotateRefreshToken, getUserProfile } from '../../utils/auth.util'
+import { verifyAndRotateRefreshToken, getUserProfile } from '~/server/utils/auth.util'
 
 export default defineEventHandler(async (event) => {
   const userId = await verifyAndRotateRefreshToken(event)

@@ -1,13 +1,13 @@
-import type { WidgetConfig, WidgetDataSource } from '../types/dashboard.type'
-import type { WidgetSize } from '../types/dashboard.type'
+import type { IWidgetConfig, IWidgetDataSource } from '../interfaces/dashboard.interface'
+import type { TWidgetSize } from '../types/dashboard.type'
 import { DEFAULT_LAYOUT } from '../consts/dashboard.const'
 
 export function useDashboard() {
   const { data, refresh } = useAsyncData('dashboard-layout', () => $fetch('/api/dashboard/layout'), { server: false })
-  const layout = computed<WidgetConfig[]>(() => (data.value as WidgetConfig[]) ?? DEFAULT_LAYOUT)
+  const layout = computed<IWidgetConfig[]>(() => (data.value as IWidgetConfig[]) ?? DEFAULT_LAYOUT)
 
   const editing = ref(false)
-  const localLayout = ref<WidgetConfig[]>([])
+  const localLayout = ref<IWidgetConfig[]>([])
 
   function startEditing() {
     localLayout.value = [...layout.value]
@@ -38,15 +38,15 @@ export function useDashboard() {
     localLayout.value.splice(index, 1)
   }
 
-  function addWidget(widget: WidgetConfig) {
+  function addWidget(widget: IWidgetConfig) {
     localLayout.value.push(widget)
   }
 
-  function resizeWidget(index: number, size: WidgetSize) {
+  function resizeWidget(index: number, size: TWidgetSize) {
     localLayout.value[index].size = size
   }
 
-  function updateWidgetConfig(index: number, patch: { dataSource?: WidgetDataSource | undefined; title?: string | undefined }) {
+  function updateWidgetConfig(index: number, patch: { dataSource?: IWidgetDataSource | undefined; title?: string | undefined }) {
     if (index < 0 || index >= localLayout.value.length) return
     localLayout.value[index] = { ...localLayout.value[index], ...patch }
   }

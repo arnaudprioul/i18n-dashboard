@@ -1,18 +1,18 @@
-import { BaseService } from './base.service'
-import type { Project } from '../composables/useProject'
-import type { ProjectPayload } from '../interfaces/project.interface'
+import { SBase } from './base.service'
+import type { IProject } from '../interfaces/project.interface'
+import type { IProjectPayload } from '../interfaces/project.interface'
 
-class ProjectService extends BaseService {
-  async getAll(): Promise<Project[]> {
-    return this.get<Project[]>('/api/projects')
+class SProject extends SBase {
+  async getAll(): Promise<IProject[]> {
+    return this.get<IProject[]>('/api/projects')
   }
 
-  async create(data: ProjectPayload): Promise<Project> {
-    return this.post<Project>('/api/projects', { body: data, skipDedup: true })
+  async create(data: IProjectPayload): Promise<IProject> {
+    return this.post<IProject>('/api/projects', { body: data, skipDedup: true })
   }
 
-  async update(id: number, data: Partial<ProjectPayload>): Promise<Project> {
-    return this.put<Project>(`/api/projects/${id}`, { body: data })
+  async update(id: number, data: Partial<IProjectPayload>): Promise<IProject> {
+    return this.put<IProject>(`/api/projects/${id}`, { body: data })
   }
 
   async remove(id: number): Promise<void> {
@@ -20,4 +20,4 @@ class ProjectService extends BaseService {
   }
 }
 
-export const projectService = new ProjectService()
+export const projectService = new SProject()

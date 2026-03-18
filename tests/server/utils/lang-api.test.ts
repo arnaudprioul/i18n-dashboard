@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest'
-import { unflattenObject } from '~/server/utils/lang-api.util'
+import { unflattenObject } from '~/utils/lang-api.util'
 
 describe('unflattenObject', () => {
   it('returns empty object for empty input', () => {

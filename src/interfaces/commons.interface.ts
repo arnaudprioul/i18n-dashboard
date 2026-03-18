@@ -1,6 +1,6 @@
-import type { Method } from '../types/commons.type'
+import type { TMethod } from '../types/commons.type'
 
-export interface RequestConfig {
+export interface IRequestConfig {
 	query?: Record<string, any>
 	body?: any
 	headers?: Record<string, string>
@@ -10,14 +10,14 @@ export interface RequestConfig {
 	skipDedup?: boolean
 }
 
-export interface RequestContext {
-	method: Method
+export interface IRequestContext {
+	method: TMethod
 	path: string
-	config: RequestConfig
+	config: IRequestConfig
 }
 
-export interface ServiceHooks {
-	beforeRequest?: (ctx: RequestContext) => Promise<void> | void
-	afterRequest?: (ctx: RequestContext, response: any) => Promise<void> | void
-	onError?: (ctx: RequestContext, error: any) => Promise<void> | void
+export interface IServiceHooks {
+	beforeRequest?: (ctx: IRequestContext) => Promise<void> | void
+	afterRequest?: (ctx: IRequestContext, response: any) => Promise<void> | void
+	onError?: (ctx: IRequestContext, error: any) => Promise<void> | void
 }

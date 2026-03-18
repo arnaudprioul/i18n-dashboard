@@ -1,5 +1,5 @@
 import { getDb } from '../db/index'
-import { autoTranslateUtil } from '../utils/auto-translate.util'
+import { autoTranslateUtil } from '~/server/utils/auto-translate.util'
 
 // Saves onboarding configuration: UI languages for Dashboard UI project
 export default defineEventHandler(async (event) => {

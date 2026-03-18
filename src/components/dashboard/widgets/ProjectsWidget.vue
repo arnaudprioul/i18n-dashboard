@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { WidgetSize } from '~/types/dashboard.type'
+import type { TWidgetSize } from '~/types/dashboard.type'
 
 const props = defineProps<{
-  size: WidgetSize
+  size: TWidgetSize
   editing: boolean
 }>()
 

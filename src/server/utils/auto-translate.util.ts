@@ -1,7 +1,7 @@
 import { translate } from '@vitalets/google-translate-api'
 import type { Knex } from 'knex'
 
-import { BATCH_DELAY_MS, BATCH_SIZE } from '../consts/auto-translate.const'
+import { BATCH_DELAY_MS, BATCH_SIZE } from '~/consts/auto-translate.const'
 
 /**
  * Auto-translates all missing Dashboard UI strings for a given language,

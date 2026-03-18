@@ -1,4 +1,4 @@
-export interface UserItem {
+export interface IUserItem {
 	id: number
 	name: string
 	email: string
@@ -9,7 +9,7 @@ export interface UserItem {
 	roles?: Array<{ role: string; project_id: number | null; project_name?: string }>
 }
 
-export interface CreateUserPayload {
+export interface ICreateUserPayload {
 	name: string
 	email: string
 	role: string
@@ -18,7 +18,7 @@ export interface CreateUserPayload {
 	global_access?: boolean
 }
 
-export interface RoleEntry {
+export interface IRoleEntry {
 	project_id: number | null
 	role: string | null
 }

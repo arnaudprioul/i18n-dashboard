@@ -1,5 +1,5 @@
 import { getDb } from '../../db/index'
-import { TRANSLATION_STATUS } from '../../enums/translation.enum'
+import { TRANSLATION_STATUS } from '~/enums/translation.enum'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
