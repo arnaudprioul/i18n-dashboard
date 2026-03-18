@@ -1,4 +1,4 @@
-export interface KeysQuery {
+export interface IKeysQuery {
 	project_id?: number
 	search?: string
 	lang?: string
@@ -7,16 +7,16 @@ export interface KeysQuery {
 	limit?: number
 }
 
-export interface KeyItem {
+export interface IKeyItem {
 	id: number
 	key: string
 	description?: string
 	is_unused: boolean
-	translations: Record<string, TranslationItem>
-	usages: UsageItem[]
+	translations: Record<string, ITranslationItem>
+	usages: IUsageItem[]
 }
 
-export interface TranslationItem {
+export interface ITranslationItem {
 	id: number
 	value: string
 	status: string
@@ -24,14 +24,14 @@ export interface TranslationItem {
 	key_id: number
 }
 
-export interface UsageItem {
+export interface IUsageItem {
 	file_path: string
 	line_number: number
 	detected_function: string
 }
 
-export interface KeysResponse {
-	data: KeyItem[]
+export interface IKeysResponse {
+	data: IKeyItem[]
 	total: number
 	page: number
 	limit: number

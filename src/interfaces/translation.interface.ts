@@ -1,10 +1,10 @@
-export interface SaveTranslationPayload {
+export interface ISaveTranslationPayload {
 	key_id: number
 	language_code: string
 	value: string
 }
 
-export interface SetStatusPayload {
+export interface ISetStatusPayload {
 	key_id: number
 	language_code: string
 	status: string

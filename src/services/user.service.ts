@@ -1,16 +1,16 @@
-import { BaseService } from './base.service'
-import type { CreateUserPayload, RoleEntry, UserItem } from '../interfaces/user.interface'
+import { SBaseService } from './base.service'
+import type { ICreateUserPayload, IRoleEntry, IUserItem } from '../interfaces/user.interface'
 
-class UserService extends BaseService {
-  async getUsers(query?: { project_id?: number }): Promise<UserItem[]> {
-    return this.get<UserItem[]>('/api/users', { query })
+class SUserService extends SBaseService {
+  async getUsers(query?: { project_id?: number }): Promise<IUserItem[]> {
+    return this.get<IUserItem[]>('/api/users', { query })
   }
 
-  async getAvailableUsers(excludeProjectId: number): Promise<UserItem[]> {
-    return this.get<UserItem[]>('/api/users', { query: { exclude_project_id: excludeProjectId }, skipErrorToast: true })
+  async getAvailableUsers(excludeProjectId: number): Promise<IUserItem[]> {
+    return this.get<IUserItem[]>('/api/users', { query: { exclude_project_id: excludeProjectId }, skipErrorToast: true })
   }
 
-  async create(data: CreateUserPayload): Promise<{ id: number; tempPassword: string; email: string; name: string }> {
+  async create(data: ICreateUserPayload): Promise<{ id: number; tempPassword: string; email: string; name: string }> {
     return this.post('/api/users', { body: data, skipDedup: true })
   }
 
@@ -18,7 +18,7 @@ class UserService extends BaseService {
     return this.put(`/api/users/${id}`, { body: data })
   }
 
-  async updateRoles(id: number, roles: RoleEntry[]): Promise<void> {
+  async updateRoles(id: number, roles: IRoleEntry[]): Promise<void> {
     return this.put(`/api/users/${id}/roles`, { body: { roles } })
   }
 
@@ -29,4 +29,4 @@ class UserService extends BaseService {
   }
 }
 
-export const userService = new UserService()
+export const userService = new SUserService()

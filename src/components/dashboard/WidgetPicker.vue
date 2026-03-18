@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import type { WidgetConfig, WidgetSize } from '~/types/dashboard.type'
+import type { TWidgetSize } from '~/types/dashboard.type'
+import type { IWidgetConfig } from '~/interfaces/dashboard.interface'
 import { WIDGET_REGISTRY } from '~/consts/dashboard.const'
 
 const { t } = useT()
@@ -10,7 +11,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean]
-  'add': [widget: WidgetConfig]
+  'add': [widget: IWidgetConfig]
 }>()
 
 const open = computed({
@@ -18,16 +19,16 @@ const open = computed({
   set: (v) => emit('update:modelValue', v),
 })
 
-const selectedSizes = ref<Record<string, WidgetSize>>({})
+const selectedSizes = ref<Record<string, TWidgetSize>>({})
 
-function getSelectedSize(type: string): WidgetSize {
+function getSelectedSize(type: string): TWidgetSize {
   return selectedSizes.value[type] ?? WIDGET_REGISTRY[type as keyof typeof WIDGET_REGISTRY].defaultSize
 }
 
 function addWidget(type: string) {
   const size = getSelectedSize(type)
   const id = Date.now().toString(36)
-  emit('add', { id, type: type as WidgetConfig['type'], size })
+  emit('add', { id, type: type as IWidgetConfig['type'], size })
   open.value = false
 }
 </script>

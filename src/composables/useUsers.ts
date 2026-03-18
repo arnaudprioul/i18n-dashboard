@@ -1,5 +1,5 @@
 import { userService } from '../services/user.service'
-import type { CreateUserPayload, RoleEntry } from '../interfaces/user.interface'
+import type { ICreateUserPayload, IRoleEntry } from '../interfaces/user.interface'
 
 export function useUsers(scope: 'project' | 'global' = 'project') {
   const toast = useToast()
@@ -37,7 +37,7 @@ export function useUsers(scope: 'project' | 'global' = 'project') {
   // ── Mutations ──────────────────────────────────────────────────────────────
 
   const saving = ref(false)
-  async function createUser(payload: CreateUserPayload): Promise<string | null> {
+  async function createUser(payload: ICreateUserPayload): Promise<string | null> {
     saving.value = true
     try {
       const result = await userService.create(payload)
@@ -56,7 +56,7 @@ export function useUsers(scope: 'project' | 'global' = 'project') {
   }
 
   const rolesSaving = ref(false)
-  async function updateRoles(userId: number, roles: RoleEntry[]): Promise<boolean> {
+  async function updateRoles(userId: number, roles: IRoleEntry[]): Promise<boolean> {
     rolesSaving.value = true
     try {
       await userService.updateRoles(userId, roles)

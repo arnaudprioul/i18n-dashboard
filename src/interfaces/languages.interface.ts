@@ -1,10 +1,10 @@
-export interface Language {
+export interface ILanguage {
 	code: string
 	name: string
 	nativeName: string
 }
 
-export interface LanguageItem {
+export interface ILanguageItem {
 	id: number
 	code: string
 	name: string
@@ -15,7 +15,7 @@ export interface LanguageItem {
 	project_color?: string
 }
 
-export interface CreateLanguagePayload {
+export interface ICreateLanguagePayload {
 	project_id: number
 	code: string
 	name: string

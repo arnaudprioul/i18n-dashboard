@@ -1,5 +1,5 @@
 import { settingsService } from '../services/settings.service'
-import type { SettingsPayload } from '../interfaces/settings.interface'
+import type { ISettingsPayload } from '../interfaces/settings.interface'
 
 export function useSettings() {
   const toast = useToast()
@@ -26,7 +26,7 @@ export function useSettings() {
   const settings = computed(() => data.value ?? {})
 
   const saving = ref(false)
-  async function saveSettings(payload: SettingsPayload): Promise<void> {
+  async function saveSettings(payload: ISettingsPayload): Promise<void> {
     saving.value = true
     try {
       await settingsService.saveSettings(payload)

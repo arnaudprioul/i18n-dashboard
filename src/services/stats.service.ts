@@ -1,11 +1,11 @@
-import { BaseService } from './base.service'
-import type { StatsResponse } from '../interfaces/stat.interface'
+import { SBaseService } from './base.service'
+import type { IStatsResponse } from '../interfaces/stat.interface'
 
-class StatsService extends BaseService {
-  async getStats(projectId?: number): Promise<StatsResponse | null> {
+class SStatsService extends SBaseService {
+  async getStats(projectId?: number): Promise<IStatsResponse | null> {
     if (!projectId) return null
-    return this.get<StatsResponse>('/api/stats', { query: { project_id: projectId } })
+    return this.get<IStatsResponse>('/api/stats', { query: { project_id: projectId } })
   }
 }
 
-export const statsService = new StatsService()
+export const statsService = new SStatsService()
