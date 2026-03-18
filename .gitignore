@@ -5,6 +5,7 @@
 
 # Database (dev)
 i18n-dashboard.db
+i18n-dashboard.db.json
 
 # Node
 node_modules
