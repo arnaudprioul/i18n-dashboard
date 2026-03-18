@@ -1,7 +1,7 @@
-import { SBaseService } from './base.service'
+import { SBase } from './base.service'
 import type { IScanResult, ISyncResult } from '../interfaces/scan.interface'
 
-class SScanService extends SBaseService {
+class SScan extends SBase {
   async scan(projectId: number): Promise<IScanResult> {
     return this.post<IScanResult>('/api/scan', { body: { project_id: projectId }, skipDedup: true })
   }
@@ -11,4 +11,4 @@ class SScanService extends SBaseService {
   }
 }
 
-export const scanService = new SScanService()
+export const scanService = new SScan()

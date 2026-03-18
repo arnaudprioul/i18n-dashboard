@@ -1,8 +1,8 @@
-import { SBaseService } from './base.service'
+import { SBase } from './base.service'
 import type { IProject } from '../interfaces/project.interface'
 import type { IProjectPayload } from '../interfaces/project.interface'
 
-class SProjectService extends SBaseService {
+class SProject extends SBase {
   async getAll(): Promise<IProject[]> {
     return this.get<IProject[]>('/api/projects')
   }
@@ -20,4 +20,4 @@ class SProjectService extends SBaseService {
   }
 }
 
-export const projectService = new SProjectService()
+export const projectService = new SProject()

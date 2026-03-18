@@ -1,7 +1,7 @@
-import { SBaseService } from './base.service'
+import { SBase } from './base.service'
 import type { ICreateUserPayload, IRoleEntry, IUserItem } from '../interfaces/user.interface'
 
-class SUserService extends SBaseService {
+class SUser extends SBase {
   async getUsers(query?: { project_id?: number }): Promise<IUserItem[]> {
     return this.get<IUserItem[]>('/api/users', { query })
   }
@@ -29,4 +29,4 @@ class SUserService extends SBaseService {
   }
 }
 
-export const userService = new SUserService()
+export const userService = new SUser()

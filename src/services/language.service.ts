@@ -1,7 +1,7 @@
-import { SBaseService } from './base.service'
+import { SBase } from './base.service'
 import type { ICreateLanguagePayload, ILanguageItem } from '../interfaces/languages.interface'
 
-class SLanguageService extends SBaseService {
+class SLanguage extends SBase {
   async getLanguages(projectId?: number): Promise<ILanguageItem[]> {
     if (!projectId) return []
     return this.get<ILanguageItem[]>('/api/languages', { query: { project_id: projectId } })
@@ -23,4 +23,4 @@ class SLanguageService extends SBaseService {
   }
 }
 
-export const languageService = new SLanguageService()
+export const languageService = new SLanguage()

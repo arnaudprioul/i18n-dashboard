@@ -1,7 +1,7 @@
-import { SBaseService } from './base.service'
+import { SBase } from './base.service'
 import type { ISaveTranslationPayload, ISetStatusPayload } from '../interfaces/translation.interface'
 
-class STranslationService extends SBaseService {
+class STranslation extends SBase {
   async save(data: ISaveTranslationPayload): Promise<void> {
     return this.post('/api/translations', { body: data, skipDedup: true })
   }
@@ -33,4 +33,4 @@ class STranslationService extends SBaseService {
   }
 }
 
-export const translationService = new STranslationService()
+export const translationService = new STranslation()

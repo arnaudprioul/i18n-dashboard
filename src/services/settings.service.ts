@@ -1,7 +1,7 @@
-import { SBaseService } from './base.service'
+import { SBase } from './base.service'
 import type { ISettingsPayload } from '../interfaces/settings.interface'
 
-class SSettingsService extends SBaseService {
+class SSettings extends SBase {
   async getSettings(): Promise<Record<string, string>> {
     return this.get<Record<string, string>>('/api/settings')
   }
@@ -11,4 +11,4 @@ class SSettingsService extends SBaseService {
   }
 }
 
-export const settingsService = new SSettingsService()
+export const settingsService = new SSettings()

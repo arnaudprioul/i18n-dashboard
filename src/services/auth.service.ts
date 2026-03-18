@@ -1,7 +1,7 @@
-import { SBaseService } from './base.service'
+import { SBase } from './base.service'
 import type { IAuthUser } from '../interfaces/auth.interface'
 
-class SAuthService extends SBaseService {
+class SAuth extends SBase {
   async login(email: string, password: string): Promise<IAuthUser> {
     return this.post<IAuthUser>('/api/auth/login', {
       body: { email, password },
@@ -28,4 +28,4 @@ class SAuthService extends SBaseService {
   }
 }
 
-export const authService = new SAuthService()
+export const authService = new SAuth()

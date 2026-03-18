@@ -8,7 +8,7 @@ const _inFlight = new Map<string, Promise<any>>()
 // Refresh lock — prevents concurrent refresh attempts
 let _refreshing: Promise<boolean> | null = null
 
-export abstract class SBaseService {
+export abstract class SBase {
   // Per-instance active request counter → drives `loading`
   private _activeCount = 0
   readonly loading = ref(false)

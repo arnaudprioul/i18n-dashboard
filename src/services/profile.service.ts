@@ -1,7 +1,7 @@
-import { SBaseService } from './base.service'
+import { SBase } from './base.service'
 import type { IUserProfile, ProfilePeriod } from '../server/interfaces/profile.interface'
 
-class SProfileService extends SBaseService {
+class SProfile extends SBase {
   async getProfile(period: ProfilePeriod = 'all'): Promise<IUserProfile> {
     return this.get<IUserProfile>('/api/profile', { query: { period } })
   }
@@ -11,4 +11,4 @@ class SProfileService extends SBaseService {
   }
 }
 
-export const profileService = new SProfileService()
+export const profileService = new SProfile()

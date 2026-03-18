@@ -1,7 +1,7 @@
-import { SBaseService } from './base.service'
+import { SBase } from './base.service'
 import type { IKeyItem, IKeysQuery, IKeysResponse } from '../interfaces/key.interface'
 
-class SKeyService extends SBaseService {
+class SKey extends SBase {
   async getKeys(query: IKeysQuery): Promise<IKeysResponse> {
     return this.get<IKeysResponse>('/api/keys', { query })
   }
@@ -23,4 +23,4 @@ class SKeyService extends SBaseService {
   }
 }
 
-export const keyService = new SKeyService()
+export const keyService = new SKey()
