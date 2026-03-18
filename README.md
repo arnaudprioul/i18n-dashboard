@@ -97,13 +97,3 @@ MIT
 
 ---
 
-## ❤️ Support the project
-
-i18n-dashboard is free, open-source, and self-hosted — built and maintained in my spare time.
-
-If it saves you time or helps your team, consider buying me a coffee to keep the project alive and actively maintained:
-
-[![Donate via PayPal](https://img.shields.io/badge/Donate-PayPal-0070ba?style=for-the-badge&logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=ARNAUDPRIOUL)
-
-Even a small contribution helps cover hosting, tooling, and development time. Thank you! 🙏
-
