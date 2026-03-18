@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync, readdirSync, readFileSync, existsSync } from 'fs'
 import { tmpdir } from 'os'
 import { spawnSync } from 'child_process'
 import { getDb } from '../db/index'
-import { scanProject, detectLanguages } from '~/utils/scanner.uti'
+import { scanProject, detectLanguages } from '../../utils/scanner.util'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
