@@ -1,28 +1,13 @@
 import { projectService } from '~/services/project.service'
 import { scanService } from '~/services/scan.service'
-import type { ProjectPayload } from '~/interfaces/project.interface'
+import type { IProject, IProjectPayload } from '~/interfaces/project.interface'
 
-export interface Project {
-  id: number
-  name: string
-  root_path: string
-  source_url?: string
-  locales_path: string
-  key_separator: string
-  color: string
-  description?: string
-  key_count?: number
-  language_count?: number
-  is_system?: boolean
-  git_repo?: { name?: string; url: string; branch?: string; token?: string } | null
-}
-
-export function canScanProject(project: Project): boolean {
+export function canScanProject(project: IProject): boolean {
   if (project.root_path && project.root_path !== '__DASHBOARD_UI__') return true
   return !!project.git_repo?.url
 }
 
-export function canSyncProject(project: Project): boolean {
+export function canSyncProject(project: IProject): boolean {
   if (project.root_path && project.root_path !== '__DASHBOARD_UI__') return true
   return !!project.git_repo?.url
 }
@@ -36,20 +21,20 @@ export function canSyncProject(project: Project): boolean {
 export function useProject() {
   const { currentUser } = useAuth()
 
-  const { data: projectsData, pending, refresh: fetchProjects } = useAsyncData<Project[]>(
+  const { data: projectsData, pending, refresh: fetchProjects } = useAsyncData<IProject[]>(
     'all-projects',
     () => projectService.getAll(),
     { default: () => [], server: false },
   )
 
-  const projects = computed(() => (projectsData.value ?? []) as Project[])
+  const projects = computed(() => (projectsData.value ?? []) as IProject[])
 
   // Not route-dependent — safe to watch from anywhere (including layout onMount)
   const systemProject = computed(() => projects.value.find(p => p.is_system) ?? null)
 
   // Route-dependent: only returns a value when inside a /projects/[id]/* page
   const route = useRoute()
-  const currentProject = computed((): Project | null => {
+  const currentProject = computed((): IProject | null => {
     const paramId = route.params.id
     if (!paramId) return null
     const id = Number(Array.isArray(paramId) ? paramId[0] : paramId)
@@ -73,7 +58,7 @@ export function useProject() {
   const router = useRouter()
 
   const saving = ref(false)
-  async function createProject(payload: ProjectPayload): Promise<any> {
+  async function createProject(payload: IProjectPayload): Promise<any> {
     saving.value = true
     try {
       const project = await projectService.create(payload)
@@ -89,7 +74,7 @@ export function useProject() {
     }
   }
 
-  async function updateProject(id: number, payload: Partial<ProjectPayload>): Promise<boolean> {
+  async function updateProject(id: number, payload: Partial<IProjectPayload>): Promise<boolean> {
     saving.value = true
     try {
       await projectService.update(id, payload)

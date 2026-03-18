@@ -3,8 +3,8 @@ import { resolve, basename } from 'path'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { useRuntimeConfig } from '#imports'
 
-import { OVERRIDE_FILE } from '../consts/db.const'
-import { _dirname } from '../../consts/commons.const'
+import { OVERRIDE_FILE } from '~/server/consts/db.const'
+import { __DIRNAME } from '~/server/consts/commons.const'
 
 let _db: Knex | null = null
 
@@ -119,8 +119,8 @@ async function addColumnIfMissing(db: Knex, tableName: string, columnName: strin
 function readLocaleFile(lang: string): Record<string, string> {
   const candidates = [
     resolve(process.cwd(), `assets/locales/${lang}.json`),
-    resolve(_dirname, `../../assets/locales/${lang}.json`),
-    resolve(_dirname, `../assets/locales/${lang}.json`),
+    resolve(__DIRNAME, `../../assets/locales/${lang}.json`),
+    resolve(__DIRNAME, `../assets/locales/${lang}.json`),
   ]
   for (const p of candidates) {
     if (existsSync(p)) {

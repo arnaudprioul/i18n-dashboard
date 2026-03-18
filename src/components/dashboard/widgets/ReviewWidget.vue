@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue'
-import type { WidgetSize, WidgetDataSource } from '~/types/dashboard.type'
-import { TRANSLATION_STATUS } from '~/server/enums/translation.enum'
+import type { TWidgetSize } from '~/types/dashboard.type'
+import type { IWidgetDataSource } from '~/interfaces/dashboard.interface'
+import { TRANSLATION_STATUS } from '~/enums/translation.enum'
 
 const props = defineProps({
   id: {
@@ -9,7 +10,7 @@ const props = defineProps({
     required: true,
   },
   size: {
-    type: String as PropType<WidgetSize>,
+    type: String as PropType<TWidgetSize>,
     required: true,
   },
   editing: {
@@ -17,7 +18,7 @@ const props = defineProps({
     required: true,
   },
   dataSource: {
-    type: Object as PropType<WidgetDataSource | undefined>,
+    type: Object as PropType<IWidgetDataSource | undefined>,
     default: undefined,
   },
   title: {

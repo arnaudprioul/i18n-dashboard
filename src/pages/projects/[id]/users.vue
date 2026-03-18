@@ -259,7 +259,7 @@
 
 <script setup lang="ts">
 import { userService } from '~/services/user.service'
-import type { UserItem } from '~/interfaces/user.interface'
+import type { IUserItem } from '~/interfaces/user.interface'
 
 const toast = useToast()
 const { currentUser } = useAuth()
@@ -288,9 +288,9 @@ const addModalTitle = computed(() => {
 
 // ── Select mode: existing users ────────────────────────────────────────────────
 const search = ref('')
-const availableUsers = ref<UserItem[]>([])
+const availableUsers = ref<IUserItem[]>([])
 const loadingAvailable = ref(false)
-const selectedUser = ref<UserItem | null>(null)
+const selectedUser = ref<IUserItem | null>(null)
 const selectRole = ref('translator')
 
 const filteredAvailable = computed(() => {
@@ -315,7 +315,7 @@ async function loadAvailableUsers() {
   }
 }
 
-function selectUser(u: UserItem) {
+function selectUser(u: IUserItem) {
   selectedUser.value = selectedUser.value?.id === u.id ? null : u
 }
 

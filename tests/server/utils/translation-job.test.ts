@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { createJob, getJob, runTranslationJob } from '~/server/utils/translation-job.util'
-import { JobStatus } from '~/server/consts/translation-job.const'
+import { JOB_STATUS } from '~/enums/translation-job.enum'
 
 vi.mock('@vitalets/google-translate-api', () => ({
   translate: vi.fn(),
@@ -37,7 +37,7 @@ function makeKnexMock(overrides: Record<string, any> = {}) {
 describe('createJob', () => {
   it('creates a job with RUNNING status', () => {
     const job = createJob(1, 'fr', 'French')
-    expect(job.status).toBe(JobStatus.RUNNING)
+    expect(job.status).toBe(JOB_STATUS.RUNNING)
   })
 
   it('assigns the correct projectId, languageCode, and languageName', () => {
@@ -99,7 +99,7 @@ describe('runTranslationJob', () => {
     const job = createJob(1, 'fr', 'French')
     await runTranslationJob(db, job)
 
-    expect(job.status).toBe(JobStatus.ERROR)
+    expect(job.status).toBe(JOB_STATUS.ERROR)
   })
 
   it('sets job.status to DONE when there are no source translations', async () => {
@@ -113,7 +113,7 @@ describe('runTranslationJob', () => {
     const job = createJob(1, 'fr', 'French')
     await runTranslationJob(db, job)
 
-    expect(job.status).toBe(JobStatus.DONE)
+    expect(job.status).toBe(JOB_STATUS.DONE)
   })
 
   it('sets job.status to DONE when everything is already translated', async () => {
@@ -132,7 +132,7 @@ describe('runTranslationJob', () => {
     const job = createJob(1, 'fr', 'French')
     await runTranslationJob(db, job)
 
-    expect(job.status).toBe(JobStatus.DONE)
+    expect(job.status).toBe(JOB_STATUS.DONE)
     expect(translate).not.toHaveBeenCalled()
   })
 
@@ -156,7 +156,7 @@ describe('runTranslationJob', () => {
     const job = createJob(1, 'fr', 'French')
     await runTranslationJob(db, job)
 
-    expect(job.status).toBe(JobStatus.DONE)
+    expect(job.status).toBe(JOB_STATUS.DONE)
     expect(job.done).toBe(2)
     expect(job.errors).toBe(0)
     expect(translate).toHaveBeenCalledOnce()
@@ -176,7 +176,7 @@ describe('runTranslationJob', () => {
     const job = createJob(1, 'fr', 'French')
     await runTranslationJob(db, job)
 
-    expect(job.status).toBe(JobStatus.DONE)
+    expect(job.status).toBe(JOB_STATUS.DONE)
     expect(job.errors).toBe(1)
   })
 
@@ -238,6 +238,6 @@ describe('runTranslationJob', () => {
     const job = createJob(1, 'fr', 'French')
     await runTranslationJob(db, job)
 
-    expect(job.status).toBe(JobStatus.DONE)
+    expect(job.status).toBe(JOB_STATUS.DONE)
   })
 })

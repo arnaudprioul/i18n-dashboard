@@ -1,15 +1,7 @@
 import { authService } from '../services/auth.service'
+import type { IAuthUser } from '../interfaces/auth.interface'
 
-export interface AuthUser {
-  id: number
-  email: string
-  name: string
-  is_super_admin: boolean
-  is_active: boolean
-  roles: Array<{ role: string; project_id: number | null; project_name?: string }>
-}
-
-const _currentUser = ref<AuthUser | null>(null)
+const _currentUser = ref<IAuthUser | null>(null)
 
 export function useAuth() {
   const currentUser = _currentUser

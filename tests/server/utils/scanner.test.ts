@@ -3,7 +3,7 @@ import { describe, it, expect, afterEach } from 'vitest'
 import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
-import { detectLanguages, scanProject } from '~/server/utils/scanner.uti'
+import { detectLanguages, scanProject } from '~/server/utils/scanner.util'
 
 // ── Temp dir helpers ──────────────────────────────────────────────────────────
 const tmpdirs: string[] = []

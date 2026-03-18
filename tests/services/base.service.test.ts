@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { nextTick } from 'vue'
-import { BaseService } from '~/services/base.service'
+import { SBase } from '~/services/base.service'
 
 // ── Concrete test subclass ────────────────────────────────────────────────────
-class TestService extends BaseService {
+class TestService extends SBase {
   async testGet<T>(path: string, config?: any): Promise<T> {
     return this.get<T>(path, config)
   }

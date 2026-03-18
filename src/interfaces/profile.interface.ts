@@ -1,19 +1,19 @@
 export type ProfilePeriod = '1d' | '7d' | '30d' | '365d' | 'all'
 
-export interface ProfileStats {
+export interface IProfileStats {
   total: number
   periodCount: number
   period: ProfilePeriod
 }
 
-export interface ProfileRole {
+export interface IProfileRole {
   role: string
   project_id: number | null
   project_name: string | null
   project_color: string | null
 }
 
-export interface ProfileLanguage {
+export interface IProfileLanguage {
   id: number
   code: string
   name: string
@@ -21,7 +21,7 @@ export interface ProfileLanguage {
   project_name: string
 }
 
-export interface ProfileRecentTranslation {
+export interface IProfileRecentTranslation {
   id: number
   key: string
   key_id: number
@@ -34,7 +34,7 @@ export interface ProfileRecentTranslation {
   project_color: string
 }
 
-export interface UserProfile {
+export interface IUserProfile {
   user: {
     id: number
     name: string
@@ -43,8 +43,8 @@ export interface UserProfile {
     last_login_at: string | null
     created_at: string
   }
-  roles: ProfileRole[]
-  stats: ProfileStats
-  languages: ProfileLanguage[]
-  recentTranslations: ProfileRecentTranslation[]
+  roles: IProfileRole[]
+  stats: IProfileStats
+  languages: IProfileLanguage[]
+  recentTranslations: IProfileRecentTranslation[]
 }

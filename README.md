@@ -94,3 +94,6 @@ Open an issue or discussion!
 ## 📄 License
 
 MIT
+
+---
+

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue'
-import type { WidgetConfig, WidgetDataSource, DataSourceType } from '~/types/dashboard.type'
+import type { TDataSourceType } from '~/types/dashboard.type'
+import type { IWidgetConfig, IWidgetDataSource } from '~/interfaces/dashboard.interface'
 import { WIDGET_REGISTRY } from '~/consts/dashboard.const'
 
 const props = defineProps({
@@ -9,7 +10,7 @@ const props = defineProps({
     required: true,
   },
   widget: {
-    type: Object as PropType<WidgetConfig | null>,
+    type: Object as PropType<IWidgetConfig | null>,
     default: null,
   },
   index: {
@@ -20,13 +21,13 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: 'update:open', value: boolean): void
-  (e: 'save', value: { dataSource: WidgetDataSource | undefined; title: string | undefined }): void
+  (e: 'save', value: { dataSource: IWidgetDataSource | undefined; title: string | undefined }): void
 }>()
 
 const { t } = useT()
 const { visibleProjects } = useProject()
 
-const draftSource = ref<DataSourceType>('global')
+const draftSource = ref<TDataSourceType>('global')
 const draftProjectId = ref<number | undefined>()
 const draftTitle = ref('')
 
@@ -53,7 +54,7 @@ const hasDataSource = computed(() => {
 })
 
 function save() {
-  const dataSource: WidgetDataSource = draftSource.value === 'project'
+  const dataSource: IWidgetDataSource = draftSource.value === 'project'
     ? { type: 'project', projectId: draftProjectId.value }
     : { type: 'global' }
   emit('save', { dataSource, title: draftTitle.value || undefined })

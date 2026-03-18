@@ -15,19 +15,19 @@
 </template>
 
 <script setup lang="ts">
-import type { GitRepo } from '~/interfaces/project.interface'
+import type { IGitRepo } from '~/interfaces/project.interface'
 
 const { t } = useT()
 
 const props = defineProps<{
-  modelValue: GitRepo | null | undefined
+  modelValue: IGitRepo | null | undefined
 }>()
 
 const emit = defineEmits<{
-  'update:modelValue': [value: GitRepo | null]
+  'update:modelValue': [value: IGitRepo | null]
 }>()
 
-const local = reactive<GitRepo>({ url: '', branch: '', token: '' })
+const local = reactive<IGitRepo>({ url: '', branch: '', token: '' })
 
 watch(() => props.modelValue, (val) => {
   local.url = val?.url ?? ''

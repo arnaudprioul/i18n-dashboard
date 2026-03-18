@@ -1,6 +1,7 @@
-import type { WidgetSize, WidgetType, WidgetConfig } from '../types/dashboard.type'
+import type { TWidgetSize, TWidgetType } from '../types/dashboard.type'
+import type { IWidgetConfig } from '../interfaces/dashboard.interface'
 
-export const WIDGET_SIZES: Record<WidgetSize, { cols: number; rows: number; label: string }> = {
+export const WIDGET_SIZES: Record<TWidgetSize, { cols: number; rows: number; label: string }> = {
   sm: { cols: 1, rows: 1, label: 'Petit' },
   md: { cols: 2, rows: 1, label: 'Moyen' },
   lg: { cols: 2, rows: 2, label: 'Grand' },
@@ -8,7 +9,7 @@ export const WIDGET_SIZES: Record<WidgetSize, { cols: number; rows: number; labe
   xl: { cols: 4, rows: 2, label: 'Très grand' },
 }
 
-export const WIDGET_SIZE_CLASSES: Record<WidgetSize, string> = {
+export const WIDGET_SIZE_CLASSES: Record<TWidgetSize, string> = {
   sm: 'col-span-1 row-span-1',
   md: 'col-span-2 row-span-1',
   lg: 'col-span-2 row-span-2',
@@ -16,7 +17,7 @@ export const WIDGET_SIZE_CLASSES: Record<WidgetSize, string> = {
   xl: 'col-span-4 row-span-2',
 }
 
-export const WIDGET_REGISTRY: Record<WidgetType, { label: string; description: string; icon: string; sizes: WidgetSize[]; defaultSize: WidgetSize; hasDataSource: boolean }> = {
+export const WIDGET_REGISTRY: Record<TWidgetType, { label: string; description: string; icon: string; sizes: TWidgetSize[]; defaultSize: TWidgetSize; hasDataSource: boolean }> = {
   'stat-keys': {
     label: 'Clés totales',
     description: 'Nombre total de clés de traduction',
@@ -83,7 +84,7 @@ export const WIDGET_REGISTRY: Record<WidgetType, { label: string; description: s
   },
 }
 
-export const DEFAULT_LAYOUT: WidgetConfig[] = [
+export const DEFAULT_LAYOUT: IWidgetConfig[] = [
   { id: 'default-1', type: 'stat-keys', size: 'sm' },
   { id: 'default-2', type: 'stat-coverage', size: 'sm' },
   { id: 'default-3', type: 'stat-languages', size: 'sm' },

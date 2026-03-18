@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest'
-import { PUBLIC_ROUTES, SETUP_ONLY_ROUTES } from '~/server/consts/commons.const'
+import { PUBLIC_ROUTES, SETUP_ONLY_ROUTES } from '~/consts/commons.const'
 
 // ── Route configuration security ─────────────────────────────────────────────
 // These tests act as a tripwire: if someone accidentally adds a sensitive

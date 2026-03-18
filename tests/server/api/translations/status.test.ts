@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { TRANSLATION_STATUS } from '~/server/enums/translation.enum'
+import { TRANSLATION_STATUS } from '~/enums/translation.enum'
 
 vi.mock('~/server/db/index', () => ({ getDb: vi.fn() }))
 

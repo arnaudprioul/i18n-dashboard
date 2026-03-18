@@ -1,17 +1,18 @@
 import { translate } from '@vitalets/google-translate-api'
 import type { Knex } from 'knex'
 
-import { JobStatus, JOB_BATCH_SIZE, JOB_BATCH_DELAY_MS } from '../consts/translation-job.const'
-import type { TranslationJob } from '../interfaces/translation-job.interface'
+import { JOB_STATUS } from '~/enums/translation-job.enum'
+import { JOB_BATCH_SIZE, JOB_BATCH_DELAY_MS } from '~/consts/translation-job.const'
+import type { ITranslationJob } from '~/interfaces/translation-job.interface'
 
 // ── In-memory job store ───────────────────────────────────────────────────────
-const _jobs = new Map<string, TranslationJob>()
+const _jobs = new Map<string, ITranslationJob>()
 
-export function createJob(projectId: number, languageCode: string, languageName: string): TranslationJob {
+export function createJob(projectId: number, languageCode: string, languageName: string): ITranslationJob {
   const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
-  const job: TranslationJob = {
+  const job: ITranslationJob = {
     id,
-    status: JobStatus.RUNNING,
+    status: JOB_STATUS.RUNNING,
     projectId,
     languageCode,
     languageName,
@@ -24,7 +25,7 @@ export function createJob(projectId: number, languageCode: string, languageName:
   return job
 }
 
-export function getJob(id: string): TranslationJob | undefined {
+export function getJob(id: string): ITranslationJob | undefined {
   return _jobs.get(id)
 }
 
@@ -34,7 +35,7 @@ function scheduleCleanup(id: string) {
 }
 
 // ── Main runner ───────────────────────────────────────────────────────────────
-export async function runTranslationJob(db: Knex, job: TranslationJob): Promise<void> {
+export async function runTranslationJob(db: Knex, job: ITranslationJob): Promise<void> {
   try {
     // Find source language (default lang of the project)
     const sourceLang = await db('languages')
@@ -46,7 +47,7 @@ export async function runTranslationJob(db: Knex, job: TranslationJob): Promise<
         .first()
 
     if (!sourceLang) {
-      job.status = JobStatus.ERROR
+      job.status = JOB_STATUS.ERROR
       scheduleCleanup(job.id)
       return
     }
@@ -63,7 +64,7 @@ export async function runTranslationJob(db: Knex, job: TranslationJob): Promise<
       .select('tk.id as key_id', 't.value as source_value')
 
     if (!sourceTranslations.length) {
-      job.status = JobStatus.DONE
+      job.status = JOB_STATUS.DONE
       scheduleCleanup(job.id)
       return
     }
@@ -83,7 +84,7 @@ export async function runTranslationJob(db: Knex, job: TranslationJob): Promise<
     job.total = toTranslate.length
 
     if (!toTranslate.length) {
-      job.status = JobStatus.DONE
+      job.status = JOB_STATUS.DONE
       scheduleCleanup(job.id)
       return
     }
@@ -132,10 +133,10 @@ export async function runTranslationJob(db: Knex, job: TranslationJob): Promise<
       }
     }
 
-    job.status = JobStatus.DONE
+    job.status = JOB_STATUS.DONE
   } catch (e: any) {
     console.error(`[TranslationJob] Fatal error:`, e.message)
-    job.status = JobStatus.ERROR
+    job.status = JOB_STATUS.ERROR
   } finally {
     scheduleCleanup(job.id)
   }

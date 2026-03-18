@@ -1,6 +1,6 @@
-import type { Language } from '../interfaces/languages.interface'
+import type { ILanguage } from '../interfaces/languages.interface'
 
-export const LANGUAGES: Language[] = [
+export const LANGUAGES: ILanguage[] = [
   // ── A ──────────────────────────────────────────────────────────────────────
   { code: 'af', name: 'Afrikaans', nativeName: 'Afrikaans' },
   { code: 'sq', name: 'Albanian', nativeName: 'Shqip' },

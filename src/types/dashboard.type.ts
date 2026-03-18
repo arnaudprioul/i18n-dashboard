@@ -1,4 +1,4 @@
-export type WidgetType =
+export type TWidgetType =
   | 'stat-keys'
   | 'stat-coverage'
   | 'stat-languages'
@@ -8,19 +8,9 @@ export type WidgetType =
   | 'last-activity'
   | 'review-queue'
 
-export type WidgetSize = 'sm' | 'md' | 'lg' | 'wide' | 'xl'
+export type TWidgetSize = 'sm' | 'md' | 'lg' | 'wide' | 'xl'
 
-export type DataSourceType = 'global' | 'project'
+export type TDataSourceType = 'global' | 'project'
 
-export interface WidgetDataSource {
-  type: DataSourceType
-  projectId?: number // only when type === 'project'
-}
-
-export interface WidgetConfig {
-  id: string
-  type: WidgetType
-  size: WidgetSize
-  dataSource?: WidgetDataSource // default = 'global'
-  title?: string // optional custom title override
-}
+// Re-export interface types for backward compatibility (consumers use these names)
+export type { IWidgetDataSource as WidgetDataSource, IWidgetConfig as WidgetConfig } from '../interfaces/dashboard.interface'

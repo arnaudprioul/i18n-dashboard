@@ -9,6 +9,7 @@ export default defineConfig({
       '#imports': resolve(__dirname, 'tests/__mocks__/nuxt-imports.ts'),
       '#app': resolve(__dirname, 'tests/__mocks__/nuxt-imports.ts'),
       '#server/': `${resolve(__dirname)}/src/server/`,
+      // kept for backwards compat with any remaining #server/ usage
     },
   },
   test: {
@@ -25,7 +26,7 @@ export default defineConfig({
       include: [
         'src/composables/**',
         'src/services/**',
-        'src/server/utils/**',
+        'src/utils/**',
         'src/utils/**',
       ],
       exclude: [
