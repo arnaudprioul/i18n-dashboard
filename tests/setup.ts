@@ -20,6 +20,16 @@ Object.assign(globalThis, {
 const _mockToast = { add: vi.fn(), remove: vi.fn() }
 vi.stubGlobal('useToast', vi.fn(() => _mockToast))
 
+// ── H3 server handler utilities (Nuxt auto-imports used in server/ handlers) ──
+// defineEventHandler: return the inner function directly so tests can call it
+vi.stubGlobal('defineEventHandler', (fn: Function) => fn)
+vi.stubGlobal('readBody', (event: any) => Promise.resolve(event?._body ?? {}))
+vi.stubGlobal('getQuery', (event: any) => event?._query ?? {})
+vi.stubGlobal('getHeader', (event: any, name: string) => event?._headers?.[name] ?? '')
+vi.stubGlobal('getRouterParam', (event: any, name: string) => event?._params?.[name] ?? '')
+vi.stubGlobal('setHeader', () => {})
+vi.stubGlobal('getRequestURL', (event: any) => ({ pathname: event?._path ?? '' }))
+
 // ── Nuxt fetch / navigation ───────────────────────────────────────────────────
 vi.stubGlobal('$fetch', vi.fn())
 vi.stubGlobal('navigateTo', vi.fn())

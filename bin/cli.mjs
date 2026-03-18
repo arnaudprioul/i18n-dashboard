@@ -100,7 +100,7 @@ program
         const port = env.I18N_PORT || '3333'
         const host = env.I18N_HOST || 'localhost'
 
-        console.log(`\n🌐 Starting vue-i18n-dashboard on http://${host}:${port}`)
+        console.log(`\n🌐 Starting i18n-dashboard on http://${host}:${port}`)
         console.log(`📁 Project root: ${env.I18N_PROJECT_ROOT}\n`)
 
         const outputDir = resolve(packageRoot, '.output')
@@ -115,7 +115,10 @@ program
                 detached: options.detach || false,
             })
         } else {
-            proc = spawn('npx', ['nuxt', 'dev', '--port', port, '--host', host], {
+            // Use the nuxt binary bundled with the package so it works whether
+            // i18n-dashboard is installed locally (node_modules/.bin) or globally.
+            const nuxtBin = resolve(packageRoot, 'node_modules/.bin/nuxt')
+            proc = spawn(nuxtBin, ['dev', '--port', port, '--host', host], {
                 env,
                 stdio: options.detach ? 'ignore' : 'inherit',
                 cwd: packageRoot,
@@ -130,7 +133,7 @@ program
         if (options.detach) {
             proc.unref()
             console.log(`✅ Dashboard started in background (PID: ${proc.pid})`)
-            console.log(`   Stop it with: vue-i18n-dashboard stop\n`)
+            console.log(`   Stop it with: i18n-dashboard stop\n`)
         } else {
             proc.on('exit', (code) => {
                 if (existsSync(pidFile)) unlinkSync(pidFile)
@@ -195,8 +198,9 @@ program
     .command('build')
     .description('Build the dashboard for production (run once after install)')
     .action(async () => {
-        console.log('\n🔨 Building vue-i18n-dashboard for production...\n')
-        const proc = spawn('npx', ['nuxt', 'build'], {
+        console.log('\n🔨 Building i18n-dashboard for production...\n')
+        const nuxtBin = resolve(packageRoot, 'node_modules/.bin/nuxt')
+        const proc = spawn(nuxtBin, ['build'], {
             env: process.env,
             stdio: 'inherit',
             cwd: packageRoot,
@@ -204,7 +208,7 @@ program
         proc.on('exit', (code) => {
             if (code === 0) {
                 console.log('\n✅ Build complete!')
-                console.log('   Run "vue-i18n-dashboard start" to launch the dashboard.\n')
+                console.log('   Run "i18n-dashboard start" to launch the dashboard.\n')
             } else {
                 console.error('\n❌ Build failed.\n')
             }
@@ -222,7 +226,7 @@ program
         const rl = createInterface({ input: process.stdin, output: process.stdout })
         const question = (q) => new Promise((resolve) => rl.question(q, resolve))
 
-        console.log('\nvue-i18n-dashboard — Initialisation\n')
+        console.log('\ni18n-dashboard — Initialisation\n')
 
         const dbClient = options.db || await question('Base de données [sqlite3/postgresql/mysql] (défaut: sqlite3): ') || 'sqlite3'
         const localesPath = await question('Dossier des locales (défaut: src/locales): ') || 'src/locales'
@@ -298,7 +302,7 @@ export default {
         writeFileSync(resolve(process.cwd(), 'i18n-dashboard.config.js'), configContent)
 
         console.log('\n✅ Fichier de configuration créé : i18n-dashboard.config.js')
-        console.log('   Lancez le dashboard avec : vue-i18n-dashboard start\n')
+        console.log('   Lancez le dashboard avec : i18n-dashboard start\n')
 
         rl.close()
     })
@@ -332,7 +336,7 @@ program
             const data = await res.json()
             console.log(`✅ Sync done: ${data.added} ajoutées · ${data.updated} mises à jour · ${data.total} total\n`)
         } catch (e) {
-            console.error('Could not connect to dashboard. Is it running?\n  vue-i18n-dashboard start\n')
+            console.error('Could not connect to dashboard. Is it running?\n  i18n-dashboard start\n')
         }
     })
 
