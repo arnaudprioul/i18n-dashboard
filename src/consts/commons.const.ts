@@ -1,9 +1,3 @@
-import { dirname } from 'path'
-import { fileURLToPath } from 'url'
-
-export const __DIRNAME = typeof __dirname !== 'undefined'
-	? __dirname
-	: dirname(fileURLToPath(import.meta.url))
 export const PUBLIC_ROUTES = [
 	'/api/auth/login',
 	'/api/auth/logout',

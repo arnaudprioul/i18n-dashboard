@@ -3,8 +3,8 @@ import { resolve, basename } from 'path'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import { useRuntimeConfig } from '#imports'
 
-import { OVERRIDE_FILE } from '~/consts/db.const'
-import { __DIRNAME } from '~/consts/commons.const'
+import { OVERRIDE_FILE } from '~/server/consts/db.const'
+import { __DIRNAME } from '~/server/consts/commons.const'
 
 let _db: Knex | null = null
 

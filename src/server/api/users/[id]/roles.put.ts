@@ -1,5 +1,5 @@
 import { getDb } from '../../../db/index'
-import { getUserRole, canManageUsers } from '~/utils/auth.util'
+import { getUserRole, canManageUsers } from '~/server/utils/auth.util'
 
 const VALID_ROLES = ['translator', 'moderator', 'admin']
 
