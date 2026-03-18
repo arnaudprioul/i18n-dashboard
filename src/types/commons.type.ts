@@ -1,3 +1,3 @@
 import type { METHODS } from '../enums/commons.enum'
 
-export type Method = `${METHODS}`
+export type TMethod = `${METHODS}`

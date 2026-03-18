@@ -1,5 +1,5 @@
-import type { RequestConfig, RequestContext, ServiceHooks } from '../interfaces/commons.interface'
-import type { Method } from '../types/commons.type'
+import type { IRequestConfig, IRequestContext, IServiceHooks } from '../interfaces/commons.interface'
+import type { TMethod } from '../types/commons.type'
 import { METHODS } from '../enums/commons.enum'
 
 // Deduplication registry shared across all service instances
@@ -8,13 +8,13 @@ const _inFlight = new Map<string, Promise<any>>()
 // Refresh lock — prevents concurrent refresh attempts
 let _refreshing: Promise<boolean> | null = null
 
-export abstract class BaseService {
+export abstract class SBaseService {
   // Per-instance active request counter → drives `loading`
   private _activeCount = 0
   readonly loading = ref(false)
 
   // Override in subclass to add lifecycle hooks
-  protected hooks: ServiceHooks = {}
+  protected hooks: IServiceHooks = {}
 
   // ── Internal helpers ────────────────────────────────────────────────────────
 
@@ -23,12 +23,12 @@ export abstract class BaseService {
     this.loading.value = this._activeCount > 0
   }
 
-  private _dedupKey(method: Method, path: string, query?: Record<string, any>): string {
+  private _dedupKey(method: TMethod, path: string, query?: Record<string, any>): string {
     const q = query ? `:${JSON.stringify(query)}` : ''
     return `${method}:${path}${q}`
   }
 
-  private async _doFetch<T>(method: Method, path: string, config: RequestConfig): Promise<T> {
+  private async _doFetch<T>(method: TMethod, path: string, config: IRequestConfig): Promise<T> {
     return $fetch<T>(path, {
       method,
       query: config.query,
@@ -55,7 +55,7 @@ export abstract class BaseService {
 
   // ── Core request ────────────────────────────────────────────────────────────
 
-  private async _request<T>(method: Method, path: string, config: RequestConfig = {}): Promise<T> {
+  private async _request<T>(method: TMethod, path: string, config: IRequestConfig = {}): Promise<T> {
     const dedupKey = config.skipDedup ? null : this._dedupKey(method, path, config.query)
 
     // Return existing in-flight promise for the same key
@@ -63,7 +63,7 @@ export abstract class BaseService {
       return _inFlight.get(dedupKey) as Promise<T>
     }
 
-    const ctx: RequestContext = { method, path, config }
+    const ctx: IRequestContext = { method, path, config }
 
     const execute = async (): Promise<T> => {
       this._setLoading(1)
@@ -118,23 +118,23 @@ export abstract class BaseService {
 
   // ── Public HTTP methods ─────────────────────────────────────────────────────
 
-  protected get<T = void>(path: string, config?: RequestConfig): Promise<T> {
+  protected get<T = void>(path: string, config?: IRequestConfig): Promise<T> {
     return this._request<T>(METHODS.GET, path, config)
   }
 
-  protected post<T = void>(path: string, config?: RequestConfig): Promise<T> {
+  protected post<T = void>(path: string, config?: IRequestConfig): Promise<T> {
     return this._request<T>(METHODS.POST, path, config)
   }
 
-  protected put<T = void>(path: string, config?: RequestConfig): Promise<T> {
+  protected put<T = void>(path: string, config?: IRequestConfig): Promise<T> {
     return this._request<T>(METHODS.PUT, path, config)
   }
 
-  protected patch<T = void>(path: string, config?: RequestConfig): Promise<T> {
+  protected patch<T = void>(path: string, config?: IRequestConfig): Promise<T> {
     return this._request<T>(METHODS.PATCH, path, config)
   }
 
-  protected delete<T = void>(path: string, config?: RequestConfig): Promise<T> {
+  protected delete<T = void>(path: string, config?: IRequestConfig): Promise<T> {
     return this._request<T>(METHODS.DELETE, path, config)
   }
 }

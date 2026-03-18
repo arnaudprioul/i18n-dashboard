@@ -1,3 +1,3 @@
 import type { ROLES } from '../enums/auth.enum'
 
-export type Role = `${ROLES}`
+export type TRole = `${ROLES}`

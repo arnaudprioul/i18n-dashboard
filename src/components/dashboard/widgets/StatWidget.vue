@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue'
-import type { WidgetType, WidgetSize, WidgetDataSource } from '~/types/dashboard.type'
+import type { TWidgetType, TWidgetSize } from '~/types/dashboard.type'
+import type { IWidgetDataSource } from '~/interfaces/dashboard.interface'
 
 const props = defineProps({
   id: {
@@ -8,11 +9,11 @@ const props = defineProps({
     required: true,
   },
   type: {
-    type: String as PropType<WidgetType>,
+    type: String as PropType<TWidgetType>,
     required: true,
   },
   size: {
-    type: String as PropType<WidgetSize>,
+    type: String as PropType<TWidgetSize>,
     required: true,
   },
   editing: {
@@ -20,7 +21,7 @@ const props = defineProps({
     required: true,
   },
   dataSource: {
-    type: Object as PropType<WidgetDataSource | undefined>,
+    type: Object as PropType<IWidgetDataSource | undefined>,
     default: undefined,
   },
   title: {

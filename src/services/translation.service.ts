@@ -1,12 +1,12 @@
-import { BaseService } from './base.service'
-import type { SaveTranslationPayload, SetStatusPayload } from '../interfaces/translation.interface'
+import { SBaseService } from './base.service'
+import type { ISaveTranslationPayload, ISetStatusPayload } from '../interfaces/translation.interface'
 
-class TranslationService extends BaseService {
-  async save(data: SaveTranslationPayload): Promise<void> {
+class STranslationService extends SBaseService {
+  async save(data: ISaveTranslationPayload): Promise<void> {
     return this.post('/api/translations', { body: data, skipDedup: true })
   }
 
-  async setStatus(data: SetStatusPayload): Promise<void> {
+  async setStatus(data: ISetStatusPayload): Promise<void> {
     return this.post('/api/translations/status', { body: data, skipDedup: true })
   }
 
@@ -33,4 +33,4 @@ class TranslationService extends BaseService {
   }
 }
 
-export const translationService = new TranslationService()
+export const translationService = new STranslationService()

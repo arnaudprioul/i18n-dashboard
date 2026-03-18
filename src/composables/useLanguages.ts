@@ -2,7 +2,7 @@ import { LANGUAGES } from '../consts/languages.const'
 import { languageService } from '../services/language.service'
 import { translationService } from '../services/translation.service'
 import { jobService } from '../services/job.service'
-import type { Language, LanguageItem, CreateLanguagePayload } from '../interfaces/languages.interface'
+import type { ILanguage, ILanguageItem, ICreateLanguagePayload } from '../interfaces/languages.interface'
 
 // ── Static language lookup ───────────────────────────────────────────────────
 
@@ -25,7 +25,7 @@ export function useLanguages() {
     )
   })
 
-  function findLanguage(code: string): Language | undefined {
+  function findLanguage(code: string): ILanguage | undefined {
     // Exact match first, then fall back to base language (fr-CA → fr)
     return LANGUAGES.find(l => l.code === code)
       ?? LANGUAGES.find(l => l.code === code.split('-')[0])
@@ -38,7 +38,7 @@ export function useLanguages() {
 
   // ── Project languages (API) ──────────────────────────────────────────────
 
-  const data = ref<LanguageItem[]>([])
+  const data = ref<ILanguageItem[]>([])
   const pending = ref(false)
 
   async function refresh() {
@@ -60,7 +60,7 @@ export function useLanguages() {
   const projectLanguages = computed(() => data.value ?? [])
 
   const adding = ref(false)
-  async function addLanguage(payload: Omit<CreateLanguagePayload, 'project_id'>): Promise<void> {
+  async function addLanguage(payload: Omit<ICreateLanguagePayload, 'project_id'>): Promise<void> {
     if (!currentProject.value) return
     adding.value = true
     try {
@@ -88,7 +88,7 @@ export function useLanguages() {
     }
   }
 
-  async function setDefault(lang: LanguageItem): Promise<void> {
+  async function setDefault(lang: ILanguageItem): Promise<void> {
     if (!currentProject.value) return
     try {
       await languageService.setDefault(lang, currentProject.value.id)
@@ -97,7 +97,7 @@ export function useLanguages() {
     catch {}
   }
 
-  async function setFallback(lang: LanguageItem, fallbackCode: string | null): Promise<void> {
+  async function setFallback(lang: ILanguageItem, fallbackCode: string | null): Promise<void> {
     await $fetch(`/api/languages/${lang.id}`, {
       method: 'PUT',
       body: { fallback_code: fallbackCode },

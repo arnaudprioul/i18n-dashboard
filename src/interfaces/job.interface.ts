@@ -1,4 +1,4 @@
-export interface JobStatus {
+export interface IJobStatus {
 	id: string
 	status: 'running' | 'done' | 'error'
 	languageCode: string

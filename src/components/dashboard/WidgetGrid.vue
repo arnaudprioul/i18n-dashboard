@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { WidgetType } from '~/types/dashboard.type'
+import type { TWidgetType } from '~/types/dashboard.type'
 import { WIDGET_REGISTRY, WIDGET_SIZE_CLASSES } from '~/consts/dashboard.const'
 
 const { t } = useT()
@@ -30,7 +30,7 @@ function sizeClass(size: string) {
   return WIDGET_SIZE_CLASSES[size as keyof typeof WIDGET_SIZE_CLASSES] ?? 'col-span-1 row-span-1'
 }
 
-function widgetComponent(type: WidgetType) {
+function widgetComponent(type: TWidgetType) {
   switch (type) {
     case 'stat-keys':
     case 'stat-coverage':

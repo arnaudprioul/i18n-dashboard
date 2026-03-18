@@ -1,14 +1,7 @@
 import { keyService } from '../services/key.service'
 import { translationService } from '../services/translation.service'
 import { TRANSLATION_STATUS } from '../server/enums/translation.enum'
-
-export interface ReviewItem {
-  id: number
-  key: string
-  key_description?: string
-  language_code: string
-  value: string
-}
+import type { IReviewItem } from '../interfaces/review.interface'
 
 export function useReview() {
   const toast = useToast()
@@ -34,9 +27,9 @@ export function useReview() {
 
   watch(() => currentProject.value?.id, refresh, { immediate: true })
 
-  const reviewItems = computed<ReviewItem[]>(() => {
+  const reviewItems = computed<IReviewItem[]>(() => {
     const keys = data.value?.data ?? []
-    const result: ReviewItem[] = []
+    const result: IReviewItem[] = []
     for (const k of keys) {
       for (const [lang, tr] of Object.entries(k.translations as Record<string, any>)) {
         if (tr?.status === TRANSLATION_STATUS.DRAFT && tr?.value) {
@@ -50,7 +43,7 @@ export function useReview() {
   const processingId = ref<number | null>(null)
   const processingAction = ref('')
 
-  async function setStatus(item: ReviewItem, status: TRANSLATION_STATUS): Promise<void> {
+  async function setStatus(item: IReviewItem, status: TRANSLATION_STATUS): Promise<void> {
     processingId.value = item.id
     processingAction.value = status
     try {

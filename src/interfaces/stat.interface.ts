@@ -1,4 +1,4 @@
-export interface LangStat {
+export interface ILangStat {
 	id: number
 	code: string
 	name: string
@@ -12,14 +12,14 @@ export interface LangStat {
 	coverage: number
 }
 
-export interface StatsResponse {
+export interface IStatsResponse {
 	totalKeys: number
 	unusedKeys: number
-	languages: LangStat[]
-	recentActivity: ActivityItem[]
+	languages: ILangStat[]
+	recentActivity: IActivityItem[]
 }
 
-export interface ActivityItem {
+export interface IActivityItem {
 	id: number
 	old_value: string | null
 	new_value: string

@@ -96,13 +96,13 @@
 </template>
 
 <script setup lang="ts">
-import type { GitRepo } from '~/interfaces/project.interface'
+import type { IGitRepo } from '~/interfaces/project.interface'
 
 const { t } = useT()
 
 const props = defineProps<{
   projectId: number
-  project?: { languages?: { code: string; name: string }[]; root_path?: string; git_repo?: GitRepo | null }
+  project?: { languages?: { code: string; name: string }[]; root_path?: string; git_repo?: IGitRepo | null }
 }>()
 
 const emit = defineEmits<{ done: [] }>()
@@ -111,7 +111,7 @@ const open = defineModel<boolean>('open', { default: false })
 
 const mode = ref<'local' | 'git'>('local')
 const localPath = ref(props.project?.root_path ?? '')
-const gitRepo = ref<GitRepo | null>(null)
+const gitRepo = ref<IGitRepo | null>(null)
 const saveRepo = ref(false)
 const loading = ref(false)
 const result = ref<any>(null)

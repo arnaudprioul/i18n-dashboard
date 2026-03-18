@@ -1,10 +1,10 @@
 import { keyService } from '../services/key.service'
 import { translationService } from '../services/translation.service'
 import { scanService } from '../services/scan.service'
-import type { KeysQuery, KeysResponse } from '../services/key.service'
+import type { IKeysQuery, IKeysResponse } from '../interfaces/key.interface'
 
 export function useKeys(options: {
-  queryParams?: Ref<KeysQuery>
+  queryParams?: Ref<IKeysQuery>
   id?: Ref<string | string[]>
 } = {}) {
   const toast = useToast()
@@ -14,7 +14,7 @@ export function useKeys(options: {
 
   // ── List mode ─────────────────────────────────────────────────────────────
 
-  const data = ref<KeysResponse | null>(null)
+  const data = ref<IKeysResponse | null>(null)
   const listPending = ref(false)
 
   async function refresh() {

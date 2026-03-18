@@ -1,9 +1,9 @@
-import { BaseService } from './base.service'
-import type { AuthUser } from '../composables/useAuth'
+import { SBaseService } from './base.service'
+import type { IAuthUser } from '../interfaces/auth.interface'
 
-class AuthService extends BaseService {
-  async login(email: string, password: string): Promise<AuthUser> {
-    return this.post<AuthUser>('/api/auth/login', {
+class SAuthService extends SBaseService {
+  async login(email: string, password: string): Promise<IAuthUser> {
+    return this.post<IAuthUser>('/api/auth/login', {
       body: { email, password },
       skipErrorToast: true, // login errors are handled by the page
     })
@@ -13,8 +13,8 @@ class AuthService extends BaseService {
     return this.post('/api/auth/logout', { skipDedup: true })
   }
 
-  async me(): Promise<AuthUser | null> {
-    return this.get<AuthUser | null>('/api/auth/me', { skipErrorToast: true })
+  async me(): Promise<IAuthUser | null> {
+    return this.get<IAuthUser | null>('/api/auth/me', { skipErrorToast: true })
   }
 
   async changePassword(currentPassword: string, newPassword: string): Promise<void> {
@@ -23,9 +23,9 @@ class AuthService extends BaseService {
     })
   }
 
-  async updateMe(data: { name?: string; email?: string }): Promise<AuthUser> {
-    return this.put<AuthUser>('/api/auth/me', { body: data })
+  async updateMe(data: { name?: string; email?: string }): Promise<IAuthUser> {
+    return this.put<IAuthUser>('/api/auth/me', { body: data })
   }
 }
 
-export const authService = new AuthService()
+export const authService = new SAuthService()
