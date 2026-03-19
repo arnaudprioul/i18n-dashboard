@@ -91,13 +91,18 @@
 import { TRANSLATION_STATUS } from '~/enums/translation.enum'
 
 const { currentProject } = useProject()
-const { canApprove } = useAuth()
+const { canApprove, currentUser } = useAuth()
 const { t } = useT()
 
-const hasAccess = computed(() =>
-  currentProject.value ? canApprove(currentProject.value.id) : false,
-)
-watch(hasAccess, (ok) => { if (import.meta.client && !ok) navigateTo('/') }, { immediate: true })
+const hasAccess = computed((): boolean | null => {
+  if (currentProject.value === null || currentUser.value === null) return null
+  return canApprove(currentProject.value.id)
+})
+watch(hasAccess, (ok) => {
+  if (import.meta.client && ok === false) {
+    navigateTo('/')
+  }
+}, { immediate: true })
 
 const {
   reviewItems,

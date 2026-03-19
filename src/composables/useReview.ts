@@ -25,7 +25,9 @@ export function useReview() {
     }
   }
 
-  watch(() => currentProject.value?.id, refresh, { immediate: true })
+  watch(() => currentProject.value?.id, () => {
+    refresh()
+  }, { immediate: true })
 
   const reviewItems = computed<IReviewItem[]>(() => {
     const keys = data.value?.data ?? []
