@@ -1,25 +1,42 @@
 <template>
   <!-- Global loading overlay -->
   <Transition name="fade">
-    <div v-if="!appReady || pending" class="fixed inset-0 z-50 flex items-center justify-center bg-white/60 dark:bg-gray-950/60 backdrop-blur-sm">
-      <UIcon name="i-heroicons-arrow-path" class="text-4xl text-primary-500 animate-spin" />
+    <div
+      v-if="!appReady || pending"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-white/60 dark:bg-gray-950/60 backdrop-blur-sm"
+    >
+      <UIcon
+        name="i-heroicons-arrow-path"
+        class="text-4xl text-primary-500 animate-spin"
+      />
     </div>
   </Transition>
 
   <div class="min-h-screen bg-gray-50 dark:bg-gray-950 flex">
-
     <!-- ── Sidebar ─────────────────────────────────────────────────────────── -->
-    <aside data-cy="main-sidebar" class="w-56 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col shrink-0">
-
+    <aside
+      data-cy="main-sidebar"
+      class="w-56 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 flex flex-col shrink-0"
+    >
       <!-- Logo -->
       <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-800">
-        <NuxtLink to="/" class="flex items-center gap-2.5">
+        <NuxtLink
+          to="/"
+          class="flex items-center gap-2.5"
+        >
           <div class="w-8 h-8 rounded-lg bg-primary-500 flex items-center justify-center shrink-0">
-            <UIcon name="i-heroicons-language" class="text-white text-base" />
+            <UIcon
+              name="i-heroicons-language"
+              class="text-white text-base"
+            />
           </div>
           <div>
-            <h1 class="text-sm font-bold text-gray-900 dark:text-white leading-tight">i18n Dashboard</h1>
-            <p class="text-xs text-gray-400">vue-i18n manager</p>
+            <h1 class="text-sm font-bold text-gray-900 dark:text-white leading-tight">
+              i18n Dashboard
+            </h1>
+            <p class="text-xs text-gray-400">
+              vue-i18n manager
+            </p>
           </div>
         </NuxtLink>
       </div>
@@ -32,24 +49,53 @@
             to="/projects"
             class="flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs text-gray-400 hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors mb-1"
           >
-            <UIcon name="i-heroicons-arrow-left" class="text-sm" />
+            <UIcon
+              name="i-heroicons-arrow-left"
+              class="text-sm"
+            />
             {{ t('nav.all_projects', 'All projects') }}
           </NuxtLink>
-          <div v-if="currentProject" class="flex items-center gap-2 px-2 py-1.5">
-            <span class="w-2.5 h-2.5 rounded-full shrink-0" :class="`bg-${currentProject.color || 'primary'}-500`" />
+          <div
+            v-if="currentProject"
+            class="flex items-center gap-2 px-2 py-1.5"
+          >
+            <span
+              class="w-2.5 h-2.5 rounded-full shrink-0"
+              :class="`bg-${currentProject.color || 'primary'}-500`"
+            />
             <span class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ currentProject.name }}</span>
           </div>
         </div>
 
         <!-- Scan / Sync actions -->
-        <div v-if="currentProject && userCanManage && !currentProject.is_system" class="p-2 border-b border-gray-200 dark:border-gray-800 space-y-1">
-          <UButton block variant="soft" color="neutral" size="sm" icon="i-heroicons-magnifying-glass"
-                   @click="showScanModal = true">
+        <div
+          v-if="currentProject && userCanManage && !currentProject.is_system"
+          class="p-2 border-b border-gray-200 dark:border-gray-800 space-y-1"
+        >
+          <UButton
+            block
+            variant="soft"
+            color="neutral"
+            size="sm"
+            icon="i-heroicons-magnifying-glass"
+            @click="showScanModal = true"
+          >
             {{ t('sidebar.scan', 'Scan project') }}
           </UButton>
-          <UTooltip :text="t('sidebar.sync_disabled_hint', 'Requiert un chemin local ou une URL distante')" :disabled="canSyncProject(currentProject)">
-            <UButton block variant="soft" color="neutral" size="sm" icon="i-heroicons-arrow-path"
-                     :loading="syncing !== null" :disabled="!canSyncProject(currentProject)" @click="doSync">
+          <UTooltip
+            :text="t('sidebar.sync_disabled_hint', 'Requiert un chemin local ou une URL distante')"
+            :disabled="canSyncProject(currentProject)"
+          >
+            <UButton
+              block
+              variant="soft"
+              color="neutral"
+              size="sm"
+              icon="i-heroicons-arrow-path"
+              :loading="syncing !== null"
+              :disabled="!canSyncProject(currentProject)"
+              @click="doSync"
+            >
               {{ t('sidebar.sync', 'Sync JSON') }}
             </UButton>
           </UTooltip>
@@ -66,9 +112,18 @@
               ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 font-medium'
               : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'"
           >
-            <UIcon :name="item.icon" class="text-base shrink-0" />
+            <UIcon
+              :name="item.icon"
+              class="text-base shrink-0"
+            />
             <span class="flex-1">{{ item.label }}</span>
-            <UBadge v-if="item.badge" size="xs" :color="item.badgeColor || 'neutral'">{{ item.badge }}</UBadge>
+            <UBadge
+              v-if="item.badge"
+              size="xs"
+              :color="item.badgeColor || 'neutral'"
+            >
+              {{ item.badge }}
+            </UBadge>
           </NuxtLink>
         </nav>
       </template>
@@ -76,16 +131,31 @@
       <!-- ── Global sidebar ───────────────────────────────────────────────── -->
       <template v-else>
         <div class="p-2 border-b border-gray-200 dark:border-gray-800">
-          <p class="text-xs text-gray-400 font-medium px-2 mb-1.5 uppercase tracking-wide">{{ t('sidebar.project_label', 'Projects') }}</p>
+          <p class="text-xs text-gray-400 font-medium px-2 mb-1.5 uppercase tracking-wide">
+            {{ t('sidebar.project_label', 'Projects') }}
+          </p>
 
-          <div v-if="!userProjects.length" class="px-2 py-2">
-            <p class="text-xs text-gray-400 italic mb-2">{{ t('sidebar.no_project', 'No project configured') }}</p>
-            <UButton size="xs" block icon="i-heroicons-plus" to="/projects">
+          <div
+            v-if="!userProjects.length"
+            class="px-2 py-2"
+          >
+            <p class="text-xs text-gray-400 italic mb-2">
+              {{ t('sidebar.no_project', 'No project configured') }}
+            </p>
+            <UButton
+              size="xs"
+              block
+              icon="i-heroicons-plus"
+              to="/projects"
+            >
               {{ t('sidebar.add_project', 'Add a project') }}
             </UButton>
           </div>
 
-          <div v-else class="space-y-0.5">
+          <div
+            v-else
+            class="space-y-0.5"
+          >
             <NuxtLink
               v-for="project in userProjects"
               :key="project.id"
@@ -94,16 +164,26 @@
               class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm transition-colors text-left"
               :class="'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'"
             >
-              <span class="w-2.5 h-2.5 rounded-full shrink-0" :class="`bg-${project.color || 'primary'}-500`" />
+              <span
+                class="w-2.5 h-2.5 rounded-full shrink-0"
+                :class="`bg-${project.color || 'primary'}-500`"
+              />
               <span class="flex-1 truncate font-medium">{{ project.name }}</span>
-              <UIcon v-if="project.is_system" name="i-heroicons-lock-closed" class="text-xs text-gray-400 shrink-0" />
+              <UIcon
+                v-if="project.is_system"
+                name="i-heroicons-lock-closed"
+                class="text-xs text-gray-400 shrink-0"
+              />
             </NuxtLink>
 
             <NuxtLink
               to="/projects"
               class="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs text-gray-400 hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
             >
-              <UIcon name="i-heroicons-rectangle-stack" class="text-sm" />
+              <UIcon
+                name="i-heroicons-rectangle-stack"
+                class="text-sm"
+              />
               {{ t('sidebar.manage_projects', 'Manage projects') }}
             </NuxtLink>
           </div>
@@ -113,8 +193,13 @@
       </template>
 
       <!-- Admin section (super admin only) -->
-      <div v-if="isSuperAdmin" class="p-2 border-t border-gray-200 dark:border-gray-800">
-        <p class="text-xs text-gray-400 font-medium px-2 mb-1.5 uppercase tracking-wide">{{ t('nav.administration', 'Administration') }}</p>
+      <div
+        v-if="isSuperAdmin"
+        class="p-2 border-t border-gray-200 dark:border-gray-800"
+      >
+        <p class="text-xs text-gray-400 font-medium px-2 mb-1.5 uppercase tracking-wide">
+          {{ t('nav.administration', 'Administration') }}
+        </p>
         <NuxtLink
           data-cy="sidebar-all-users-link"
           to="/users"
@@ -123,7 +208,10 @@
             ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 font-medium'
             : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'"
         >
-          <UIcon name="i-heroicons-user-group" class="text-base shrink-0" />
+          <UIcon
+            name="i-heroicons-user-group"
+            class="text-base shrink-0"
+          />
           <span class="flex-1">{{ t('users.all_title', 'All users') }}</span>
         </NuxtLink>
       </div>
@@ -131,10 +219,8 @@
 
     <!-- ── Right column ────────────────────────────────────────────────────── -->
     <div class="flex-1 flex flex-col min-w-0">
-
       <!-- Header -->
       <header class="h-12 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 flex items-center justify-end gap-2 px-4 shrink-0">
-
         <!-- UI Language -->
         <USelect
           v-if="uiLangsOptions.length > 1"
@@ -154,7 +240,10 @@
           @click="toggleDark"
         />
 
-        <UDivider orientation="vertical" class="h-5" />
+        <UDivider
+          orientation="vertical"
+          class="h-5"
+        />
 
         <!-- User menu -->
         <UDropdownMenu :items="userMenuItems">
@@ -165,7 +254,10 @@
               </span>
             </div>
             <span class="text-sm font-medium text-gray-700 dark:text-gray-300 max-w-32 truncate">{{ currentUser?.name }}</span>
-            <UIcon name="i-heroicons-chevron-down" class="text-xs text-gray-400" />
+            <UIcon
+              name="i-heroicons-chevron-down"
+              class="text-xs text-gray-400"
+            />
           </button>
         </UDropdownMenu>
       </header>
@@ -187,25 +279,66 @@
   />
 
   <!-- Change password modal -->
-  <UModal v-model:open="showPasswordModal" :title="t('user.change_password_title', 'Change password')">
+  <UModal
+    v-model:open="showPasswordModal"
+    :title="t('user.change_password_title', 'Change password')"
+  >
     <template #body>
       <div class="space-y-4">
-        <UFormField :label="t('user.current_password', 'Current password')" required>
-          <UInput v-model="passwordForm.current" type="password" class="w-full" />
+        <UFormField
+          :label="t('user.current_password', 'Current password')"
+          required
+        >
+          <UInput
+            v-model="passwordForm.current"
+            type="password"
+            class="w-full"
+          />
         </UFormField>
-        <UFormField :label="t('user.new_password', 'New password')" :hint="t('user.password_hint', 'Minimum 8 characters')" required>
-          <UInput v-model="passwordForm.next" type="password" class="w-full" />
+        <UFormField
+          :label="t('user.new_password', 'New password')"
+          :hint="t('user.password_hint', 'Minimum 8 characters')"
+          required
+        >
+          <UInput
+            v-model="passwordForm.next"
+            type="password"
+            class="w-full"
+          />
         </UFormField>
-        <UFormField :label="t('user.confirm_password', 'Confirm')" required>
-          <UInput v-model="passwordForm.confirm" type="password" class="w-full" />
+        <UFormField
+          :label="t('user.confirm_password', 'Confirm')"
+          required
+        >
+          <UInput
+            v-model="passwordForm.confirm"
+            type="password"
+            class="w-full"
+          />
         </UFormField>
-        <p v-if="passwordError" class="text-sm text-red-500">{{ passwordError }}</p>
+        <p
+          v-if="passwordError"
+          class="text-sm text-red-500"
+        >
+          {{ passwordError }}
+        </p>
       </div>
     </template>
     <template #footer>
       <div class="flex justify-end gap-3">
-        <UButton color="neutral" variant="ghost" @click="showPasswordModal = false">{{ t('translations.cancel', 'Cancel') }}</UButton>
-        <UButton :loading="passwordSaving" @click="changePassword">{{ t('user.save_password', 'Save') }}</UButton>
+        <UButton
+          color="neutral"
+          variant="ghost"
+          @click="showPasswordModal = false"
+        >
+          {{ t('translations.cancel', 'Cancel') }}
+        </UButton>
+        <UButton
+          :loading="passwordSaving"
+          @click="changePassword"
+        >
+          {{ t('user.save_password', 'Save') }}
+        </UButton>
       </div>
     </template>
   </UModal>

@@ -1,0 +1,30 @@
+#!/bin/sh
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+
+if [ "$branch" = "develop" ] || [ "$branch" = "main" ]; then
+  echo "🔍 [pre-push] Branch: $branch — running checks..."
+
+  echo "\n📐 Running lint:fix..."
+  npm run lint:fix
+  if [ $? -ne 0 ]; then
+    echo "❌ Lint failed. Push aborted."
+    exit 1
+  fi
+
+  echo "\n🧪 Running unit tests..."
+  npm run test:run
+  if [ $? -ne 0 ]; then
+    echo "❌ Unit tests failed. Push aborted."
+    exit 1
+  fi
+
+  echo "\n🌐 Running E2E tests (starting dev server)..."
+  npm run cy:run:ci
+  if [ $? -ne 0 ]; then
+    echo "❌ E2E tests failed. Push aborted."
+    exit 1
+  fi
+
+  echo "\n✅ All checks passed. Pushing..."
+fi

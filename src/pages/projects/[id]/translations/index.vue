@@ -3,7 +3,12 @@
     <!-- Header -->
     <div class="flex items-center justify-between mb-5">
       <div>
-        <h1 data-cy="translations-title" class="text-2xl font-bold text-gray-900 dark:text-white">{{ t('translations.title', 'Translations') }}</h1>
+        <h1
+          data-cy="translations-title"
+          class="text-2xl font-bold text-gray-900 dark:text-white"
+        >
+          {{ t('translations.title', 'Translations') }}
+        </h1>
         <p class="text-gray-500 dark:text-gray-400 mt-0.5 text-sm">
           {{ data?.total || 0 }} {{ t('translations.keys_count', 'keys') }} · {{ languages.length }} {{ t('translations.langs_count', 'languages') }}
         </p>
@@ -19,7 +24,14 @@
         >
           {{ t('translations.translate_all', 'Translate all') }} ({{ filterLangs[0].toUpperCase() }})
         </UButton>
-        <UButton v-if="userCanManage" data-cy="new-key-btn" icon="i-heroicons-plus" @click="showAddKey = true">{{ t('translations.add_key', 'New key') }}</UButton>
+        <UButton
+          v-if="userCanManage"
+          data-cy="new-key-btn"
+          icon="i-heroicons-plus"
+          @click="showAddKey = true"
+        >
+          {{ t('translations.add_key', 'New key') }}
+        </UButton>
       </div>
     </div>
 
@@ -56,50 +68,108 @@
           : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-500 hover:border-gray-300'"
         @click="filterStatus = s.value; refresh()"
       >
-        <span class="w-2 h-2 rounded-full" :class="s.dot" />
+        <span
+          class="w-2 h-2 rounded-full"
+          :class="s.dot"
+        />
         {{ s.label }}
       </button>
     </div>
 
     <!-- Empty state -->
-    <div v-if="!pending && !data?.data?.length" class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 py-16 text-center">
-      <UIcon name="i-heroicons-inbox" class="text-5xl text-gray-300 dark:text-gray-600 mb-3" />
-      <p class="text-gray-500 font-medium">{{ t('translations.no_results', 'No keys found') }}</p>
+    <div
+      v-if="!pending && !data?.data?.length"
+      class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 py-16 text-center"
+    >
+      <UIcon
+        name="i-heroicons-inbox"
+        class="text-5xl text-gray-300 dark:text-gray-600 mb-3"
+      />
+      <p class="text-gray-500 font-medium">
+        {{ t('translations.no_results', 'No keys found') }}
+      </p>
       <p class="text-gray-400 text-sm mt-1">
-        <template v-if="search || filterStatus !== 'all'">{{ t('translations.modify_filters', 'Modify your filters or') }} </template>
+        <template v-if="search || filterStatus !== 'all'">
+          {{ t('translations.modify_filters', 'Modify your filters or') }}
+        </template>
         {{ t('translations.add_or_scan', 'add a key manually or scan your project.') }}
       </p>
       <div class="flex justify-center gap-3 mt-4">
-        <UButton size="sm" @click="showAddKey = true">{{ t('translations.add_key', 'New key') }}</UButton>
-        <UButton size="sm" variant="outline" color="neutral" :loading="scanning" @click="scanProject">{{ t('translations.scan', 'Scan') }}</UButton>
-        <UButton size="sm" variant="outline" color="neutral" :loading="syncing" @click="syncFiles">{{ t('translations.sync', 'Sync JSON') }}</UButton>
+        <UButton
+          size="sm"
+          @click="showAddKey = true"
+        >
+          {{ t('translations.add_key', 'New key') }}
+        </UButton>
+        <UButton
+          size="sm"
+          variant="outline"
+          color="neutral"
+          :loading="scanning"
+          @click="scanProject"
+        >
+          {{ t('translations.scan', 'Scan') }}
+        </UButton>
+        <UButton
+          size="sm"
+          variant="outline"
+          color="neutral"
+          :loading="syncing"
+          @click="syncFiles"
+        >
+          {{ t('translations.sync', 'Sync JSON') }}
+        </UButton>
       </div>
     </div>
 
     <!-- Table -->
-    <div v-else class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+    <div
+      v-else
+      class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden"
+    >
       <!-- Table header -->
       <div
         class="grid border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50"
         :style="gridStyle"
       >
-        <div class="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">{{ t('translations.key_label', 'Key') }}</div>
+        <div class="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+          {{ t('translations.key_label', 'Key') }}
+        </div>
         <div
           v-for="lang in visibleLanguages"
           :key="lang.code"
           class="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-1.5"
         >
           {{ findLanguage(lang.code)?.nativeName || lang.name }}
-          <UBadge size="xs" variant="outline" color="neutral">{{ lang.code }}</UBadge>
+          <UBadge
+            size="xs"
+            variant="outline"
+            color="neutral"
+          >
+            {{ lang.code }}
+          </UBadge>
         </div>
         <div class="px-3 py-3" />
       </div>
 
       <!-- Loading -->
       <div v-if="pending">
-        <div v-for="i in 6" :key="i" class="grid border-b border-gray-100 dark:border-gray-800 last:border-0" :style="gridStyle">
-          <div class="px-4 py-4"><USkeleton class="h-4 w-3/4" /></div>
-          <div v-for="j in visibleLanguages.length" :key="j" class="px-4 py-4"><USkeleton class="h-4" /></div>
+        <div
+          v-for="i in 6"
+          :key="i"
+          class="grid border-b border-gray-100 dark:border-gray-800 last:border-0"
+          :style="gridStyle"
+        >
+          <div class="px-4 py-4">
+            <USkeleton class="h-4 w-3/4" />
+          </div>
+          <div
+            v-for="j in visibleLanguages.length"
+            :key="j"
+            class="px-4 py-4"
+          >
+            <USkeleton class="h-4" />
+          </div>
           <div class="px-3 py-4" />
         </div>
       </div>
@@ -119,7 +189,10 @@
     </div>
 
     <!-- Pagination -->
-    <div v-if="(data?.total || 0) > limit" class="flex justify-center mt-5">
+    <div
+      v-if="(data?.total || 0) > limit"
+      class="flex justify-center mt-5"
+    >
       <UPagination
         v-model:page="page"
         :total="data?.total || 0"
@@ -129,21 +202,55 @@
     </div>
 
     <!-- Add Key modal -->
-    <UModal v-model:open="showAddKey" :title="t('translations.add_key_title', 'New translation key')">
+    <UModal
+      v-model:open="showAddKey"
+      :title="t('translations.add_key_title', 'New translation key')"
+    >
       <template #body>
-        <div data-cy="add-key-modal" class="space-y-4">
-          <UFormField :label="t('translations.key_label', 'Key')" :hint="t('translations.key_hint', 'Example: home.title or nav.menu.about')" required>
-            <UInput v-model="newKey.key" placeholder="home.title" class="w-full font-mono" />
+        <div
+          data-cy="add-key-modal"
+          class="space-y-4"
+        >
+          <UFormField
+            :label="t('translations.key_label', 'Key')"
+            :hint="t('translations.key_hint', 'Example: home.title or nav.menu.about')"
+            required
+          >
+            <UInput
+              v-model="newKey.key"
+              placeholder="home.title"
+              class="w-full font-mono"
+            />
           </UFormField>
-          <UFormField :label="t('translations.description_label', 'Description')" :hint="t('translations.description_hint', 'Context for translators')">
-            <UInput v-model="newKey.description" :placeholder="t('translations.description_placeholder', 'Home page title')" class="w-full" />
+          <UFormField
+            :label="t('translations.description_label', 'Description')"
+            :hint="t('translations.description_hint', 'Context for translators')"
+          >
+            <UInput
+              v-model="newKey.description"
+              :placeholder="t('translations.description_placeholder', 'Home page title')"
+              class="w-full"
+            />
           </UFormField>
         </div>
       </template>
       <template #footer>
         <div class="flex justify-end gap-3">
-          <UButton data-cy="add-key-cancel-btn" variant="ghost" color="neutral" @click="showAddKey = false">{{ t('common.cancel', 'Cancel') }}</UButton>
-          <UButton data-cy="add-key-create-btn" :loading="addingKey" @click="addKey">{{ t('common.create', 'Create') }}</UButton>
+          <UButton
+            data-cy="add-key-cancel-btn"
+            variant="ghost"
+            color="neutral"
+            @click="showAddKey = false"
+          >
+            {{ t('common.cancel', 'Cancel') }}
+          </UButton>
+          <UButton
+            data-cy="add-key-create-btn"
+            :loading="addingKey"
+            @click="addKey"
+          >
+            {{ t('common.create', 'Create') }}
+          </UButton>
         </div>
       </template>
     </UModal>

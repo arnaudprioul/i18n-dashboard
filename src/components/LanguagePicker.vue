@@ -22,9 +22,16 @@
           <span class="font-mono text-xs text-gray-400 w-14 shrink-0">{{ lang.code }}</span>
           <span class="flex-1">{{ lang.nativeName }}</span>
           <span class="text-xs text-gray-400 shrink-0">{{ lang.name }}</span>
-          <UIcon v-if="isSelected(lang.code)" name="i-heroicons-check" class="text-primary-500 shrink-0" />
+          <UIcon
+            v-if="isSelected(lang.code)"
+            name="i-heroicons-check"
+            class="text-primary-500 shrink-0"
+          />
         </button>
-        <div v-if="!filteredList.length" class="px-3 py-4 text-sm text-center text-gray-400">
+        <div
+          v-if="!filteredList.length"
+          class="px-3 py-4 text-sm text-center text-gray-400"
+        >
           {{ t('languages.none_found', 'No language found') }}
         </div>
       </div>
@@ -38,16 +45,30 @@
           class="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-left hover:bg-amber-50 dark:hover:bg-amber-900/20 text-gray-500 dark:text-gray-400 transition-colors"
           @click="addCustom(search)"
         >
-          <UIcon name="i-heroicons-plus-circle" class="shrink-0 text-amber-500" />
+          <UIcon
+            name="i-heroicons-plus-circle"
+            class="shrink-0 text-amber-500"
+          />
           <span class="flex-1">{{ t('languages.use_code', 'Use code') }} <code class="font-mono bg-gray-100 dark:bg-gray-800 px-1 rounded">{{ search }}</code></span>
-          <UBadge size="xs" color="warning" variant="soft">BCP 47</UBadge>
+          <UBadge
+            size="xs"
+            color="warning"
+            variant="soft"
+          >
+            BCP 47
+          </UBadge>
         </button>
       </div>
     </div>
 
     <!-- Selected languages -->
-    <div v-if="modelValue.length" class="space-y-1.5">
-      <p class="text-xs font-medium text-gray-500 dark:text-gray-400">{{ t('languages.selected', 'Selected languages') }}</p>
+    <div
+      v-if="modelValue.length"
+      class="space-y-1.5"
+    >
+      <p class="text-xs font-medium text-gray-500 dark:text-gray-400">
+        {{ t('languages.selected', 'Selected languages') }}
+      </p>
       <div class="flex flex-wrap gap-2">
         <div
           v-for="lang in modelValue"
@@ -62,17 +83,28 @@
             variant="soft"
             class="cursor-pointer"
             @click="setDefault(lang.code)"
-          >{{ t('languages.default_badge', 'Default') }}</UBadge>
+          >
+            {{ t('languages.default_badge', 'Default') }}
+          </UBadge>
           <button
             v-else
             class="text-xs text-gray-400 hover:text-primary-500 transition-colors"
             :title="t('languages.set_as_default', 'Set as default')"
             @click="setDefault(lang.code)"
           >
-            <UIcon name="i-heroicons-star" class="text-xs" />
+            <UIcon
+              name="i-heroicons-star"
+              class="text-xs"
+            />
           </button>
-          <button class="text-gray-300 hover:text-red-500 transition-colors" @click="remove(lang.code)">
-            <UIcon name="i-heroicons-x-mark" class="text-xs" />
+          <button
+            class="text-gray-300 hover:text-red-500 transition-colors"
+            @click="remove(lang.code)"
+          >
+            <UIcon
+              name="i-heroicons-x-mark"
+              class="text-xs"
+            />
           </button>
         </div>
       </div>

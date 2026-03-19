@@ -7,8 +7,14 @@
     <!-- Key column -->
     <div class="px-4 py-3 flex flex-col justify-center min-w-0">
       <div class="flex items-center gap-2 min-w-0">
-        <UTooltip v-if="translationKey.is_unused" :text="t('translations.unused_tooltip', 'Key not found in source code')">
-          <UIcon name="i-heroicons-exclamation-triangle" class="text-orange-400 text-sm shrink-0" />
+        <UTooltip
+          v-if="translationKey.is_unused"
+          :text="t('translations.unused_tooltip', 'Key not found in source code')"
+        >
+          <UIcon
+            name="i-heroicons-exclamation-triangle"
+            class="text-orange-400 text-sm shrink-0"
+          />
         </UTooltip>
         <NuxtLink
           :to="projectId ? `/projects/${projectId}/translations/${translationKey.id}` : `/keys/${translationKey.id}`"
@@ -29,8 +35,21 @@
             @keydown.enter="saveDescription"
             @keydown.escape="cancelDescription"
           />
-          <UButton size="xs" @click="saveDescription" :loading="savingDescription">OK</UButton>
-          <UButton size="xs" color="neutral" variant="ghost" @click="cancelDescription">✕</UButton>
+          <UButton
+            size="xs"
+            :loading="savingDescription"
+            @click="saveDescription"
+          >
+            OK
+          </UButton>
+          <UButton
+            size="xs"
+            color="neutral"
+            variant="ghost"
+            @click="cancelDescription"
+          >
+            ✕
+          </UButton>
         </div>
       </template>
       <template v-else>
@@ -43,10 +62,16 @@
         </p>
       </template>
       <!-- Usage info -->
-      <div v-if="translationKey.usages?.length" class="flex items-center gap-1 mt-1">
+      <div
+        v-if="translationKey.usages?.length"
+        class="flex items-center gap-1 mt-1"
+      >
         <UTooltip :text="usageTooltip">
           <button class="flex items-center gap-1 text-xs text-gray-400 hover:text-primary-500 transition-colors">
-            <UIcon name="i-heroicons-code-bracket" class="text-xs" />
+            <UIcon
+              name="i-heroicons-code-bracket"
+              class="text-xs"
+            />
             <span>{{ translationKey.usages.length }} {{ translationKey.usages.length > 1 ? t('translations.references', 'references') : t('translations.reference', 'reference') }}</span>
           </button>
         </UTooltip>
@@ -85,7 +110,10 @@
                   class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-mono bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700 hover:bg-amber-100 dark:hover:bg-amber-900/50 transition-colors"
                   @mousedown.prevent="insertAtCursor(lang.code, '{' + param + '}')"
                 >
-                  <UIcon name="i-heroicons-cursor-arrow-rays" class="text-xs opacity-60" />
+                  <UIcon
+                    name="i-heroicons-cursor-arrow-rays"
+                    class="text-xs opacity-60"
+                  />
                   {{ '{' + param + '}' }}
                 </button>
               </div>
@@ -93,21 +121,33 @@
             <!-- Literal / backslash escapes -->
             <div class="flex items-center gap-1 flex-wrap">
               <span class="text-xs text-gray-400">{{ t('key.escapes_label', 'Escapes:') }}</span>
-              <UTooltip v-for="esc in ALL_ESCAPES" :key="esc.insert" :text="esc.hint">
+              <UTooltip
+                v-for="esc in ALL_ESCAPES"
+                :key="esc.insert"
+                :text="esc.hint"
+              >
                 <button
                   class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors"
                   @mousedown.prevent="insertAtCursor(lang.code, esc.insert)"
-                >{{ esc.label }}</button>
+                >
+                  {{ esc.label }}
+                </button>
               </UTooltip>
             </div>
             <!-- Modifiers -->
             <div class="flex items-center gap-1 flex-wrap">
               <span class="text-xs text-gray-400">{{ t('key.modifiers_label', 'Modifiers:') }}</span>
-              <UTooltip v-for="mod in LINK_MODIFIERS" :key="mod.prefix" :text="mod.hint">
+              <UTooltip
+                v-for="mod in LINK_MODIFIERS"
+                :key="mod.prefix"
+                :text="mod.hint"
+              >
                 <button
                   class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-mono bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-700 hover:bg-violet-100 dark:hover:bg-violet-900/50 transition-colors"
                   @mousedown.prevent="insertAtCursor(lang.code, mod.prefix)"
-                >{{ mod.prefix }}</button>
+                >
+                  {{ mod.prefix }}
+                </button>
               </UTooltip>
             </div>
             <!-- Plural separator -->
@@ -116,22 +156,33 @@
                 class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-mono bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors"
                 @mousedown.prevent="insertAtCursor(lang.code, ' | ')"
               >
-                <UIcon name="i-heroicons-bars-3-bottom-left" class="text-xs opacity-60" />
+                <UIcon
+                  name="i-heroicons-bars-3-bottom-left"
+                  class="text-xs opacity-60"
+                />
                 {{ ' | ' }}
               </button>
             </UTooltip>
             <!-- Linked key picker -->
-            <LinkedKeyPicker :project-id="projectId" @select="(val) => insertLinkedKey(lang.code, val)" />
+            <LinkedKeyPicker
+              :project-id="projectId"
+              @select="(val) => insertLinkedKey(lang.code, val)"
+            />
           </div>
           <div class="flex gap-1 mt-1.5">
             <UButton
               size="xs"
-              @click="saveTranslation(lang.code)"
               :loading="saving === `${translationKey.id}-${lang.code}`"
+              @click="saveTranslation(lang.code)"
             >
               {{ t('translations.save', 'Save') }}
             </UButton>
-            <UButton size="xs" color="neutral" variant="ghost" @click="cancelEdit(lang.code)">
+            <UButton
+              size="xs"
+              color="neutral"
+              variant="ghost"
+              @click="cancelEdit(lang.code)"
+            >
               {{ t('common.cancel', 'Cancel') }}
             </UButton>
           </div>
@@ -141,7 +192,10 @@
         <template v-else>
           <div class="flex items-start gap-1.5">
             <!-- Status dot -->
-            <UTooltip :text="statusLabel(lang.code)" :delay-duration="300">
+            <UTooltip
+              :text="statusLabel(lang.code)"
+              :delay-duration="300"
+            >
               <span
                 class="mt-1.5 w-2 h-2 rounded-full shrink-0 transition-opacity"
                 :class="[
@@ -152,10 +206,16 @@
               />
             </UTooltip>
 
-            <div class="flex-1 min-w-0 cursor-pointer" @click="startEdit(lang.code)">
+            <div
+              class="flex-1 min-w-0 cursor-pointer"
+              @click="startEdit(lang.code)"
+            >
               <template v-if="getTranslation(lang.code)">
                 <!-- Plural: show forms stacked -->
-                <div v-if="getPluralCount(lang.code) > 1" class="space-y-0.5">
+                <div
+                  v-if="getPluralCount(lang.code) > 1"
+                  class="space-y-0.5"
+                >
                   <div
                     v-for="(form, i) in getTranslation(lang.code).split(' | ')"
                     :key="i"
@@ -169,9 +229,14 @@
                 <p
                   v-else
                   class="text-sm text-gray-700 dark:text-gray-300 leading-snug truncate hover:text-primary-600 dark:hover:text-primary-400"
-                >{{ getTranslation(lang.code) }}</p>
+                >
+                  {{ getTranslation(lang.code) }}
+                </p>
               </template>
-              <span v-else class="text-xs text-gray-300 dark:text-gray-600 italic hover:text-primary-500 transition-colors">
+              <span
+                v-else
+                class="text-xs text-gray-300 dark:text-gray-600 italic hover:text-primary-500 transition-colors"
+              >
                 {{ t('translations.click_to_add', 'Click to add…') }}
               </span>
             </div>

@@ -54,24 +54,53 @@ function coverageColor(coverage: number) {
   <UCard class="h-full overflow-hidden">
     <template #header>
       <div class="flex items-center gap-2">
-        <UIcon name="i-heroicons-globe-alt" class="text-gray-400" />
+        <UIcon
+          name="i-heroicons-globe-alt"
+          class="text-gray-400"
+        />
         <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ displayTitle }}</span>
-        <span v-if="sourceLabel" class="ml-auto text-xs text-gray-400 dark:text-gray-500">{{ sourceLabel }}</span>
+        <span
+          v-if="sourceLabel"
+          class="ml-auto text-xs text-gray-400 dark:text-gray-500"
+        >{{ sourceLabel }}</span>
       </div>
     </template>
 
-    <div v-if="pending" class="space-y-3">
-      <USkeleton v-for="i in 3" :key="i" class="h-8 w-full" />
+    <div
+      v-if="pending"
+      class="space-y-3"
+    >
+      <USkeleton
+        v-for="i in 3"
+        :key="i"
+        class="h-8 w-full"
+      />
     </div>
 
-    <div v-else-if="!hasProject" class="flex flex-col items-center justify-center h-full py-6 text-center">
-      <UIcon name="i-heroicons-globe-alt" class="text-3xl text-gray-300 dark:text-gray-600 mb-2" />
-      <p class="text-sm text-gray-400">{{ t('dashboard.select_project', 'Select a project') }}</p>
+    <div
+      v-else-if="!hasProject"
+      class="flex flex-col items-center justify-center h-full py-6 text-center"
+    >
+      <UIcon
+        name="i-heroicons-globe-alt"
+        class="text-3xl text-gray-300 dark:text-gray-600 mb-2"
+      />
+      <p class="text-sm text-gray-400">
+        {{ t('dashboard.select_project', 'Select a project') }}
+      </p>
     </div>
 
-    <div v-else-if="!displayedLanguages.length" class="flex flex-col items-center justify-center h-full py-6 text-center">
-      <UIcon name="i-heroicons-globe-alt" class="text-3xl text-gray-300 dark:text-gray-600 mb-2" />
-      <p class="text-sm text-gray-400">{{ t('dashboard.no_languages', 'No language configured') }}</p>
+    <div
+      v-else-if="!displayedLanguages.length"
+      class="flex flex-col items-center justify-center h-full py-6 text-center"
+    >
+      <UIcon
+        name="i-heroicons-globe-alt"
+        class="text-3xl text-gray-300 dark:text-gray-600 mb-2"
+      />
+      <p class="text-sm text-gray-400">
+        {{ t('dashboard.no_languages', 'No language configured') }}
+      </p>
     </div>
 
     <div
@@ -79,13 +108,20 @@ function coverageColor(coverage: number) {
       class="overflow-y-auto space-y-3"
       :class="size === 'wide' ? 'grid grid-cols-2 gap-3 space-y-0' : ''"
     >
-      <div v-for="lang in displayedLanguages" :key="lang.code" class="space-y-1">
+      <div
+        v-for="lang in displayedLanguages"
+        :key="lang.code"
+        class="space-y-1"
+      >
         <div class="flex items-center justify-between text-xs">
           <span class="font-medium text-gray-700 dark:text-gray-300">
             {{ lang.name }}
             <span class="text-gray-400 ml-1 font-mono">{{ lang.code }}</span>
           </span>
-          <span class="font-semibold" :class="lang.coverage >= 90 ? 'text-green-600' : lang.coverage >= 60 ? 'text-yellow-500' : 'text-red-500'">
+          <span
+            class="font-semibold"
+            :class="lang.coverage >= 90 ? 'text-green-600' : lang.coverage >= 60 ? 'text-yellow-500' : 'text-red-500'"
+          >
             {{ lang.coverage }}%
           </span>
         </div>
@@ -96,7 +132,10 @@ function coverageColor(coverage: number) {
             :style="{ width: `${lang.coverage}%` }"
           />
         </div>
-        <p v-if="size !== 'sm'" class="text-xs text-gray-400">
+        <p
+          v-if="size !== 'sm'"
+          class="text-xs text-gray-400"
+        >
           {{ lang.translated }} / {{ lang.total }} · {{ lang.missing }} {{ t('dashboard.missing', 'missing') }}
         </p>
       </div>

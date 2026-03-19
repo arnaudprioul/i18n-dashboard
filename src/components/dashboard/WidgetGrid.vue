@@ -67,7 +67,9 @@ function onSaveConfig(patch: { dataSource?: any; title?: string | undefined }) {
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
           {{ t('dashboard.hello', 'Hello') }}{{ currentUser?.name ? `, ${currentUser.name}` : '' }}
         </h1>
-        <p class="text-gray-500 dark:text-gray-400 mt-0.5 text-sm">{{ t('dashboard.title', 'Dashboard') }}</p>
+        <p class="text-gray-500 dark:text-gray-400 mt-0.5 text-sm">
+          {{ t('dashboard.title', 'Dashboard') }}
+        </p>
       </div>
 
       <div class="flex items-center gap-2">
@@ -81,7 +83,11 @@ function onSaveConfig(patch: { dataSource?: any; title?: string | undefined }) {
           {{ t('dashboard.edit', 'Edit') }}
         </UButton>
         <template v-else>
-          <UButton variant="ghost" color="neutral" @click="cancelEditing">
+          <UButton
+            variant="ghost"
+            color="neutral"
+            @click="cancelEditing"
+          >
             {{ t('common.cancel', 'Cancel') }}
           </UButton>
           <UButton
@@ -92,7 +98,11 @@ function onSaveConfig(patch: { dataSource?: any; title?: string | undefined }) {
           >
             {{ t('common.add', 'Add') }}
           </UButton>
-          <UButton :loading="saving" icon="i-heroicons-check" @click="saveLayout">
+          <UButton
+            :loading="saving"
+            icon="i-heroicons-check"
+            @click="saveLayout"
+          >
             {{ t('dashboard.done', 'Done') }}
           </UButton>
         </template>
@@ -103,9 +113,19 @@ function onSaveConfig(patch: { dataSource?: any; title?: string | undefined }) {
       v-if="activeLayout.length === 0"
       class="border border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-16 text-center"
     >
-      <UIcon name="i-heroicons-squares-2x2" class="text-5xl text-gray-300 dark:text-gray-600 mb-3" />
-      <p class="text-gray-400 font-medium">{{ t('dashboard.no_widgets', 'No widgets') }}</p>
-      <UButton v-if="editing" class="mt-4" icon="i-heroicons-plus" @click="showPicker = true">
+      <UIcon
+        name="i-heroicons-squares-2x2"
+        class="text-5xl text-gray-300 dark:text-gray-600 mb-3"
+      />
+      <p class="text-gray-400 font-medium">
+        {{ t('dashboard.no_widgets', 'No widgets') }}
+      </p>
+      <UButton
+        v-if="editing"
+        class="mt-4"
+        icon="i-heroicons-plus"
+        @click="showPicker = true"
+      >
         {{ t('dashboard.add_widget', 'Add a widget') }}
       </UButton>
     </div>
@@ -131,7 +151,10 @@ function onSaveConfig(patch: { dataSource?: any; title?: string | undefined }) {
           ×
         </button>
 
-        <div v-if="editing" class="absolute -top-2 right-0 z-10 flex gap-0.5">
+        <div
+          v-if="editing"
+          class="absolute -top-2 right-0 z-10 flex gap-0.5"
+        >
           <button
             v-for="s in WIDGET_REGISTRY[widget.type].sizes"
             :key="s"
@@ -150,7 +173,10 @@ function onSaveConfig(patch: { dataSource?: any; title?: string | undefined }) {
           class="absolute bottom-1 right-1 z-10 w-6 h-6 bg-gray-600/80 dark:bg-gray-400/80 rounded-full text-white flex items-center justify-center text-xs hover:bg-gray-700 transition-colors"
           @click.stop="configIndex = index"
         >
-          <UIcon name="i-heroicons-cog-6-tooth" class="text-xs" />
+          <UIcon
+            name="i-heroicons-cog-6-tooth"
+            class="text-xs"
+          />
         </button>
 
         <div :class="editing ? 'animate-wiggle h-full' : 'h-full'">
@@ -167,7 +193,10 @@ function onSaveConfig(patch: { dataSource?: any; title?: string | undefined }) {
       </div>
     </div>
 
-    <DashboardWidgetPicker v-model="showPicker" @add="onAddWidget" />
+    <DashboardWidgetPicker
+      v-model="showPicker"
+      @add="onAddWidget"
+    />
 
     <DashboardWidgetConfigModal
       :open="configIndex !== -1"

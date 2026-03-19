@@ -1,8 +1,11 @@
 <template>
-  <UModal v-model:open="open" :title="t('scan.modal_title', 'Scan project')" :ui="{ width: '48rem' }">
+  <UModal
+    v-model:open="open"
+    :title="t('scan.modal_title', 'Scan project')"
+    :ui="{ width: '48rem' }"
+  >
     <template #body>
       <div class="space-y-5">
-
         <!-- Mode tabs -->
         <div class="flex gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
           <button
@@ -14,74 +17,144 @@
               : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
             @click="mode = m.value"
           >
-            <UIcon :name="m.icon" class="text-sm" />
+            <UIcon
+              :name="m.icon"
+              class="text-sm"
+            />
             {{ m.label }}
           </button>
         </div>
 
         <!-- Local mode -->
-        <div v-if="mode === 'local'" class="space-y-3">
+        <div
+          v-if="mode === 'local'"
+          class="space-y-3"
+        >
           <p class="text-sm text-gray-500 dark:text-gray-400">
             {{ t('scan.local_hint', 'Select the root folder of your Vue.js project. The scanner will detect all $t(), t(), <i18n-t> and v-t usages.') }}
           </p>
           <UFormField :label="t('scan.local_path_label', 'Project root folder')">
-            <PathPicker v-model="localPath" class="w-full" />
+            <PathPicker
+              v-model="localPath"
+              class="w-full"
+            />
           </UFormField>
         </div>
 
         <!-- Git mode -->
-        <div v-if="mode === 'git'" class="space-y-4">
+        <div
+          v-if="mode === 'git'"
+          class="space-y-4"
+        >
           <p class="text-sm text-gray-500 dark:text-gray-400">
             {{ t('scan.git_hint', 'Clone a Git repository and scan source files for translation keys.') }}
           </p>
           <GitRepoManager v-model="gitRepo" />
           <label class="flex items-center gap-2 cursor-pointer">
-            <UToggle v-model="saveRepo" size="sm" />
+            <UToggle
+              v-model="saveRepo"
+              size="sm"
+            />
             <span class="text-sm text-gray-600 dark:text-gray-400">{{ t('scan.git_save', 'Save this repository to the project') }}</span>
           </label>
         </div>
 
         <!-- Results -->
-        <div v-if="result" class="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 space-y-2">
-          <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">{{ t('scan.results', 'Results') }}</p>
+        <div
+          v-if="result"
+          class="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 space-y-2"
+        >
+          <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+            {{ t('scan.results', 'Results') }}
+          </p>
           <div class="grid grid-cols-2 gap-2">
             <div class="bg-white dark:bg-gray-900 rounded-lg p-2.5 text-center">
-              <p class="text-xl font-bold text-gray-900 dark:text-white">{{ result.keysFound ?? result.keysImported }}</p>
-              <p class="text-xs text-gray-400">{{ t('scan.keys_found', 'keys found') }}</p>
+              <p class="text-xl font-bold text-gray-900 dark:text-white">
+                {{ result.keysFound ?? result.keysImported }}
+              </p>
+              <p class="text-xs text-gray-400">
+                {{ t('scan.keys_found', 'keys found') }}
+              </p>
             </div>
             <div class="bg-white dark:bg-gray-900 rounded-lg p-2.5 text-center">
-              <p class="text-xl font-bold text-green-600 dark:text-green-400">{{ result.keysAdded }}</p>
-              <p class="text-xs text-gray-400">{{ t('scan.keys_added', 'new keys') }}</p>
+              <p class="text-xl font-bold text-green-600 dark:text-green-400">
+                {{ result.keysAdded }}
+              </p>
+              <p class="text-xs text-gray-400">
+                {{ t('scan.keys_added', 'new keys') }}
+              </p>
             </div>
-            <div v-if="result.unusedKeys !== undefined" class="bg-white dark:bg-gray-900 rounded-lg p-2.5 text-center">
-              <p class="text-xl font-bold text-amber-500">{{ result.unusedKeys }}</p>
-              <p class="text-xs text-gray-400">{{ t('scan.unused', 'unused') }}</p>
+            <div
+              v-if="result.unusedKeys !== undefined"
+              class="bg-white dark:bg-gray-900 rounded-lg p-2.5 text-center"
+            >
+              <p class="text-xl font-bold text-amber-500">
+                {{ result.unusedKeys }}
+              </p>
+              <p class="text-xs text-gray-400">
+                {{ t('scan.unused', 'unused') }}
+              </p>
             </div>
-            <div v-if="result.scannedFiles !== undefined" class="bg-white dark:bg-gray-900 rounded-lg p-2.5 text-center">
-              <p class="text-xl font-bold text-gray-900 dark:text-white">{{ result.scannedFiles }}</p>
-              <p class="text-xs text-gray-400">{{ t('scan.files_scanned', 'files scanned') }}</p>
+            <div
+              v-if="result.scannedFiles !== undefined"
+              class="bg-white dark:bg-gray-900 rounded-lg p-2.5 text-center"
+            >
+              <p class="text-xl font-bold text-gray-900 dark:text-white">
+                {{ result.scannedFiles }}
+              </p>
+              <p class="text-xs text-gray-400">
+                {{ t('scan.files_scanned', 'files scanned') }}
+              </p>
             </div>
-            <div v-if="result.langsAdded" class="bg-white dark:bg-gray-900 rounded-lg p-2.5 text-center">
-              <p class="text-xl font-bold text-primary-600 dark:text-primary-400">{{ result.langsAdded }}</p>
-              <p class="text-xs text-gray-400">{{ t('scan.langs_added', 'language(s) added') }}</p>
+            <div
+              v-if="result.langsAdded"
+              class="bg-white dark:bg-gray-900 rounded-lg p-2.5 text-center"
+            >
+              <p class="text-xl font-bold text-primary-600 dark:text-primary-400">
+                {{ result.langsAdded }}
+              </p>
+              <p class="text-xs text-gray-400">
+                {{ t('scan.langs_added', 'language(s) added') }}
+              </p>
             </div>
-            <div v-if="result.translationsAdded !== undefined" class="bg-white dark:bg-gray-900 rounded-lg p-2.5 text-center col-span-2">
-              <p class="text-xl font-bold text-green-600 dark:text-green-400">{{ result.translationsAdded }}</p>
-              <p class="text-xs text-gray-400">{{ t('scan.translations_synced', 'translations imported') }}</p>
+            <div
+              v-if="result.translationsAdded !== undefined"
+              class="bg-white dark:bg-gray-900 rounded-lg p-2.5 text-center col-span-2"
+            >
+              <p class="text-xl font-bold text-green-600 dark:text-green-400">
+                {{ result.translationsAdded }}
+              </p>
+              <p class="text-xs text-gray-400">
+                {{ t('scan.translations_synced', 'translations imported') }}
+              </p>
             </div>
           </div>
-          <p v-if="result.errors?.length" class="text-xs text-red-500">
+          <p
+            v-if="result.errors?.length"
+            class="text-xs text-red-500"
+          >
             {{ result.errors.length }} {{ t('scan.errors', 'errors') }}
           </p>
         </div>
 
-        <p v-if="error" class="text-sm text-red-500">{{ error }}</p>
+        <p
+          v-if="error"
+          class="text-sm text-red-500"
+        >
+          {{ error }}
+        </p>
       </div>
     </template>
 
     <template #footer>
       <div class="flex justify-end gap-2">
-        <UButton color="neutral" variant="ghost" @click="open = false">{{ t('common.cancel', 'Cancel') }}</UButton>
+        <UButton
+          color="neutral"
+          variant="ghost"
+          @click="open = false"
+        >
+          {{ t('common.cancel', 'Cancel') }}
+        </UButton>
         <UButton
           :loading="loading"
           :disabled="mode === 'local' ? !localPath : !gitRepo?.url"

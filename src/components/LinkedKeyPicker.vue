@@ -10,7 +10,11 @@
     />
   </UTooltip>
 
-  <UModal v-model:open="open" :title="t('key.link_key_title', 'Link a key')" :ui="{ width: 'sm:max-w-lg' }">
+  <UModal
+    v-model:open="open"
+    :title="t('key.link_key_title', 'Link a key')"
+    :ui="{ width: 'sm:max-w-lg' }"
+  >
     <template #body>
       <div class="space-y-4">
         <!-- Modifier selector -->
@@ -40,13 +44,25 @@
 
         <!-- Key list -->
         <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-          <div v-if="loading" class="py-8 text-center">
-            <UIcon name="i-heroicons-arrow-path" class="animate-spin text-gray-400 text-lg" />
+          <div
+            v-if="loading"
+            class="py-8 text-center"
+          >
+            <UIcon
+              name="i-heroicons-arrow-path"
+              class="animate-spin text-gray-400 text-lg"
+            />
           </div>
-          <div v-else-if="!keys.length" class="py-8 text-center text-sm text-gray-400">
+          <div
+            v-else-if="!keys.length"
+            class="py-8 text-center text-sm text-gray-400"
+          >
             {{ t('key.none_found', 'No key found') }}
           </div>
-          <div v-else class="max-h-72 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-800">
+          <div
+            v-else
+            class="max-h-72 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-800"
+          >
             <button
               v-for="key in keys"
               :key="key.id"

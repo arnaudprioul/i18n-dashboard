@@ -2,28 +2,59 @@
   <div class="p-6">
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h1 data-cy="all-users-title" class="text-2xl font-bold text-gray-900 dark:text-white">{{ t('users.all_title', 'All users') }}</h1>
-        <p class="text-gray-500 dark:text-gray-400 mt-0.5 text-sm">{{ t('users.subtitle', 'Manage dashboard access') }}</p>
+        <h1
+          data-cy="all-users-title"
+          class="text-2xl font-bold text-gray-900 dark:text-white"
+        >
+          {{ t('users.all_title', 'All users') }}
+        </h1>
+        <p class="text-gray-500 dark:text-gray-400 mt-0.5 text-sm">
+          {{ t('users.subtitle', 'Manage dashboard access') }}
+        </p>
       </div>
-      <UButton data-cy="global-users-add-btn" icon="i-heroicons-plus" @click="openAdd">{{ t('users.add', 'Add a user') }}</UButton>
+      <UButton
+        data-cy="global-users-add-btn"
+        icon="i-heroicons-plus"
+        @click="openAdd"
+      >
+        {{ t('users.add', 'Add a user') }}
+      </UButton>
     </div>
 
     <!-- Users table -->
     <UCard>
-      <div v-if="pending" class="space-y-3">
-        <USkeleton v-for="i in 4" :key="i" class="h-12" />
+      <div
+        v-if="pending"
+        class="space-y-3"
+      >
+        <USkeleton
+          v-for="i in 4"
+          :key="i"
+          class="h-12"
+        />
       </div>
-      <div v-else-if="!users.length" class="text-center py-12">
-        <UIcon name="i-heroicons-users" class="text-4xl text-gray-300 mb-2" />
-        <p class="text-gray-400">{{ t('users.none', 'No users') }}</p>
+      <div
+        v-else-if="!users.length"
+        class="text-center py-12"
+      >
+        <UIcon
+          name="i-heroicons-users"
+          class="text-4xl text-gray-300 mb-2"
+        />
+        <p class="text-gray-400">
+          {{ t('users.none', 'No users') }}
+        </p>
       </div>
-      <div v-else class="divide-y divide-gray-100 dark:divide-gray-800">
+      <div
+        v-else
+        class="divide-y divide-gray-100 dark:divide-gray-800"
+      >
         <div
-            v-for="user in users"
-            :key="user.id"
-            :data-cy="'user-row-' + user.id"
-            class="flex items-center justify-between py-3 gap-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg px-2 -mx-2 transition-colors"
-            @click="router.push(`/users/${user.id}/profile`)"
+          v-for="user in users"
+          :key="user.id"
+          :data-cy="'user-row-' + user.id"
+          class="flex items-center justify-between py-3 gap-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg px-2 -mx-2 transition-colors"
+          @click="router.push(`/users/${user.id}/profile`)"
         >
           <div class="flex items-center gap-3 min-w-0">
             <div class="w-9 h-9 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0">
@@ -33,11 +64,34 @@
             </div>
             <div class="min-w-0">
               <div class="flex items-center gap-2">
-                <p :data-cy="'user-name-' + user.id" class="font-medium text-gray-900 dark:text-white text-sm truncate">{{ user.name }}</p>
-                <UBadge v-if="user.is_super_admin" size="xs" color="error">Super Admin</UBadge>
-                <UBadge v-if="!user.is_active" size="xs" color="neutral" variant="outline">{{ t('users.inactive', 'Inactive') }}</UBadge>
+                <p
+                  :data-cy="'user-name-' + user.id"
+                  class="font-medium text-gray-900 dark:text-white text-sm truncate"
+                >
+                  {{ user.name }}
+                </p>
+                <UBadge
+                  v-if="user.is_super_admin"
+                  size="xs"
+                  color="error"
+                >
+                  Super Admin
+                </UBadge>
+                <UBadge
+                  v-if="!user.is_active"
+                  size="xs"
+                  color="neutral"
+                  variant="outline"
+                >
+                  {{ t('users.inactive', 'Inactive') }}
+                </UBadge>
               </div>
-              <p :data-cy="'user-email-' + user.id" class="text-xs text-gray-400 truncate">{{ user.email }}</p>
+              <p
+                :data-cy="'user-email-' + user.id"
+                class="text-xs text-gray-400 truncate"
+              >
+                {{ user.email }}
+              </p>
             </div>
           </div>
 
@@ -45,27 +99,43 @@
           <div class="flex flex-wrap gap-1 flex-1 justify-center">
             <template v-if="user.roles?.length">
               <UBadge
-                  v-for="r in user.roles.slice(0, 3)"
-                  :key="`${r.project_id}-${r.role}`"
-                  size="xs"
-                  :color="roleColor(r.role)"
-                  variant="soft"
+                v-for="r in user.roles.slice(0, 3)"
+                :key="`${r.project_id}-${r.role}`"
+                size="xs"
+                :color="roleColor(r.role)"
+                variant="soft"
               >
                 {{ r.project_id === null ? t('users.global_access', 'Global') : r.project_name }} · {{ roleLabel(r.role) }}
               </UBadge>
-              <UBadge v-if="user.roles.length > 3" size="xs" color="neutral" variant="soft">
+              <UBadge
+                v-if="user.roles.length > 3"
+                size="xs"
+                color="neutral"
+                variant="soft"
+              >
                 +{{ user.roles.length - 3 }}
               </UBadge>
             </template>
-            <span v-else class="text-xs text-gray-400 italic">{{ t('users.no_role', 'No role') }}</span>
+            <span
+              v-else
+              class="text-xs text-gray-400 italic"
+            >{{ t('users.no_role', 'No role') }}</span>
           </div>
 
-          <div class="flex items-center gap-2 shrink-0" @click.stop>
+          <div
+            class="flex items-center gap-2 shrink-0"
+            @click.stop
+          >
             <span class="text-xs text-gray-400">
               {{ user.last_login_at ? formatRelative(user.last_login_at) : t('users.never_connected', 'Never logged in') }}
             </span>
             <UDropdownMenu :items="userActions(user)">
-              <UButton icon="i-heroicons-ellipsis-vertical" color="neutral" variant="ghost" size="xs" />
+              <UButton
+                icon="i-heroicons-ellipsis-vertical"
+                color="neutral"
+                variant="ghost"
+                size="xs"
+              />
             </UDropdownMenu>
           </div>
         </div>
@@ -73,32 +143,64 @@
     </UCard>
 
     <!-- Add user modal -->
-    <UModal data-cy="global-add-user-modal" v-model:open="showModal" :title="t('users.add_user_title', 'Add a user')">
+    <UModal
+      v-model:open="showModal"
+      data-cy="global-add-user-modal"
+      :title="t('users.add_user_title', 'Add a user')"
+    >
       <template #body>
         <div class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
-            <UFormField :label="t('users.full_name', 'Full name')" required>
-              <UInput v-model="form.name" placeholder="Marie Dupont" class="w-full" />
+            <UFormField
+              :label="t('users.full_name', 'Full name')"
+              required
+            >
+              <UInput
+                v-model="form.name"
+                placeholder="Marie Dupont"
+                class="w-full"
+              />
             </UFormField>
-            <UFormField :label="t('login.email', 'Email')" required>
-              <UInput v-model="form.email" type="email" placeholder="marie@example.com" class="w-full" />
+            <UFormField
+              :label="t('login.email', 'Email')"
+              required
+            >
+              <UInput
+                v-model="form.email"
+                type="email"
+                placeholder="marie@example.com"
+                class="w-full"
+              />
             </UFormField>
           </div>
 
-          <UFormField :label="t('users.role_label', 'Role')" required>
-            <USelect v-model="form.role" :items="roleOptions" class="w-full" />
+          <UFormField
+            :label="t('users.role_label', 'Role')"
+            required
+          >
+            <USelect
+              v-model="form.role"
+              :items="roleOptions"
+              class="w-full"
+            />
           </UFormField>
 
           <UFormField :label="t('users.project_access_label', 'Project access')">
             <div class="space-y-2">
-              <UCheckbox v-model="form.global_access" :label="t('users.global_access_label', 'Global access (all projects)')" />
-              <div v-if="!form.global_access" class="space-y-1 pl-1">
+              <UCheckbox
+                v-model="form.global_access"
+                :label="t('users.global_access_label', 'Global access (all projects)')"
+              />
+              <div
+                v-if="!form.global_access"
+                class="space-y-1 pl-1"
+              >
                 <UCheckbox
-                    v-for="p in projects"
-                    :key="p.id"
-                    :label="p.name"
-                    :model-value="form.project_ids.includes(p.id)"
-                    @update:model-value="toggleProject(p.id, $event)"
+                  v-for="p in projects"
+                  :key="p.id"
+                  :label="p.name"
+                  :model-value="form.project_ids.includes(p.id)"
+                  @update:model-value="toggleProject(p.id, $event)"
                 />
               </div>
             </div>
@@ -106,35 +208,64 @@
 
           <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
             <p class="text-xs text-blue-600 dark:text-blue-400">
-              <UIcon name="i-heroicons-information-circle" class="inline mr-1" />
+              <UIcon
+                name="i-heroicons-information-circle"
+                class="inline mr-1"
+              />
               {{ t('users.temp_password_info', 'A temporary password will be generated and shown below.') }}
             </p>
           </div>
 
-          <div v-if="createdTempPassword" class="bg-green-50 dark:bg-green-900/20 rounded-lg p-3">
+          <div
+            v-if="createdTempPassword"
+            class="bg-green-50 dark:bg-green-900/20 rounded-lg p-3"
+          >
             <p class="text-xs text-green-700 dark:text-green-300 font-medium mb-1">
-              <UIcon name="i-heroicons-key" class="inline mr-1" />
+              <UIcon
+                name="i-heroicons-key"
+                class="inline mr-1"
+              />
               {{ t('users.temp_password_label', 'Temporary password (copy it now):') }}
             </p>
             <div class="flex items-center gap-2">
               <code class="text-sm font-mono text-green-800 dark:text-green-200 flex-1">{{ createdTempPassword }}</code>
-              <UButton size="xs" icon="i-heroicons-clipboard" color="neutral" variant="ghost" @click="copyTemp" />
+              <UButton
+                size="xs"
+                icon="i-heroicons-clipboard"
+                color="neutral"
+                variant="ghost"
+                @click="copyTemp"
+              />
             </div>
           </div>
         </div>
       </template>
       <template #footer>
         <div class="flex justify-end gap-3">
-          <UButton data-cy="global-add-user-cancel-btn" color="neutral" variant="ghost" @click="closeModal">
+          <UButton
+            data-cy="global-add-user-cancel-btn"
+            color="neutral"
+            variant="ghost"
+            @click="closeModal"
+          >
             {{ createdTempPassword ? t('common.close', 'Close') : t('common.cancel', 'Cancel') }}
           </UButton>
-          <UButton v-if="!createdTempPassword" :loading="saving" @click="saveUser">{{ t('common.create', 'Create') }}</UButton>
+          <UButton
+            v-if="!createdTempPassword"
+            :loading="saving"
+            @click="saveUser"
+          >
+            {{ t('common.create', 'Create') }}
+          </UButton>
         </div>
       </template>
     </UModal>
 
     <!-- Roles modal -->
-    <UModal v-model:open="showRolesModal" :title="t('users.manage_access_title', 'Manage access')">
+    <UModal
+      v-model:open="showRolesModal"
+      :title="t('users.manage_access_title', 'Manage access')"
+    >
       <template #body>
         <div class="space-y-4">
           <div class="flex items-center gap-3 pb-4 border-b border-gray-100 dark:border-gray-800">
@@ -144,48 +275,92 @@
               </span>
             </div>
             <div>
-              <p class="font-semibold text-gray-900 dark:text-white text-sm">{{ rolesUser?.name }}</p>
-              <p class="text-xs text-gray-400">{{ rolesUser?.email }}</p>
+              <p class="font-semibold text-gray-900 dark:text-white text-sm">
+                {{ rolesUser?.name }}
+              </p>
+              <p class="text-xs text-gray-400">
+                {{ rolesUser?.email }}
+              </p>
             </div>
           </div>
 
           <div class="space-y-2">
             <div
-                v-for="item in rolesForm"
-                :key="item.project_id ?? 'global'"
-                class="flex items-center justify-between gap-3"
+              v-for="item in rolesForm"
+              :key="item.project_id ?? 'global'"
+              class="flex items-center justify-between gap-3"
             >
               <div class="flex items-center gap-2 min-w-0 flex-1">
-                <UIcon v-if="item.project_id === null" name="i-heroicons-globe-alt" class="text-gray-400 shrink-0" />
-                <span v-else class="w-2 h-2 rounded-full shrink-0" :class="`bg-${item.project_color || 'primary'}-500`" />
+                <UIcon
+                  v-if="item.project_id === null"
+                  name="i-heroicons-globe-alt"
+                  class="text-gray-400 shrink-0"
+                />
+                <span
+                  v-else
+                  class="w-2 h-2 rounded-full shrink-0"
+                  :class="`bg-${item.project_color || 'primary'}-500`"
+                />
                 <span class="text-sm text-gray-700 dark:text-gray-300 truncate">{{ item.project_name }}</span>
               </div>
-              <USelect v-model="item.role" :items="accessOptions" class="w-44 shrink-0" />
+              <USelect
+                v-model="item.role"
+                :items="accessOptions"
+                class="w-44 shrink-0"
+              />
             </div>
           </div>
         </div>
       </template>
       <template #footer>
         <div class="flex justify-end gap-3">
-          <UButton color="neutral" variant="ghost" @click="showRolesModal = false">{{ t('common.cancel', 'Cancel') }}</UButton>
-          <UButton :loading="rolesSaving" @click="saveRoles">{{ t('common.save', 'Save') }}</UButton>
+          <UButton
+            color="neutral"
+            variant="ghost"
+            @click="showRolesModal = false"
+          >
+            {{ t('common.cancel', 'Cancel') }}
+          </UButton>
+          <UButton
+            :loading="rolesSaving"
+            @click="saveRoles"
+          >
+            {{ t('common.save', 'Save') }}
+          </UButton>
         </div>
       </template>
     </UModal>
 
     <!-- Delete confirm -->
-    <UModal v-model:open="showDeleteConfirm" :title="t('users.delete_user_title', 'Delete user')">
+    <UModal
+      v-model:open="showDeleteConfirm"
+      :title="t('users.delete_user_title', 'Delete user')"
+    >
       <template #body>
         <p class="text-gray-600 dark:text-gray-400">
           {{ t('users.delete_confirm', 'Permanently delete') }} <strong>{{ deletingUser?.name }}</strong>?
           {{ t('users.delete_warning', 'All their data will be deleted.') }}
         </p>
-        <p class="text-red-500 text-sm mt-2 font-medium">{{ t('common.irreversible', 'This action is irreversible.') }}</p>
+        <p class="text-red-500 text-sm mt-2 font-medium">
+          {{ t('common.irreversible', 'This action is irreversible.') }}
+        </p>
       </template>
       <template #footer>
         <div class="flex justify-end gap-3">
-          <UButton color="neutral" variant="ghost" @click="showDeleteConfirm = false">{{ t('common.cancel', 'Cancel') }}</UButton>
-          <UButton color="error" :loading="deleting" @click="deleteUser">{{ t('common.delete', 'Delete') }}</UButton>
+          <UButton
+            color="neutral"
+            variant="ghost"
+            @click="showDeleteConfirm = false"
+          >
+            {{ t('common.cancel', 'Cancel') }}
+          </UButton>
+          <UButton
+            color="error"
+            :loading="deleting"
+            @click="deleteUser"
+          >
+            {{ t('common.delete', 'Delete') }}
+          </UButton>
         </div>
       </template>
     </UModal>

@@ -2,7 +2,12 @@
   <div class="p-6">
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h1 data-cy="review-title" class="text-2xl font-bold text-gray-900 dark:text-white">{{ t('review.title', 'Review queue') }}</h1>
+        <h1
+          data-cy="review-title"
+          class="text-2xl font-bold text-gray-900 dark:text-white"
+        >
+          {{ t('review.title', 'Review queue') }}
+        </h1>
         <p class="text-gray-500 dark:text-gray-400 mt-0.5 text-sm">
           {{ reviewItems.length }} {{ t('review.pending_count', 'translation') }}{{ reviewItems.length > 1 ? t('review.pending_count_plural', 's') : '' }} {{ t('review.pending_label', 'pending review') }}
         </p>
@@ -18,19 +23,40 @@
     </div>
 
     <!-- Loading -->
-    <div v-if="pending" class="space-y-3">
-      <USkeleton v-for="i in 5" :key="i" class="h-20" />
+    <div
+      v-if="pending"
+      class="space-y-3"
+    >
+      <USkeleton
+        v-for="i in 5"
+        :key="i"
+        class="h-20"
+      />
     </div>
 
     <!-- Empty -->
-    <div v-else-if="!reviewItems.length" data-cy="review-empty-state" class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 py-16 text-center">
-      <UIcon name="i-heroicons-check-badge" class="text-5xl text-green-400 mb-3" />
-      <p class="text-gray-600 dark:text-gray-400 font-medium">{{ t('review.empty_title', 'No translations pending') }}</p>
-      <p class="text-gray-400 text-sm mt-1">{{ t('review.empty_hint', 'All reviewed translations have already been approved.') }}</p>
+    <div
+      v-else-if="!reviewItems.length"
+      data-cy="review-empty-state"
+      class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 py-16 text-center"
+    >
+      <UIcon
+        name="i-heroicons-check-badge"
+        class="text-5xl text-green-400 mb-3"
+      />
+      <p class="text-gray-600 dark:text-gray-400 font-medium">
+        {{ t('review.empty_title', 'No translations pending') }}
+      </p>
+      <p class="text-gray-400 text-sm mt-1">
+        {{ t('review.empty_hint', 'All reviewed translations have already been approved.') }}
+      </p>
     </div>
 
     <!-- Review list -->
-    <div v-else class="space-y-3">
+    <div
+      v-else
+      class="space-y-3"
+    >
       <div
         v-for="item in reviewItems"
         :key="item.id"
@@ -52,10 +78,23 @@
               <span class="text-xs font-mono font-semibold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/30 px-2 py-0.5 rounded">
                 {{ item.key }}
               </span>
-              <UBadge size="xs" variant="outline" color="neutral">{{ item.language_code.toUpperCase() }}</UBadge>
+              <UBadge
+                size="xs"
+                variant="outline"
+                color="neutral"
+              >
+                {{ item.language_code.toUpperCase() }}
+              </UBadge>
             </div>
-            <p v-if="item.key_description" class="text-xs text-gray-400 mb-2">{{ item.key_description }}</p>
-            <p class="text-sm text-gray-700 dark:text-gray-300 leading-snug">{{ item.value }}</p>
+            <p
+              v-if="item.key_description"
+              class="text-xs text-gray-400 mb-2"
+            >
+              {{ item.key_description }}
+            </p>
+            <p class="text-sm text-gray-700 dark:text-gray-300 leading-snug">
+              {{ item.value }}
+            </p>
           </div>
 
           <!-- Actions -->

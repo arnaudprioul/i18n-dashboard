@@ -63,11 +63,20 @@ function save() {
 </script>
 
 <template>
-  <UModal :open="open" :title="t('dashboard.configure_widget', 'Configure widget')" @update:open="emit('update:open', $event)">
+  <UModal
+    :open="open"
+    :title="t('dashboard.configure_widget', 'Configure widget')"
+    @update:open="emit('update:open', $event)"
+  >
     <template #body>
       <div class="space-y-6">
-        <div v-if="hasDataSource" class="space-y-3">
-          <p class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ t('dashboard.data_source', 'Data source') }}</p>
+        <div
+          v-if="hasDataSource"
+          class="space-y-3"
+        >
+          <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
+            {{ t('dashboard.data_source', 'Data source') }}
+          </p>
           <div class="flex gap-2">
             <button
               class="flex-1 px-3 py-2 rounded-lg text-sm font-medium border transition-colors"
@@ -99,7 +108,9 @@ function save() {
         </div>
 
         <div class="space-y-2">
-          <p class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ t('dashboard.custom_title', 'Custom title') }}</p>
+          <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
+            {{ t('dashboard.custom_title', 'Custom title') }}
+          </p>
           <UInput
             v-model="draftTitle"
             :placeholder="t('dashboard.default_title', 'Default title')"
@@ -110,7 +121,11 @@ function save() {
 
     <template #footer>
       <div class="flex justify-end gap-2">
-        <UButton variant="ghost" color="neutral" @click="emit('update:open', false)">
+        <UButton
+          variant="ghost"
+          color="neutral"
+          @click="emit('update:open', false)"
+        >
           {{ t('common.cancel', 'Cancel') }}
         </UButton>
         <UButton @click="save">

@@ -96,18 +96,28 @@ const displayValue = computed(() => {
 <template>
   <UCard class="h-full overflow-hidden">
     <div class="flex flex-col h-full justify-between">
-      <div v-if="pending" class="space-y-2">
+      <div
+        v-if="pending"
+        class="space-y-2"
+      >
         <USkeleton class="h-8 w-16" />
         <USkeleton class="h-4 w-24" />
       </div>
 
-      <div v-else class="flex flex-col h-full">
+      <div
+        v-else
+        class="flex flex-col h-full"
+      >
         <div class="flex items-start justify-between">
           <div
             class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
             :class="config.bgColor"
           >
-            <UIcon :name="config.icon" class="text-xl" :class="config.iconColor" />
+            <UIcon
+              :name="config.icon"
+              class="text-xl"
+              :class="config.iconColor"
+            />
           </div>
         </div>
 
@@ -115,12 +125,27 @@ const displayValue = computed(() => {
           <p class="text-3xl font-bold text-gray-900 dark:text-white mt-3">
             {{ hasProject ? displayValue : '—' }}
           </p>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{{ displayLabel }}</p>
-          <p v-if="!hasProject" class="text-xs text-gray-400 dark:text-gray-600 mt-1">{{ t('dashboard.select_project', 'Select a project') }}</p>
-          <p v-else-if="sourceLabel" class="text-xs text-gray-400 dark:text-gray-500 mt-1">{{ sourceLabel }}</p>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+            {{ displayLabel }}
+          </p>
+          <p
+            v-if="!hasProject"
+            class="text-xs text-gray-400 dark:text-gray-600 mt-1"
+          >
+            {{ t('dashboard.select_project', 'Select a project') }}
+          </p>
+          <p
+            v-else-if="sourceLabel"
+            class="text-xs text-gray-400 dark:text-gray-500 mt-1"
+          >
+            {{ sourceLabel }}
+          </p>
         </div>
 
-        <div v-if="size === 'md' && type === 'stat-coverage' && stats && hasProject" class="mt-3">
+        <div
+          v-if="size === 'md' && type === 'stat-coverage' && stats && hasProject"
+          class="mt-3"
+        >
           <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
             <div
               class="bg-green-500 h-1.5 rounded-full transition-all"

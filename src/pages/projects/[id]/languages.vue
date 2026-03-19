@@ -2,15 +2,34 @@
   <div class="p-6">
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h1 data-cy="languages-title" class="text-2xl font-bold text-gray-900 dark:text-white">{{ t('languages.title', 'Languages') }}</h1>
-        <p class="text-gray-500 dark:text-gray-400 mt-0.5 text-sm">{{ t('languages.subtitle', 'Manage project languages') }}</p>
+        <h1
+          data-cy="languages-title"
+          class="text-2xl font-bold text-gray-900 dark:text-white"
+        >
+          {{ t('languages.title', 'Languages') }}
+        </h1>
+        <p class="text-gray-500 dark:text-gray-400 mt-0.5 text-sm">
+          {{ t('languages.subtitle', 'Manage project languages') }}
+        </p>
       </div>
-      <UButton data-cy="languages-add-btn" icon="i-heroicons-plus" @click="showAdd = true">{{ t('languages.add', 'Add a language') }}</UButton>
+      <UButton
+        data-cy="languages-add-btn"
+        icon="i-heroicons-plus"
+        @click="showAdd = true"
+      >
+        {{ t('languages.add', 'Add a language') }}
+      </UButton>
     </div>
 
     <!-- Skeleton -->
-    <div v-if="pending" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <UCard v-for="i in 3" :key="i">
+    <div
+      v-if="pending"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+    >
+      <UCard
+        v-for="i in 3"
+        :key="i"
+      >
         <div class="flex items-center gap-3 mb-4">
           <USkeleton class="w-10 h-10 rounded-full shrink-0" />
           <div class="flex-1 space-y-1.5">
@@ -24,12 +43,15 @@
     </div>
 
     <!-- Languages list -->
-    <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div
+      v-else
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+    >
       <UCard
-          v-for="lang in languages"
-          :key="lang.code"
-          :data-cy="'language-card-' + lang.code"
-          class="relative"
+        v-for="lang in languages"
+        :key="lang.code"
+        :data-cy="'language-card-' + lang.code"
+        class="relative"
       >
         <div class="flex items-start justify-between">
           <div class="flex items-center gap-3">
@@ -37,15 +59,31 @@
               <span class="text-xs font-bold text-primary-600 dark:text-primary-400 uppercase">{{ lang.code.split('-')[0] }}</span>
             </div>
             <div>
-              <p class="font-semibold text-gray-900 dark:text-white">{{ findLanguage(lang.code)?.nativeName || lang.name }}</p>
-              <p class="text-sm text-gray-400">{{ lang.code }}</p>
+              <p class="font-semibold text-gray-900 dark:text-white">
+                {{ findLanguage(lang.code)?.nativeName || lang.name }}
+              </p>
+              <p class="text-sm text-gray-400">
+                {{ lang.code }}
+              </p>
             </div>
           </div>
 
           <div class="flex items-center gap-2">
-            <UBadge v-if="lang.is_default" :data-cy="'lang-default-badge-' + lang.code" color="primary" size="xs">{{ t('languages.default_badge', 'Default') }}</UBadge>
+            <UBadge
+              v-if="lang.is_default"
+              :data-cy="'lang-default-badge-' + lang.code"
+              color="primary"
+              size="xs"
+            >
+              {{ t('languages.default_badge', 'Default') }}
+            </UBadge>
             <UDropdownMenu :items="getLangActions(lang)">
-              <UButton color="neutral" icon="i-heroicons-ellipsis-vertical" size="xs" variant="ghost"/>
+              <UButton
+                color="neutral"
+                icon="i-heroicons-ellipsis-vertical"
+                size="xs"
+                variant="ghost"
+              />
             </UDropdownMenu>
           </div>
         </div>
@@ -53,15 +91,18 @@
         <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
           <div class="flex items-center justify-between text-sm">
             <span class="text-gray-500">{{ t('languages.coverage', 'Coverage') }}</span>
-            <span :data-cy="'lang-coverage-' + lang.code" class="font-medium text-gray-700 dark:text-gray-300">
+            <span
+              :data-cy="'lang-coverage-' + lang.code"
+              class="font-medium text-gray-700 dark:text-gray-300"
+            >
               {{ getCoverage(lang.code) }}%
             </span>
           </div>
           <div class="mt-2 h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
             <div
-                :class="getCoverage(lang.code) >= 80 ? 'bg-green-500' : getCoverage(lang.code) >= 50 ? 'bg-yellow-500' : 'bg-red-400'"
-                :style="{ width: `${getCoverage(lang.code)}%` }"
-                class="h-full rounded-full"
+              :class="getCoverage(lang.code) >= 80 ? 'bg-green-500' : getCoverage(lang.code) >= 50 ? 'bg-yellow-500' : 'bg-red-400'"
+              :style="{ width: `${getCoverage(lang.code)}%` }"
+              class="h-full rounded-full"
             />
           </div>
           <p class="text-xs text-gray-400 mt-1">
@@ -74,38 +115,74 @@
               class="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors w-full text-left"
               @click="openFallbackModal(lang)"
             >
-              <UIcon name="i-heroicons-arrow-uturn-left" class="text-xs shrink-0" />
+              <UIcon
+                name="i-heroicons-arrow-uturn-left"
+                class="text-xs shrink-0"
+              />
               <span v-if="lang.fallback_code">
                 {{ t('languages.fallback_label', 'Fallback') }}: <code class="font-mono bg-gray-100 dark:bg-gray-800 px-1 rounded">{{ lang.fallback_code }}</code>
               </span>
               <span v-else-if="getAutoBcp47Fallback(lang.code)">
                 {{ t('languages.fallback_auto', 'Auto fallback') }}: <code class="font-mono bg-gray-100 dark:bg-gray-800 px-1 rounded">{{ getAutoBcp47Fallback(lang.code) }}</code>
-                <UBadge size="xs" color="neutral" variant="soft" class="ml-1">BCP 47</UBadge>
+                <UBadge
+                  size="xs"
+                  color="neutral"
+                  variant="soft"
+                  class="ml-1"
+                >BCP 47</UBadge>
               </span>
-              <span v-else class="italic">{{ t('languages.no_fallback', 'No fallback') }}</span>
-              <UIcon name="i-heroicons-pencil-square" class="ml-auto text-xs opacity-40" />
+              <span
+                v-else
+                class="italic"
+              >{{ t('languages.no_fallback', 'No fallback') }}</span>
+              <UIcon
+                name="i-heroicons-pencil-square"
+                class="ml-auto text-xs opacity-40"
+              />
             </button>
           </div>
         </div>
       </UCard>
 
       <!-- Empty state -->
-      <div v-if="!languages.length" class="col-span-full text-center py-16">
-        <UIcon class="text-5xl text-gray-300 dark:text-gray-600 mb-3" name="i-heroicons-flag"/>
-        <p class="text-gray-400 font-medium">{{ t('languages.none', 'No language configured') }}</p>
-        <p class="text-gray-400 text-sm mt-1">{{ t('languages.none_hint', 'Add languages to start translating.') }}</p>
-        <UButton class="mt-4" @click="showAdd = true">{{ t('languages.add', 'Add a language') }}</UButton>
+      <div
+        v-if="!languages.length"
+        class="col-span-full text-center py-16"
+      >
+        <UIcon
+          class="text-5xl text-gray-300 dark:text-gray-600 mb-3"
+          name="i-heroicons-flag"
+        />
+        <p class="text-gray-400 font-medium">
+          {{ t('languages.none', 'No language configured') }}
+        </p>
+        <p class="text-gray-400 text-sm mt-1">
+          {{ t('languages.none_hint', 'Add languages to start translating.') }}
+        </p>
+        <UButton
+          class="mt-4"
+          @click="showAdd = true"
+        >
+          {{ t('languages.add', 'Add a language') }}
+        </UButton>
       </div>
     </div>
 
     <!-- Add Language modal -->
-    <UModal data-cy="add-language-modal" v-model:open="showAdd" :title="t('languages.add_modal_title', 'Add a language')">
+    <UModal
+      v-model:open="showAdd"
+      data-cy="add-language-modal"
+      :title="t('languages.add_modal_title', 'Add a language')"
+    >
       <template #body>
         <div class="space-y-4">
-          <UFormField :label="t('languages.language_label', 'Language')" required>
+          <UFormField
+            :label="t('languages.language_label', 'Language')"
+            required
+          >
             <UInput
-              data-cy="lang-search-input"
               v-model="langSearch"
+              data-cy="lang-search-input"
               :placeholder="t('onboarding.languages_search', 'Search for a language...')"
               icon="i-heroicons-magnifying-glass"
               class="w-full mb-2"
@@ -122,9 +199,16 @@
                   <span class="font-mono text-xs text-gray-400 w-14 shrink-0">{{ lang.code }}</span>
                   <span class="flex-1">{{ lang.nativeName }}</span>
                   <span class="text-xs text-gray-400 shrink-0">{{ lang.name }}</span>
-                  <UIcon v-if="selectedWorldLang?.code === lang.code" name="i-heroicons-check" class="text-primary-500 shrink-0" />
+                  <UIcon
+                    v-if="selectedWorldLang?.code === lang.code"
+                    name="i-heroicons-check"
+                    class="text-primary-500 shrink-0"
+                  />
                 </button>
-                <div v-if="!filteredWorldLangs.length" class="px-3 py-4 text-sm text-center text-gray-400">
+                <div
+                  v-if="!filteredWorldLangs.length"
+                  class="px-3 py-4 text-sm text-center text-gray-400"
+                >
                   {{ t('languages.none_found', 'No language found') }}
                 </div>
               </div>
@@ -139,51 +223,99 @@
                   :class="selectedWorldLang?.code === langSearch ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300' : 'text-gray-500 dark:text-gray-400'"
                   @click="useCustomCode(langSearch)"
                 >
-                  <UIcon name="i-heroicons-plus-circle" class="shrink-0 text-amber-500" />
+                  <UIcon
+                    name="i-heroicons-plus-circle"
+                    class="shrink-0 text-amber-500"
+                  />
                   <span class="flex-1">{{ t('languages.use_code', 'Use code') }} <code class="font-mono bg-gray-100 dark:bg-gray-800 px-1 rounded">{{ langSearch }}</code></span>
-                  <UBadge size="xs" color="warning" variant="soft">BCP 47</UBadge>
+                  <UBadge
+                    size="xs"
+                    color="warning"
+                    variant="soft"
+                  >
+                    BCP 47
+                  </UBadge>
                 </button>
               </div>
             </div>
           </UFormField>
 
           <!-- Selected preview -->
-          <div v-if="selectedWorldLang" class="flex items-center gap-3 bg-primary-50 dark:bg-primary-900/20 rounded-lg px-3 py-2">
+          <div
+            v-if="selectedWorldLang"
+            class="flex items-center gap-3 bg-primary-50 dark:bg-primary-900/20 rounded-lg px-3 py-2"
+          >
             <div class="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/40 flex items-center justify-center shrink-0">
               <span class="text-xs font-bold text-primary-600 dark:text-primary-400 uppercase">{{ selectedWorldLang.code.split('-')[0] }}</span>
             </div>
             <div class="min-w-0 flex-1">
-              <p class="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">{{ selectedWorldLang.nativeName }}</p>
-              <p class="text-xs font-mono text-gray-400">{{ selectedWorldLang.code }}</p>
+              <p class="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">
+                {{ selectedWorldLang.nativeName }}
+              </p>
+              <p class="text-xs font-mono text-gray-400">
+                {{ selectedWorldLang.code }}
+              </p>
             </div>
-            <UBadge v-if="selectedWorldLang.code.includes('-')" size="xs" color="info" variant="soft">BCP 47</UBadge>
+            <UBadge
+              v-if="selectedWorldLang.code.includes('-')"
+              size="xs"
+              color="info"
+              variant="soft"
+            >
+              BCP 47
+            </UBadge>
           </div>
 
           <UFormField label="">
-            <UCheckbox v-model="newLang.is_default" :label="t('languages.set_as_default', 'Set as default language')"/>
+            <UCheckbox
+              v-model="newLang.is_default"
+              :label="t('languages.set_as_default', 'Set as default language')"
+            />
           </UFormField>
         </div>
       </template>
       <template #footer>
         <div class="flex justify-end gap-3">
-          <UButton data-cy="add-language-cancel-btn" color="neutral" variant="ghost" @click="showAdd = false">{{ t('common.cancel', 'Cancel') }}</UButton>
-          <UButton :loading="adding" :disabled="!newLang.code" @click="addLanguage">{{ t('languages.add', 'Add') }}</UButton>
+          <UButton
+            data-cy="add-language-cancel-btn"
+            color="neutral"
+            variant="ghost"
+            @click="showAdd = false"
+          >
+            {{ t('common.cancel', 'Cancel') }}
+          </UButton>
+          <UButton
+            :loading="adding"
+            :disabled="!newLang.code"
+            @click="addLanguage"
+          >
+            {{ t('languages.add', 'Add') }}
+          </UButton>
         </div>
       </template>
     </UModal>
 
     <!-- Fallback config modal -->
-    <UModal v-model:open="showFallbackModal" :title="t('languages.fallback_modal_title', 'Configure fallback')">
+    <UModal
+      v-model:open="showFallbackModal"
+      :title="t('languages.fallback_modal_title', 'Configure fallback')"
+    >
       <template #body>
         <div class="space-y-4">
-          <div v-if="fallbackTarget" class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+          <div
+            v-if="fallbackTarget"
+            class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400"
+          >
             <span>{{ t('languages.language_label', 'Language') }}:</span>
             <code class="font-mono bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded font-semibold text-gray-800 dark:text-gray-200">{{ fallbackTarget.code }}</code>
           </div>
 
           <!-- Info box -->
           <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg px-3 py-2.5 text-xs text-blue-700 dark:text-blue-300 flex gap-2">
-            <UIcon name="i-heroicons-information-circle" class="shrink-0 mt-0.5" />
+            <UIcon
+              name="i-heroicons-information-circle"
+              class="shrink-0 mt-0.5"
+            />
             <div>
               {{ t('languages.fallback_info', 'When a key is missing in') }} <strong>{{ fallbackTarget?.code }}</strong>, {{ t('languages.fallback_info2', 'the dashboard returns the value from the fallback language. Useful for') }} <code class="font-mono bg-blue-100 dark:bg-blue-900/40 px-1 rounded">fr-CA → fr</code> {{ t('languages.fallback_info3', 'or regional sub-variants.') }}
             </div>
@@ -199,7 +331,12 @@
                   ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-300 dark:border-primary-700'
                   : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'"
               >
-                <input v-model="fallbackChoice" type="radio" value="__auto__" class="hidden" />
+                <input
+                  v-model="fallbackChoice"
+                  type="radio"
+                  value="__auto__"
+                  class="hidden"
+                >
                 <div class="flex-1">
                   <p class="text-sm font-medium text-gray-800 dark:text-gray-200">
                     Auto BCP 47 —
@@ -207,8 +344,15 @@
                   </p>
                   <p class="text-xs text-gray-400">{{ t('languages.fallback_auto_detect', 'Automatic detection from language code') }}</p>
                 </div>
-                <UBadge size="xs" color="info" variant="soft">{{ t('languages.recommended', 'Recommended') }}</UBadge>
-                <div class="w-4 h-4 rounded-full border-2 shrink-0" :class="fallbackChoice === '__auto__' ? 'border-primary-500 bg-primary-500' : 'border-gray-300 dark:border-gray-600'" />
+                <UBadge
+                  size="xs"
+                  color="info"
+                  variant="soft"
+                >{{ t('languages.recommended', 'Recommended') }}</UBadge>
+                <div
+                  class="w-4 h-4 rounded-full border-2 shrink-0"
+                  :class="fallbackChoice === '__auto__' ? 'border-primary-500 bg-primary-500' : 'border-gray-300 dark:border-gray-600'"
+                />
               </label>
 
               <!-- None option -->
@@ -218,12 +362,20 @@
                   ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-300 dark:border-primary-700'
                   : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'"
               >
-                <input v-model="fallbackChoice" type="radio" value="__none__" class="hidden" />
+                <input
+                  v-model="fallbackChoice"
+                  type="radio"
+                  value="__none__"
+                  class="hidden"
+                >
                 <div class="flex-1">
                   <p class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ t('languages.no_fallback', 'No fallback') }}</p>
                   <p class="text-xs text-gray-400">{{ t('languages.no_fallback_hint', 'Returns 404 if language is missing') }}</p>
                 </div>
-                <div class="w-4 h-4 rounded-full border-2 shrink-0" :class="fallbackChoice === '__none__' ? 'border-primary-500 bg-primary-500' : 'border-gray-300 dark:border-gray-600'" />
+                <div
+                  class="w-4 h-4 rounded-full border-2 shrink-0"
+                  :class="fallbackChoice === '__none__' ? 'border-primary-500 bg-primary-500' : 'border-gray-300 dark:border-gray-600'"
+                />
               </label>
 
               <!-- Language list -->
@@ -235,7 +387,12 @@
                   ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-300 dark:border-primary-700'
                   : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'"
               >
-                <input v-model="fallbackChoice" type="radio" :value="l.code" class="hidden" />
+                <input
+                  v-model="fallbackChoice"
+                  type="radio"
+                  :value="l.code"
+                  class="hidden"
+                >
                 <div class="flex-1">
                   <p class="text-sm font-medium text-gray-800 dark:text-gray-200">
                     {{ findLanguage(l.code)?.nativeName || l.name }}
@@ -243,19 +400,38 @@
                   </p>
                   <p class="text-xs text-gray-400">{{ getCoverage(l.code) }}% {{ t('languages.translated', 'translated') }}</p>
                 </div>
-                <UBadge v-if="l.is_default" size="xs" color="primary" variant="soft">{{ t('languages.default_badge', 'Default') }}</UBadge>
-                <div class="w-4 h-4 rounded-full border-2 shrink-0" :class="fallbackChoice === l.code ? 'border-primary-500 bg-primary-500' : 'border-gray-300 dark:border-gray-600'" />
+                <UBadge
+                  v-if="l.is_default"
+                  size="xs"
+                  color="primary"
+                  variant="soft"
+                >{{ t('languages.default_badge', 'Default') }}</UBadge>
+                <div
+                  class="w-4 h-4 rounded-full border-2 shrink-0"
+                  :class="fallbackChoice === l.code ? 'border-primary-500 bg-primary-500' : 'border-gray-300 dark:border-gray-600'"
+                />
               </label>
             </div>
           </UFormField>
 
           <!-- Chain preview -->
-          <div v-if="fallbackChainPreview.length > 1" class="bg-gray-50 dark:bg-gray-800 rounded-lg px-3 py-2">
-            <p class="text-xs text-gray-400 mb-1.5">{{ t('languages.resolution_chain', 'Resolution chain:') }}</p>
+          <div
+            v-if="fallbackChainPreview.length > 1"
+            class="bg-gray-50 dark:bg-gray-800 rounded-lg px-3 py-2"
+          >
+            <p class="text-xs text-gray-400 mb-1.5">
+              {{ t('languages.resolution_chain', 'Resolution chain:') }}
+            </p>
             <div class="flex items-center gap-1.5 flex-wrap">
-              <template v-for="(code, i) in fallbackChainPreview" :key="i">
+              <template
+                v-for="(code, i) in fallbackChainPreview"
+                :key="i"
+              >
                 <code class="text-xs font-mono bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 px-1.5 py-0.5 rounded text-gray-700 dark:text-gray-300">{{ code }}</code>
-                <span v-if="i < fallbackChainPreview.length - 1" class="text-gray-400 text-xs">→</span>
+                <span
+                  v-if="i < fallbackChainPreview.length - 1"
+                  class="text-gray-400 text-xs"
+                >→</span>
               </template>
             </div>
           </div>
@@ -263,8 +439,19 @@
       </template>
       <template #footer>
         <div class="flex justify-end gap-2">
-          <UButton color="neutral" variant="ghost" @click="showFallbackModal = false">{{ t('common.cancel', 'Cancel') }}</UButton>
-          <UButton :loading="savingFallback" @click="saveFallback">{{ t('common.save', 'Save') }}</UButton>
+          <UButton
+            color="neutral"
+            variant="ghost"
+            @click="showFallbackModal = false"
+          >
+            {{ t('common.cancel', 'Cancel') }}
+          </UButton>
+          <UButton
+            :loading="savingFallback"
+            @click="saveFallback"
+          >
+            {{ t('common.save', 'Save') }}
+          </UButton>
         </div>
       </template>
     </UModal>
@@ -277,8 +464,14 @@
     >
       <template #body>
         <div class="space-y-4 py-2">
-          <div v-if="progressTotal === 0" class="flex items-center gap-3 text-sm text-gray-500">
-            <UIcon name="i-heroicons-arrow-path" class="animate-spin text-primary-500 text-xl shrink-0" />
+          <div
+            v-if="progressTotal === 0"
+            class="flex items-center gap-3 text-sm text-gray-500"
+          >
+            <UIcon
+              name="i-heroicons-arrow-path"
+              class="animate-spin text-primary-500 text-xl shrink-0"
+            />
             {{ t('languages.initializing', 'Initializing…') }}
           </div>
           <template v-else>
@@ -300,14 +493,26 @@
       </template>
       <template #footer>
         <div class="flex justify-between items-center w-full">
-          <UButton color="neutral" variant="ghost" size="sm" icon="i-heroicons-arrow-down-tray" @click="sendToBackground">
+          <UButton
+            color="neutral"
+            variant="ghost"
+            size="sm"
+            icon="i-heroicons-arrow-down-tray"
+            @click="sendToBackground"
+          >
             {{ t('languages.send_to_background', 'Send to background') }}
           </UButton>
-          <span v-if="progressStatus === 'done'" class="flex items-center gap-2 text-sm text-green-600 dark:text-green-400 font-medium">
+          <span
+            v-if="progressStatus === 'done'"
+            class="flex items-center gap-2 text-sm text-green-600 dark:text-green-400 font-medium"
+          >
             <UIcon name="i-heroicons-check-circle" />
             {{ t('languages.done', 'Done!') }}
           </span>
-          <UButton v-if="progressStatus === 'done'" @click="closeProgress">
+          <UButton
+            v-if="progressStatus === 'done'"
+            @click="closeProgress"
+          >
             {{ t('common.close', 'Close') }}
           </UButton>
         </div>
@@ -315,18 +520,35 @@
     </UModal>
 
     <!-- Delete confirm modal -->
-    <UModal v-model:open="showDeleteConfirm" :title="t('languages.delete_modal_title', 'Delete language')">
+    <UModal
+      v-model:open="showDeleteConfirm"
+      :title="t('languages.delete_modal_title', 'Delete language')"
+    >
       <template #body>
         <p class="text-gray-600 dark:text-gray-400">
           {{ t('languages.delete_confirm', 'Delete') }} <strong>{{ deletingLang?.name }}</strong>?
           {{ t('languages.delete_confirm2', 'This will also delete the') }} <strong>{{ getTranslatedCount(deletingLang?.code) }}</strong> {{ t('languages.delete_confirm3', 'associated translations.') }}
         </p>
-        <p class="text-red-500 text-sm mt-2 font-medium">{{ t('common.irreversible', 'This action is irreversible.') }}</p>
+        <p class="text-red-500 text-sm mt-2 font-medium">
+          {{ t('common.irreversible', 'This action is irreversible.') }}
+        </p>
       </template>
       <template #footer>
         <div class="flex justify-end gap-3">
-          <UButton color="neutral" variant="ghost" @click="showDeleteConfirm = false">{{ t('common.cancel', 'Cancel') }}</UButton>
-          <UButton :loading="deleting" color="error" @click="deleteLanguage">{{ t('common.delete', 'Delete') }}</UButton>
+          <UButton
+            color="neutral"
+            variant="ghost"
+            @click="showDeleteConfirm = false"
+          >
+            {{ t('common.cancel', 'Cancel') }}
+          </UButton>
+          <UButton
+            :loading="deleting"
+            color="error"
+            @click="deleteLanguage"
+          >
+            {{ t('common.delete', 'Delete') }}
+          </UButton>
         </div>
       </template>
     </UModal>
