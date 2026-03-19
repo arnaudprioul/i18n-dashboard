@@ -181,5 +181,5 @@ export async function getUserProfile(userId: number) {
     .select('r.role', 'r.project_id', 'p.name as project_name')
 
   const { password_hash, ...safeUser } = user
-  return { ...safeUser, roles }
+  return { ...safeUser, is_super_admin: !!safeUser.is_super_admin, is_active: !!safeUser.is_active, roles }
 }

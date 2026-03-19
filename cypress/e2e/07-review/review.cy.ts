@@ -9,7 +9,8 @@ describe('Review queue', () => {
     })
 
     cy.visit('/projects/1/review')
-    cy.wait('@getKeys')
+    cy.wait('@getProjects', { timeout: 10000 })
+    cy.get('[data-cy="review-title"]').should('be.visible')
   })
 
   it('should display the review queue heading', () => {

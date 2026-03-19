@@ -1,3 +1,5 @@
+import { TEST_EMAIL, TEST_PASSWORD } from './e2e'
+
 declare global {
   namespace Cypress {
     interface Chainable {
@@ -9,26 +11,20 @@ declare global {
 
 /**
  * Establishes a real server session via cy.request().
- * Uses ADMIN_EMAIL / ADMIN_PASSWORD env vars (cypress.env.json) with fallbacks.
- * The session is cached across tests in the same spec file.
+ * Credentials are hardcoded to the test admin created in e2e.ts before().
+ * The session is cached across tests in the same spec file via cy.session().
  */
 Cypress.Commands.add('login', () => {
   cy.session(
     'admin-session',
     () => {
       cy.request({
-        method: 'POST',
-        url: '/api/auth/login',
-        body: {
-          email: Cypress.env('ADMIN_EMAIL') || 'admin@example.com',
-          password: Cypress.env('ADMIN_PASSWORD') || 'admin',
-        },
+        method:           'POST',
+        url:              '/api/auth/login',
+        body:             { email: TEST_EMAIL, password: TEST_PASSWORD },
         failOnStatusCode: false,
       }).then((res) => {
-        expect(
-          res.status,
-          'Login failed — set ADMIN_EMAIL and ADMIN_PASSWORD in cypress.env.json',
-        ).to.eq(200)
+        expect(res.status, `Login failed for ${TEST_EMAIL} — is the server running?`).to.eq(200)
       })
     },
     {
@@ -43,11 +39,10 @@ Cypress.Commands.add('login', () => {
 
 /**
  * Intercepts all client-side data API calls with fixture data.
- * Auth (status/me) is NOT mocked here — the real session handles it.
+ * Auth intercepts (status/me) are included so client-side checks stay mocked.
  * Write operations (POST/PUT/DELETE) are mocked to prevent DB changes.
  */
 Cypress.Commands.add('mockAllApis', (_projectId = 1) => {
-  // Auth endpoints called by middleware + BaseService on every authenticated page
   cy.fixture('auth').then((auth) => {
     cy.intercept('GET', '/api/auth/status', { body: auth.status }).as('authStatus')
     cy.intercept('GET', '/api/auth/me', { body: auth.me }).as('authMe')
@@ -96,7 +91,7 @@ Cypress.Commands.add('mockAllApis', (_projectId = 1) => {
     cy.intercept('GET', '/api/users*', { body: users }).as('getUsers')
     cy.intercept('POST', '/api/users', {
       statusCode: 201,
-      body: { id: 10, tempPassword: 'Temp@1234', email: 'new@example.com', name: 'New User' },
+      body: { id: 10, email: 'new@example.com', name: 'New User' },
     }).as('postUser')
     cy.intercept('PUT', '/api/users/*/roles', { statusCode: 200, body: {} }).as('putUserRoles')
     cy.intercept('PUT', '/api/users/*', { statusCode: 200, body: {} }).as('putUser')
