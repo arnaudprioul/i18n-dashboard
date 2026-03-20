@@ -5,6 +5,13 @@
  * that could clear form inputs mid-test.
  */
 describe('Auth — Login page', () => {
+  before(() => {
+    // Pre-compile the login page bundle on the Nuxt dev server.
+    // Without this, the first cy.visit('/login') can exceed the 60s
+    // pageLoadTimeout while Vite recompiles after a file change.
+    cy.request({ url: '/login', failOnStatusCode: false, timeout: 120000 })
+  })
+
   // Pre-mock every API that can fire when visiting /login:
   // - auth/status : Nuxt middleware (skips /login, but hydration may still call it)
   // - auth/me     : called by BaseService on any 401 response (session-refresh flow)
@@ -35,6 +42,8 @@ describe('Auth — Login page', () => {
     }).as('loginFail')
 
     cy.visit('/login')
+    // Wait for onMounted sentinel — ensures Vue is fully hydrated and v-model is connected
+    cy.get('[data-cy="login-mounted"]').should('exist')
     // .should('be.enabled') ensures the input is interactive (DOM stable after hydration)
     cy.get('[data-cy="login-email"]').should('be.enabled').type('wrong@example.com')
     cy.get('[data-cy="login-password"]').should('be.enabled').type('wrongpassword')
@@ -63,6 +72,8 @@ describe('Auth — Login page', () => {
     })
 
     cy.visit('/login')
+    // Wait for onMounted sentinel — ensures Vue is fully hydrated and v-model is connected
+    cy.get('[data-cy="login-mounted"]').should('exist')
     cy.get('[data-cy="login-email"]').should('be.enabled').type('admin@example.com')
     cy.get('[data-cy="login-password"]').should('be.enabled').type('admin')
     cy.get('[data-cy="login-submit"]').click()

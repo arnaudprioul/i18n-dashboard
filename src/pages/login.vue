@@ -1,4 +1,5 @@
 <template>
+  <span v-if="isMounted" data-cy="login-mounted" class="sr-only" />
   <UCard class="w-full max-w-md">
     <template #header>
       <div class="flex items-center gap-3">
@@ -90,6 +91,11 @@ const { t } = useT()
 const form = ref({ email: '', password: '' })
 const loading = ref(false)
 const error = ref('')
+
+// Hydration sentinel — only rendered after onMounted() fires (Vue fully hydrated).
+// Cypress tests wait for [data-cy="login-mounted"] before interacting with the form.
+const isMounted = ref(false)
+onMounted(() => { isMounted.value = true })
 
 async function handleLogin() {
   if (!form.value.email || !form.value.password) return

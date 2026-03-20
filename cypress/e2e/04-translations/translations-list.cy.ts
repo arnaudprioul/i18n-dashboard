@@ -1,6 +1,30 @@
+import { TEST_EMAIL, TEST_PASSWORD } from '../../support/e2e'
+
 describe('Translations list', () => {
+  before(() => {
+    // Pre-compile the translations page bundle — both SSR and browser chunks.
+    // cy.request() only compiles SSR-side code. cy.visit() is required here
+    // because the browser JS chunks for this page can take > 60s to compile
+    // in Vite dev mode, exceeding the default pageLoadTimeout.
+    cy.request({
+      method: 'POST',
+      url: '/api/auth/login',
+      body: { email: TEST_EMAIL, password: TEST_PASSWORD },
+      failOnStatusCode: false,
+    })
+    cy.mockAllApis()
+    cy.visit('/projects/1/translations', { timeout: 120000 })
+  })
+
   beforeEach(() => {
-    cy.login()
+    // Direct login via cy.request() — avoids cy.session() restoration delay
+    // that can push the first cy.visit() over the 60s pageLoadTimeout.
+    cy.request({
+      method: 'POST',
+      url: '/api/auth/login',
+      body: { email: TEST_EMAIL, password: TEST_PASSWORD },
+      failOnStatusCode: false,
+    })
     cy.mockAllApis()
     cy.visit('/projects/1/translations')
     cy.wait('@getLanguages')

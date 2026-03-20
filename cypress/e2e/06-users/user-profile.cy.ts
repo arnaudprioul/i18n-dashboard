@@ -1,6 +1,29 @@
+import { TEST_EMAIL, TEST_PASSWORD } from '../../support/e2e'
+
 describe('User profile', () => {
+  before(() => {
+    // Pre-compile the user profile page bundle — both SSR and browser chunks.
+    // cy.request() only compiles SSR-side code; cy.visit() is required to also
+    // compile the browser JS chunks which can take > 60s under server load.
+    cy.request({
+      method: 'POST',
+      url: '/api/auth/login',
+      body: { email: TEST_EMAIL, password: TEST_PASSWORD },
+      failOnStatusCode: false,
+    })
+    cy.mockAllApis()
+    cy.visit('/users/2/profile', { timeout: 120000 })
+  })
+
   beforeEach(() => {
-    cy.login()
+    // Direct login via cy.request() — avoids cy.session() restoration delay
+    // that can push the first cy.visit() over the 60s pageLoadTimeout.
+    cy.request({
+      method: 'POST',
+      url: '/api/auth/login',
+      body: { email: TEST_EMAIL, password: TEST_PASSWORD },
+      failOnStatusCode: false,
+    })
     cy.mockAllApis()
     cy.visit('/users/2/profile')
     // useProfile has server:false → client-side fetch → interceptable

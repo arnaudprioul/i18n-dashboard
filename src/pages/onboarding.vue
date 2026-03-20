@@ -1,5 +1,11 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 p-4">
+    <!-- Hydration sentinel: only rendered after onMounted() fires (Vue fully hydrated) -->
+    <span
+      v-if="isMounted"
+      data-cy="onboarding-mounted"
+      class="sr-only"
+    />
     <div class="w-full max-w-2xl">
       <!-- Header -->
       <div class="text-center mb-8">
@@ -18,7 +24,10 @@
       </div>
 
       <!-- Steps indicator -->
-      <div class="flex items-center justify-center gap-2 mb-8">
+      <div
+        data-cy="onboarding-step-indicator"
+        class="flex items-center justify-center gap-2 mb-8"
+      >
         <template
           v-for="(step, i) in steps"
           :key="i"
@@ -69,11 +78,13 @@
 
           <!-- DB type selector -->
           <UFormField :label="t('onboarding.db_type_label', 'Database type')">
-            <USelect
-              v-model="dbForm.type"
-              :items="dbTypeOptions"
-              class="w-full"
-            />
+            <div data-cy="onboarding-db-type-select">
+              <USelect
+                v-model="dbForm.type"
+                :items="dbTypeOptions"
+                class="w-full"
+              />
+            </div>
           </UFormField>
 
           <!-- SQLite fields -->
@@ -84,6 +95,7 @@
                   v-model="dbForm.connection"
                   placeholder="./i18n-dashboard.db"
                   class="flex-1"
+                  data-cy="onboarding-sqlite-path"
                 />
                 <UButton
                   v-if="!sqliteFileExists"
@@ -91,6 +103,7 @@
                   variant="outline"
                   icon="i-heroicons-document-plus"
                   :loading="creatingFile"
+                  data-cy="onboarding-sqlite-create"
                   @click="createSqliteFile"
                 >
                   {{ t('onboarding.db_create_file', 'Create') }}
@@ -100,6 +113,7 @@
                   color="success"
                   variant="soft"
                   class="shrink-0 self-center"
+                  data-cy="onboarding-sqlite-file-found"
                 >
                   <UIcon
                     name="i-heroicons-check"
@@ -176,6 +190,7 @@
               variant="outline"
               icon="i-heroicons-signal"
               :loading="testingDb"
+              data-cy="onboarding-db-test"
               @click="testDbConnection"
             >
               {{ t('onboarding.db_test', 'Test connection') }}
@@ -192,6 +207,7 @@
               v-if="dbConnected"
               color="success"
               variant="soft"
+              data-cy="onboarding-db-connected"
             >
               <UIcon
                 name="i-heroicons-check-circle"
@@ -204,6 +220,7 @@
           <p
             v-if="dbError"
             class="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2"
+            data-cy="onboarding-db-error"
           >
             <UIcon
               name="i-heroicons-exclamation-circle"
@@ -242,6 +259,7 @@
                   placeholder="Marie Dupont"
                   class="w-full"
                   autofocus
+                  data-cy="onboarding-admin-name"
                 />
               </UFormField>
               <UFormField
@@ -253,6 +271,7 @@
                   type="email"
                   placeholder="admin@example.com"
                   class="w-full"
+                  data-cy="onboarding-admin-email"
                 />
               </UFormField>
               <UFormField
@@ -265,6 +284,7 @@
                   type="password"
                   placeholder="••••••••"
                   class="w-full"
+                  data-cy="onboarding-admin-password"
                 />
               </UFormField>
               <UFormField
@@ -276,11 +296,13 @@
                   type="password"
                   placeholder="••••••••"
                   class="w-full"
+                  data-cy="onboarding-admin-confirm"
                 />
               </UFormField>
               <p
                 v-if="adminError"
                 class="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2"
+                data-cy="onboarding-admin-error"
               >
                 <UIcon
                   name="i-heroicons-exclamation-circle"
@@ -292,7 +314,10 @@
           </template>
           <!-- Existing install: confirmation -->
           <template v-else>
-            <div class="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+            <div
+              class="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg"
+              data-cy="onboarding-admin-done"
+            >
               <UIcon
                 name="i-heroicons-check-circle"
                 class="text-green-500 text-2xl shrink-0"
@@ -327,8 +352,12 @@
             :placeholder="t('onboarding.languages_search', 'Rechercher une langue...')"
             icon="i-heroicons-magnifying-glass"
             class="w-full"
+            data-cy="onboarding-lang-search"
           />
-          <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden max-h-56 overflow-y-auto">
+          <div
+            class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden max-h-56 overflow-y-auto"
+            data-cy="onboarding-lang-list"
+          >
             <button
               v-for="lang in filteredUiLangs"
               :key="lang.code"
@@ -385,6 +414,7 @@
               v-model="projectForm.name"
               :placeholder="t('projects.name_placeholder', 'My App')"
               class="w-full"
+              data-cy="onboarding-project-name"
             />
           </UFormField>
           <UFormField
@@ -395,6 +425,7 @@
               v-model="projectForm.root_path"
               placeholder="/path/to/my-project"
               class="w-full"
+              data-cy="onboarding-project-path"
             />
           </UFormField>
           <UFormField :label="t('settings.locales_folder', 'Locales folder')">
@@ -402,11 +433,13 @@
               v-model="projectForm.locales_path"
               placeholder="src/locales"
               class="w-full"
+              data-cy="onboarding-project-locales"
             />
           </UFormField>
           <p
             v-if="projectError"
             class="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2"
+            data-cy="onboarding-project-error"
           >
             {{ projectError }}
           </p>
@@ -423,7 +456,10 @@
               class="text-green-500 text-3xl"
             />
           </div>
-          <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+          <h2
+            class="text-xl font-bold text-gray-900 dark:text-white"
+            data-cy="onboarding-done-title"
+          >
             {{ t('onboarding.done_title', 'Tout est prêt !') }}
           </h2>
           <p class="text-gray-500 dark:text-gray-400">
@@ -445,6 +481,7 @@
               color="neutral"
               variant="ghost"
               icon="i-heroicons-arrow-left"
+              data-cy="onboarding-prev"
               @click="currentStep--"
             >
               {{ t('onboarding.previous', 'Précédent') }}
@@ -456,6 +493,7 @@
                 v-if="currentStep === 3"
                 color="neutral"
                 variant="ghost"
+                data-cy="onboarding-skip-project"
                 @click="skipProject"
               >
                 {{ t('onboarding.project_skip', 'Passer cette étape') }}
@@ -466,6 +504,7 @@
                 v-if="currentStep === 0"
                 icon="i-heroicons-arrow-right"
                 trailing
+                data-cy="onboarding-next"
                 @click="currentStep++"
               >
                 {{ t('onboarding.next', 'Suivant') }}
@@ -477,6 +516,7 @@
                 :loading="saving"
                 icon="i-heroicons-arrow-right"
                 trailing
+                data-cy="onboarding-next"
                 @click="hasUsers ? currentStep++ : createAdmin()"
               >
                 {{ t('onboarding.next', 'Suivant') }}
@@ -489,6 +529,7 @@
                 :disabled="selectedUiLangs.length === 0"
                 icon="i-heroicons-arrow-right"
                 trailing
+                data-cy="onboarding-next"
                 @click="saveLanguages"
               >
                 {{ t('onboarding.next', 'Suivant') }}
@@ -500,6 +541,7 @@
                 :loading="saving"
                 icon="i-heroicons-arrow-right"
                 trailing
+                data-cy="onboarding-finish"
                 @click="saveProject"
               >
                 {{ t('onboarding.finish', 'Terminer') }}
@@ -510,6 +552,7 @@
                 v-if="currentStep === 4"
                 icon="i-heroicons-home"
                 trailing
+                data-cy="onboarding-go-dashboard"
                 @click="goToDashboard"
               >
                 {{ t('onboarding.go_to_dashboard', 'Aller au dashboard') }}
@@ -762,6 +805,10 @@ async function saveProject() {
 function skipProject() {
   currentStep.value = 4
 }
+
+// ─── Hydration sentinel (used by Cypress tests) ────────────────────────────────
+const isMounted = ref(false)
+onMounted(() => { isMounted.value = true })
 
 // ─── Step 4 : Done ─────────────────────────────────────────────────────────────
 async function goToDashboard() {

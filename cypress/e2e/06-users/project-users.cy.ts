@@ -1,6 +1,14 @@
+import { TEST_EMAIL, TEST_PASSWORD } from '../../support/e2e'
+
 describe('Project users', () => {
+  before(() => {
+    cy.request({ method: 'POST', url: '/api/auth/login', body: { email: TEST_EMAIL, password: TEST_PASSWORD }, failOnStatusCode: false })
+    cy.mockAllApis()
+    cy.visit('/projects/1/users', { timeout: 120000 })
+  })
+
   beforeEach(() => {
-    cy.login()
+    cy.request({ method: 'POST', url: '/api/auth/login', body: { email: TEST_EMAIL, password: TEST_PASSWORD }, failOnStatusCode: false })
     cy.mockAllApis()
     cy.visit('/projects/1/users')
     // useUsers('project') uses useAsyncData (SSR) — rendered server-side from real DB.

@@ -1,6 +1,14 @@
+import { TEST_EMAIL, TEST_PASSWORD } from '../../support/e2e'
+
 describe('Dashboard', () => {
+  before(() => {
+    cy.request({ method: 'POST', url: '/api/auth/login', body: { email: TEST_EMAIL, password: TEST_PASSWORD }, failOnStatusCode: false })
+    cy.mockAllApis()
+    cy.visit('/', { timeout: 300000 })
+  })
+
   beforeEach(() => {
-    cy.login()
+    cy.request({ method: 'POST', url: '/api/auth/login', body: { email: TEST_EMAIL, password: TEST_PASSWORD }, failOnStatusCode: false })
     cy.mockAllApis()
     cy.visit('/')
     // Wait for the primary data call that proves the page has finished loading
