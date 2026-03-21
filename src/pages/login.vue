@@ -1,5 +1,9 @@
 <template>
-  <span v-if="isMounted" data-cy="login-mounted" class="sr-only" />
+  <span
+    v-if="isMounted"
+    data-cy="login-mounted"
+    class="sr-only"
+  />
   <UCard class="w-full max-w-md">
     <template #header>
       <div class="flex items-center gap-3">
