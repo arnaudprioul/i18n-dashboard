@@ -77,6 +77,19 @@ npx i18n-dashboard start
 
 ---
 
+## 🤔 Why I built this
+
+Editing i18n JSON files was breaking my flow.
+
+I wanted something that:
+- works with vue-i18n
+- doesn't require migration
+- stays simple but scalable
+
+So I built this.
+
+---
+
 ## 📘 Documentation
 
 - See USAGE.md for workflows
@@ -86,8 +99,11 @@ npx i18n-dashboard start
 
 ## 💬 Feedback
 
-Looking for feedback 👀  
-Open an issue or discussion!
+If you're using vue-i18n, I'd genuinely love your feedback.
+
+This tool comes from a real pain point, and I'm trying to improve it.
+
+Feel free to open an issue or share your thoughts.
 
 ---
 
