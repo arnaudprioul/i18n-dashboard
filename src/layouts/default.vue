@@ -345,7 +345,7 @@
 </template>
 
 <script setup lang="ts">
-import { canSyncProject } from '~/composables/useProject'
+import { canSyncProject } from '../composables/useProject'
 
 const route = useRoute()
 const router = useRouter()

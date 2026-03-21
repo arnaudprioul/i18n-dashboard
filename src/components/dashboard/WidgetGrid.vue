@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { TWidgetType } from '~/types/dashboard.type'
-import { WIDGET_REGISTRY, WIDGET_SIZE_CLASSES } from '~/consts/dashboard.const'
+import type { TWidgetType } from '../../types/dashboard.type'
+import { WIDGET_REGISTRY, WIDGET_SIZE_CLASSES } from '../../consts/dashboard.const'
 
 const { t } = useT()
 const { currentUser } = useAuth()

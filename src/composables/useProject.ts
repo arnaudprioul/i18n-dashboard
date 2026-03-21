@@ -1,6 +1,6 @@
-import { projectService } from '~/services/project.service'
-import { scanService } from '~/services/scan.service'
-import type { IProject, IProjectPayload } from '~/interfaces/project.interface'
+import { projectService } from '../services/project.service'
+import { scanService } from '../services/scan.service'
+import type { IProject, IProjectPayload } from '../interfaces/project.interface'
 
 export function canScanProject(project: IProject): boolean {
   if (project.root_path && project.root_path !== '__DASHBOARD_UI__') return true

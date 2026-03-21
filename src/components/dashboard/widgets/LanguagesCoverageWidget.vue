@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue'
-import type { TWidgetSize } from '~/types/dashboard.type'
-import type { IWidgetDataSource } from '~/interfaces/dashboard.interface'
+import type { TWidgetSize } from '../../../types/dashboard.type'
+import type { IWidgetDataSource } from '../../../interfaces/dashboard.interface'
 
 const props = defineProps({
   id: {

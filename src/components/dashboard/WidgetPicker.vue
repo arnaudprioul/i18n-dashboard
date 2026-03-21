@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { TWidgetSize } from '~/types/dashboard.type'
-import type { IWidgetConfig } from '~/interfaces/dashboard.interface'
-import { WIDGET_REGISTRY } from '~/consts/dashboard.const'
+import type { TWidgetSize } from '../../types/dashboard.type'
+import type { IWidgetConfig } from '../../interfaces/dashboard.interface'
+import { WIDGET_REGISTRY } from '../../consts/dashboard.const'
 
 const { t } = useT()
 

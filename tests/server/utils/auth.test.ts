@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { canEdit, canApprove, canManageProject, canManageUsers, getUserRole } from '~/server/utils/auth.util'
+import { canEdit, canApprove, canManageProject, canManageUsers, getUserRole } from '~/utils/auth.util'
 import { ROLES } from '~/enums/auth.enum'
 import type { Role } from '~/types/auth.type'
 

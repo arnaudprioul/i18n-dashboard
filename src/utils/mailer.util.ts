@@ -1,4 +1,4 @@
-import { useRuntimeConfig } from '#imports'
+import { useRuntimeConfig } from 'nitropack/runtime'
 
 export async function sendEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
   const config = useRuntimeConfig()
@@ -28,6 +28,33 @@ export async function sendEmail({ to, subject, html }: { to: string; subject: st
     subject,
     html,
   })
+}
+
+export function resetPasswordEmailHtml({
+  name,
+  resetUrl,
+}: {
+  name: string
+  resetUrl: string
+}) {
+  return `
+<!DOCTYPE html>
+<html>
+<body style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; color: #333;">
+  <div style="background: #4f46e5; padding: 24px; border-radius: 8px 8px 0 0;">
+    <h1 style="color: white; margin: 0; font-size: 1.5rem;">🌐 i18n Dashboard</h1>
+  </div>
+  <div style="background: #f9fafb; padding: 24px; border-radius: 0 0 8px 8px; border: 1px solid #e5e7eb;">
+    <h2>Bonjour ${name},</h2>
+    <p>Vous avez demandé la réinitialisation de votre mot de passe.</p>
+    <p>Cliquez sur le bouton ci-dessous pour choisir un nouveau mot de passe. Ce lien est valide <strong>1 heure</strong>.</p>
+    <a href="${resetUrl}" style="display: inline-block; background: #4f46e5; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; margin: 16px 0;">Réinitialiser mon mot de passe</a>
+    <p style="margin-top: 24px; font-size: 0.85rem; color: #6b7280;">
+      Si vous n'avez pas fait cette demande, ignorez cet email. Votre mot de passe restera inchangé.
+    </p>
+  </div>
+</body>
+</html>`
 }
 
 export function inviteEmailHtml({

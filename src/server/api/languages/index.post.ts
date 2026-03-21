@@ -1,5 +1,5 @@
 import { getDb } from '../../db/index'
-import { autoTranslateUtil } from '~/server/utils/auto-translate.util'
+import { autoTranslateUtil } from '../../../utils/auto-translate.util'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)

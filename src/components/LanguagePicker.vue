@@ -113,7 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import { LANGUAGES } from '~/consts/languages.const'
+import { LANGUAGES } from '../consts/languages.const'
 
 const { t } = useT()
 

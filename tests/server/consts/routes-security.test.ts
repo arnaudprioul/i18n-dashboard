@@ -27,6 +27,8 @@ describe('PUBLIC_ROUTES — must not expose sensitive endpoints', () => {
       '/api/auth/me',
       '/api/auth/refresh',
       '/api/auth/status',
+      '/api/auth/forgot-password',
+      '/api/auth/reset-password',
       '/api/setup',
       '/api/ui-locale',
       '/api/config',

@@ -37,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import type { IGitRepo } from '~/interfaces/project.interface'
+import type { IGitRepo } from '../interfaces/project.interface'
 
 const { t } = useT()
 

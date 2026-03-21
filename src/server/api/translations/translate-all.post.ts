@@ -1,5 +1,5 @@
 import { getDb } from '../../db/index'
-import { createJob, runTranslationJob } from '~/server/utils/translation-job.util'
+import { createJob, runTranslationJob } from '../../../utils/translation-job.util'
 
 export default defineEventHandler(async (event) => {
   const { project_id, language_code, language_name } = await readBody(event)

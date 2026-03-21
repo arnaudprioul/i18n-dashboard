@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { createJob, getJob, runTranslationJob } from '~/server/utils/translation-job.util'
+import { createJob, getJob, runTranslationJob } from '~/utils/translation-job.util'
 import { JOB_STATUS } from '~/enums/translation-job.enum'
 
 vi.mock('@vitalets/google-translate-api', () => ({

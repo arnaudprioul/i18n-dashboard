@@ -459,8 +459,8 @@
 </template>
 
 <script setup lang="ts">
-import { userService } from '~/services/user.service'
-import type { IUserItem } from '~/interfaces/user.interface'
+import { userService } from '../../../services/user.service'
+import type { IUserItem } from '../../../interfaces/user.interface'
 
 const toast = useToast()
 const { currentUser } = useAuth()

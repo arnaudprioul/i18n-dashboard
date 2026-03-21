@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue'
-import type { TDataSourceType } from '~/types/dashboard.type'
-import type { IWidgetConfig, IWidgetDataSource } from '~/interfaces/dashboard.interface'
-import { WIDGET_REGISTRY } from '~/consts/dashboard.const'
+import type { TDataSourceType } from '../../types/dashboard.type'
+import type { IWidgetConfig, IWidgetDataSource } from '../../interfaces/dashboard.interface'
+import { WIDGET_REGISTRY } from '../../consts/dashboard.const'
 
 const props = defineProps({
   open: {

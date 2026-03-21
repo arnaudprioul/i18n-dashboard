@@ -258,7 +258,7 @@
 </template>
 
 <script setup lang="ts">
-import { TRANSLATION_STATUS } from '~/enums/translation.enum'
+import { TRANSLATION_STATUS } from '../../../../enums/translation.enum'
 
 const route = useRoute()
 const { currentProject } = useProject()

@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs'
 import { getDb } from '../../db/index'
-import { getSession, createRefreshToken } from '~/server/utils/auth.util'
+import { getSession, createRefreshToken } from '../../../utils/auth.util'
 
 export default defineEventHandler(async (event) => {
   const { email, password } = await readBody(event)

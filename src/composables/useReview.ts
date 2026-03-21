@@ -1,6 +1,6 @@
 import { keyService } from '../services/key.service'
 import { translationService } from '../services/translation.service'
-import { TRANSLATION_STATUS } from '~/enums/translation.enum'
+import { TRANSLATION_STATUS } from '../enums/translation.enum'
 import type { IReviewItem } from '../interfaces/review.interface'
 
 export function useReview() {

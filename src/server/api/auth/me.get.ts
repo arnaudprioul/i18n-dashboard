@@ -1,5 +1,4 @@
-import { getSession, getUserProfile } from '~/server/utils/auth.util'
-import { getDb } from '../../db/index'
+import { getSession, getUserProfile } from '../../../utils/auth.util'
 
 export default defineEventHandler(async (event) => {
   const session = await getSession(event)

@@ -1,4 +1,4 @@
-import { getJob } from '~/server/utils/translation-job.util'
+import { getJob } from '../../../utils/translation-job.util'
 
 export default defineEventHandler((event) => {
   const id = getRouterParam(event, 'id') || ''

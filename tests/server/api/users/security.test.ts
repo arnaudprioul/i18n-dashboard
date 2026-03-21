@@ -6,11 +6,11 @@ import { fileURLToPath } from 'url'
 
 vi.mock('bcryptjs', () => ({ default: { hash: vi.fn().mockResolvedValue('$2b$12$hashed') } }))
 vi.mock('~/server/db/index', () => ({ getDb: vi.fn() }))
-vi.mock('~/server/utils/auth.util', () => ({
+vi.mock('~/utils/auth.util', () => ({
   getUserRole: vi.fn().mockResolvedValue('admin'),
   canManageUsers: vi.fn().mockReturnValue(true),
 }))
-vi.mock('~/server/utils/mailer.util', () => ({
+vi.mock('~/utils/mailer.util', () => ({
   sendEmail: vi.fn().mockResolvedValue(undefined),
   inviteEmailHtml: vi.fn().mockReturnValue('<html>invite</html>'),
 }))

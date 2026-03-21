@@ -1,5 +1,5 @@
 import { getDb } from '../../db/index'
-import { getSession } from '~/server/utils/auth.util'
+import { getSession } from '../../../utils/auth.util'
 
 export default defineEventHandler(async (event) => {
   const db = getDb()

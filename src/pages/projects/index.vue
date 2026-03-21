@@ -627,7 +627,7 @@
 </template>
 
 <script lang="ts" setup>
-import { canScanProject, canSyncProject } from '~/composables/useProject'
+import { canScanProject, canSyncProject } from '../../composables/useProject'
 
 const router = useRouter()
 const { t } = useT()

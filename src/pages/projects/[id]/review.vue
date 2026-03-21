@@ -127,7 +127,7 @@
 </template>
 
 <script setup lang="ts">
-import { TRANSLATION_STATUS } from '~/enums/translation.enum'
+import { TRANSLATION_STATUS } from '../../../enums/translation.enum'
 
 const { currentProject } = useProject()
 const { canApprove, currentUser } = useAuth()

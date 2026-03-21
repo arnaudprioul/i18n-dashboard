@@ -1,10 +1,10 @@
 import knex, { type Knex } from 'knex'
 import { resolve, basename } from 'path'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
-import { useRuntimeConfig } from '#imports'
+import { useRuntimeConfig } from 'nitropack/runtime'
 
-import { OVERRIDE_FILE } from '~/server/consts/db.const'
-import { __DIRNAME } from '~/server/consts/commons.const'
+import { OVERRIDE_FILE } from '../../consts/db.const'
+import { __DIRNAME } from '../../consts/commons.const'
 
 let _db: Knex | null = null
 
@@ -1041,6 +1041,19 @@ export async function initDb(): Promise<void> {
       table.timestamp('expires_at').notNullable()
       table.timestamp('created_at').defaultTo(db.fn.now())
       table.index(['user_id'])
+      table.index(['token_hash'])
+    })
+  }
+
+  // ── password_reset_tokens ──────────────────────────────────────────────────
+  const hasPasswordResetTokens = await db.schema.hasTable('password_reset_tokens')
+  if (!hasPasswordResetTokens) {
+    await db.schema.createTable('password_reset_tokens', (table) => {
+      table.increments('id').primary()
+      table.integer('user_id').notNullable().references('id').inTable('users').onDelete('CASCADE')
+      table.string('token_hash', 64).notNullable() // SHA-256 hex of the raw token
+      table.timestamp('expires_at').notNullable()
+      table.timestamp('created_at').defaultTo(db.fn.now())
       table.index(['token_hash'])
     })
   }
