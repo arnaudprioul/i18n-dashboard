@@ -15,6 +15,10 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
   devtools: { enabled: false },
 
+  app: {
+    pageTransition: { name: 'page', mode: 'out-in' },
+  },
+
   srcDir: 'src',
   serverDir: 'src/server',
 
