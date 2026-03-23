@@ -406,6 +406,7 @@
               {{ t('onboarding.project_hint', 'Configurez le projet Vue.js que vous souhaitez gérer.') }}
             </p>
           </div>
+
           <UFormField
             :label="t('projects.name_label', 'Project name')"
             required
@@ -417,17 +418,74 @@
               data-cy="onboarding-project-name"
             />
           </UFormField>
-          <UFormField
-            :label="t('settings.root_path', 'Project path')"
-            required
-          >
-            <UInput
-              v-model="projectForm.root_path"
-              placeholder="/path/to/my-project"
-              class="w-full"
-              data-cy="onboarding-project-path"
-            />
-          </UFormField>
+
+          <!-- Source type toggle -->
+          <div class="flex gap-2">
+            <UButton
+              :variant="projectSourceType === 'local' ? 'solid' : 'outline'"
+              :color="projectSourceType === 'local' ? 'primary' : 'neutral'"
+              icon="i-heroicons-folder"
+              size="sm"
+              @click="projectSourceType = 'local'"
+            >
+              {{ t('onboarding.source_local', 'Local path') }}
+            </UButton>
+            <UButton
+              :variant="projectSourceType === 'git' ? 'solid' : 'outline'"
+              :color="projectSourceType === 'git' ? 'primary' : 'neutral'"
+              icon="i-heroicons-code-bracket"
+              size="sm"
+              @click="projectSourceType = 'git'"
+            >
+              {{ t('onboarding.source_git', 'Git repository') }}
+            </UButton>
+          </div>
+
+          <!-- Local path fields -->
+          <template v-if="projectSourceType === 'local'">
+            <UFormField
+              :label="t('settings.root_path', 'Project path')"
+              required
+            >
+              <UInput
+                v-model="projectForm.root_path"
+                placeholder="/path/to/my-project"
+                class="w-full"
+                data-cy="onboarding-project-path"
+              />
+            </UFormField>
+          </template>
+
+          <!-- Git fields -->
+          <template v-else>
+            <UFormField
+              :label="t('projects.git_repo_url_label', 'Repository URL')"
+              required
+            >
+              <UInput
+                v-model="projectForm.git_url"
+                placeholder="https://github.com/org/repo"
+                class="w-full"
+                data-cy="onboarding-project-git-url"
+              />
+            </UFormField>
+            <UFormField :label="t('projects.git_repo_branch_label', 'Branch')">
+              <UInput
+                v-model="projectForm.git_branch"
+                placeholder="main"
+                class="w-full"
+              />
+            </UFormField>
+            <UFormField :label="t('projects.git_token_label', 'Access token (optional)')">
+              <UInput
+                v-model="projectForm.git_token"
+                type="password"
+                :placeholder="t('projects.git_token_placeholder', 'ghp_...')"
+                class="w-full"
+              />
+            </UFormField>
+          </template>
+
           <UFormField :label="t('settings.locales_folder', 'Locales folder')">
             <UInput
               v-model="projectForm.locales_path"
@@ -436,6 +494,7 @@
               data-cy="onboarding-project-locales"
             />
           </UFormField>
+
           <p
             v-if="projectError"
             class="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2"
@@ -771,29 +830,47 @@ async function saveLanguages() {
 }
 
 // ─── Step 3 : First project ────────────────────────────────────────────────────
+const projectSourceType = ref<'local' | 'git'>('local')
 const projectForm = ref({
   name: configData.value?.project?.name || '',
   root_path: '',
   locales_path: configData.value?.project?.localesPath || 'src/locales',
+  git_url: '',
+  git_branch: '',
+  git_token: '',
 })
 const projectError = ref('')
 
 async function saveProject() {
   projectError.value = ''
-  if (!projectForm.value.name.trim() || !projectForm.value.root_path.trim()) {
-    projectError.value = t('onboarding.project_name_path_required', 'Project name and path are required.')
+  if (!projectForm.value.name.trim()) {
+    projectError.value = t('onboarding.project_name_required', 'Project name is required.')
+    return
+  }
+  if (projectSourceType.value === 'local' && !projectForm.value.root_path.trim()) {
+    projectError.value = t('onboarding.project_path_required', 'Project path is required.')
+    return
+  }
+  if (projectSourceType.value === 'git' && !projectForm.value.git_url.trim()) {
+    projectError.value = t('onboarding.project_git_url_required', 'Repository URL is required.')
     return
   }
   saving.value = true
   try {
-    await $fetch('/api/projects', {
-      method: 'POST',
-      body: {
-        name: projectForm.value.name.trim(),
-        root_path: projectForm.value.root_path.trim(),
-        locales_path: projectForm.value.locales_path || 'src/locales',
-      },
-    })
+    const body: Record<string, any> = {
+      name: projectForm.value.name.trim(),
+      locales_path: projectForm.value.locales_path || 'src/locales',
+    }
+    if (projectSourceType.value === 'local') {
+      body.root_path = projectForm.value.root_path.trim()
+    } else {
+      body.git_repo = {
+        url: projectForm.value.git_url.trim(),
+        branch: projectForm.value.git_branch.trim() || 'main',
+        token: projectForm.value.git_token.trim() || undefined,
+      }
+    }
+    await $fetch('/api/projects', { method: 'POST', body })
     currentStep.value = 4
   } catch (e: any) {
     projectError.value = e.data?.message || t('onboarding.project_creation_error', 'Error creating the project.')

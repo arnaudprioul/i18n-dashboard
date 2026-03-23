@@ -41,6 +41,11 @@ export default defineNuxtConfig({
     localesPath: process.env.I18N_LOCALES_PATH || 'src/locales',
     // Auth — set SESSION_SECRET to a strong random value in production
     sessionSecret: process.env.SESSION_SECRET || DEFAULT_SECRET,
+    // Security — tunable without code changes
+    bcryptRounds: process.env.BCRYPT_ROUNDS || '12',
+    sessionTtlMinutes: process.env.SESSION_TTL_MINUTES || '15',
+    refreshTokenTtlDays: process.env.REFRESH_TOKEN_TTL_DAYS || '7',
+    resetTokenTtlHours: process.env.RESET_TOKEN_TTL_HOURS || '1',
     // Email (SMTP) — optional
     smtpHost: process.env.SMTP_HOST || '',
     smtpPort: process.env.SMTP_PORT || '587',
@@ -69,6 +74,10 @@ export default defineNuxtConfig({
         dir: './src/assets/locales',
       },
     ],
+    experimental: { tasks: true },
+    scheduledTasks: {
+      '0 * * * *': ['purge-logs'],
+    },
     // ── Security headers ─────────────────────────────────────────────────────
     // Applied to every response from the Nitro server.
     routeRules: {

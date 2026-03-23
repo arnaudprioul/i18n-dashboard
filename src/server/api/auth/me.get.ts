@@ -1,4 +1,4 @@
-import { getSession, getUserProfile } from '../../../utils/auth.util'
+import { getSession, getUserProfile } from '../../utils/auth.util'
 
 export default defineEventHandler(async (event) => {
   const session = await getSession(event)

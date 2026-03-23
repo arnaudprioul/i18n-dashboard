@@ -214,6 +214,45 @@
           />
           <span class="flex-1">{{ t('users.all_title', 'All users') }}</span>
         </NuxtLink>
+        <NuxtLink
+          to="/admin/security"
+          class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors"
+          :class="isActive('/admin/security')
+            ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 font-medium'
+            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'"
+        >
+          <UIcon
+            name="i-heroicons-shield-check"
+            class="text-base shrink-0"
+          />
+          <span class="flex-1">Sécurité</span>
+        </NuxtLink>
+        <NuxtLink
+          to="/admin/smtp"
+          class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors"
+          :class="isActive('/admin/smtp')
+            ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 font-medium'
+            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'"
+        >
+          <UIcon
+            name="i-heroicons-envelope"
+            class="text-base shrink-0"
+          />
+          <span class="flex-1">{{ t('smtp.nav_label', 'SMTP') }}</span>
+        </NuxtLink>
+        <NuxtLink
+          to="/admin/logs"
+          class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors"
+          :class="isActive('/admin/logs')
+            ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 font-medium'
+            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'"
+        >
+          <UIcon
+            name="i-heroicons-document-text"
+            class="text-base shrink-0"
+          />
+          <span class="flex-1">{{ t('logs.nav_label', 'System logs') }}</span>
+        </NuxtLink>
       </div>
     </aside>
 

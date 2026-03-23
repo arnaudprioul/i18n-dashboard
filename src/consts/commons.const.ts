@@ -9,6 +9,7 @@ export const PUBLIC_ROUTES = [
 	'/api/auth/status',
 	'/api/auth/forgot-password',
 	'/api/auth/reset-password',
+	'/api/settings/password-policy',
 	'/api/setup',
 	'/api/ui-locale',
 	'/api/config',
