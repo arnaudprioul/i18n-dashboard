@@ -13,11 +13,14 @@ describe('PUBLIC_ROUTES — must not expose sensitive endpoints', () => {
   })
 
   it('does NOT include any project management endpoint', () => {
-    const sensitivePatterns = ['/api/projects', '/api/keys', '/api/translations', '/api/users', '/api/settings']
+    const sensitivePatterns = ['/api/projects', '/api/keys', '/api/translations', '/api/users']
     for (const pattern of sensitivePatterns) {
       const leak = PUBLIC_ROUTES.find(r => r.startsWith(pattern))
       expect(leak, `${pattern} must not be in PUBLIC_ROUTES`).toBeUndefined()
     }
+    // /api/settings is mostly protected — only the read-only password-policy sub-route is public
+    const settingsLeak = PUBLIC_ROUTES.find(r => r.startsWith('/api/settings') && r !== '/api/settings/password-policy')
+    expect(settingsLeak, '/api/settings must not be in PUBLIC_ROUTES (except password-policy)').toBeUndefined()
   })
 
   it('only exposes the minimum required auth and setup endpoints', () => {
@@ -29,6 +32,7 @@ describe('PUBLIC_ROUTES — must not expose sensitive endpoints', () => {
       '/api/auth/status',
       '/api/auth/forgot-password',
       '/api/auth/reset-password',
+      '/api/settings/password-policy',
       '/api/setup',
       '/api/ui-locale',
       '/api/config',

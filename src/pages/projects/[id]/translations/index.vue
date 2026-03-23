@@ -15,16 +15,6 @@
       </div>
       <div class="flex gap-2">
         <UButton
-          v-if="filterStatus === 'missing' && filterLangs.length === 1"
-          icon="i-heroicons-sparkles"
-          color="warning"
-          variant="outline"
-          :loading="batchTranslating"
-          @click="batchTranslate"
-        >
-          {{ t('translations.translate_all', 'Translate all') }} ({{ filterLangs[0].toUpperCase() }})
-        </UButton>
-        <UButton
           v-if="userCanManage"
           data-cy="new-key-btn"
           icon="i-heroicons-plus"
@@ -148,6 +138,22 @@
           >
             {{ lang.code }}
           </UBadge>
+          <UTooltip
+            v-if="filterStatus === 'missing'"
+            :text="langsWithMissing.has(lang.code)
+              ? t('translations.translate_all', 'Translate all') + ' ' + lang.code.toUpperCase()
+              : t('translations.nothing_to_translate', 'Nothing to translate')"
+          >
+            <UButton
+              icon="i-heroicons-sparkles"
+              color="warning"
+              variant="ghost"
+              size="xs"
+              :loading="loadingLangs.has(lang.code)"
+              :disabled="batchTranslating || !langsWithMissing.has(lang.code)"
+              @click.stop="batchTranslateForLang(lang.code)"
+            />
+          </UTooltip>
         </div>
         <div class="px-3 py-3" />
       </div>
@@ -297,6 +303,18 @@ const statusFilters = computed(() => [
   { value: 'unused', label: t('status.unused', 'Unused'), dot: 'bg-orange-400', activeBg: 'bg-orange-50 dark:bg-orange-900/20', activeText: 'text-orange-700 dark:text-orange-300' },
 ])
 
+const langsWithMissing = computed(() => {
+  if (filterStatus.value !== 'missing' || !data.value?.data) return new Set<string>()
+  const set = new Set<string>()
+  for (const key of data.value.data) {
+    for (const lang of visibleLanguages.value) {
+      const tr = (key.translations as any)?.[lang.code]
+      if (!tr?.value) set.add(lang.code)
+    }
+  }
+  return set
+})
+
 const gridStyle = computed(() => ({
   gridTemplateColumns: `minmax(220px, 1.5fr) ${visibleLanguages.value.map(() => 'minmax(160px, 1fr)').join(' ')} 48px`,
 }))
@@ -352,8 +370,18 @@ async function syncFiles() {
   await sync(currentProject.value.id)
 }
 
-async function batchTranslate() {
-  if (!currentProject.value) return
-  await doBatchTranslate(currentProject.value.id, filterLangs.value[0])
+const loadingLangs = ref(new Set<string>())
+
+async function batchTranslateForLang(langCode: string) {
+  if (!currentProject.value || loadingLangs.value.has(langCode)) return
+  loadingLangs.value = new Set(loadingLangs.value).add(langCode)
+  try {
+    await doBatchTranslate(currentProject.value.id, langCode)
+    await refresh()
+  } finally {
+    const next = new Set(loadingLangs.value)
+    next.delete(langCode)
+    loadingLangs.value = next
+  }
 }
 </script>

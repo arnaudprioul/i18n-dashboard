@@ -9,17 +9,27 @@ export function useReview() {
   const { currentProject } = useProject()
 
   const data = ref<any>(null)
+  const reviewedData = ref<any>(null)
   const pending = ref(false)
 
   async function refresh() {
     if (!currentProject.value?.id) return
     pending.value = true
     try {
-      data.value = await keyService.getKeys({
-        project_id: currentProject.value.id,
-        status: TRANSLATION_STATUS.DRAFT,
-        limit: 200,
-      })
+      const [draftResult, reviewedResult] = await Promise.all([
+        keyService.getKeys({
+          project_id: currentProject.value.id,
+          status: TRANSLATION_STATUS.DRAFT,
+          limit: 200,
+        }),
+        keyService.getKeys({
+          project_id: currentProject.value.id,
+          status: TRANSLATION_STATUS.REVIEWED,
+          limit: 200,
+        }),
+      ])
+      data.value = draftResult
+      reviewedData.value = reviewedResult
     } catch {} finally {
       pending.value = false
     }
@@ -35,6 +45,19 @@ export function useReview() {
     for (const k of keys) {
       for (const [lang, tr] of Object.entries(k.translations as Record<string, any>)) {
         if (tr?.status === TRANSLATION_STATUS.DRAFT && tr?.value) {
+          result.push({ id: tr.id, key: k.key, key_description: k.description, language_code: lang, value: tr.value })
+        }
+      }
+    }
+    return result
+  })
+
+  const reviewedItems = computed<IReviewItem[]>(() => {
+    const keys = reviewedData.value?.data ?? []
+    const result: IReviewItem[] = []
+    for (const k of keys) {
+      for (const [lang, tr] of Object.entries(k.translations as Record<string, any>)) {
+        if (tr?.status === TRANSLATION_STATUS.REVIEWED && tr?.value) {
           result.push({ id: tr.id, key: k.key, key_description: k.description, language_code: lang, value: tr.value })
         }
       }
@@ -77,8 +100,28 @@ export function useReview() {
     }
   }
 
+  const approvingAllReviewed = ref(false)
+  async function approveAllReviewed(): Promise<void> {
+    approvingAllReviewed.value = true
+    try {
+      const ids = reviewedItems.value.map(i => i.id)
+      await translationService.bulkStatus(ids, TRANSLATION_STATUS.APPROVED)
+      const n = ids.length
+      toast.add({
+        title: t('review.approved_toast', 'Approved'),
+        description: `${n} ${t('review.translations_approved', 'translation(s) approved')}`,
+        color: 'success',
+      })
+      await refresh()
+      refreshNuxtData('project-stats')
+    } catch {} finally {
+      approvingAllReviewed.value = false
+    }
+  }
+
   return {
     reviewItems,
+    reviewedItems,
     pending,
     refresh,
     processingId,
@@ -86,5 +129,7 @@ export function useReview() {
     setStatus,
     approvingAll,
     markAllReviewed,
+    approvingAllReviewed,
+    approveAllReviewed,
   }
 }

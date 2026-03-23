@@ -1,5 +1,6 @@
 import { translate } from '@vitalets/google-translate-api'
 import { getDb } from '../../db/index'
+import { writeLog } from '../../utils/log.util'
 
 // Auto-translate all missing translations for a given target language
 export default defineEventHandler(async (event) => {
@@ -114,6 +115,12 @@ export default defineEventHandler(async (event) => {
     } catch (e: any) {
       errors++
       console.error(`[batch-translate] Failed for key "${key.key}":`, e.message)
+      await writeLog('error', 'batch-translate', `Failed to translate key "${key.key}" to "${target_language}"`, {
+        key: key.key,
+        target_language,
+        source_lang: source?.lang,
+        error: e.message,
+      })
     }
   }
 

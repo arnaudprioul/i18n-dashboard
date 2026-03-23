@@ -26,15 +26,33 @@ export default defineEventHandler(async (event) => {
 
   if (status === 'unused') {
     keysQuery = keysQuery.where('tk.is_unused', true)
-  } else if (status === 'missing' && lang && lang !== 'all') {
-    keysQuery = keysQuery.whereNotExists(
-      db('translations as t')
-        .where('t.key_id', db.ref('tk.id'))
-        .where('t.language_code', lang as string)
-        .whereNotNull('t.value')
-        .where('t.value', '!=', '')
-        .select('t.id'),
-    )
+  } else if (status === 'missing') {
+    if (lang && lang !== 'all') {
+      // Missing for a specific language
+      keysQuery = keysQuery.whereNotExists(
+        db('translations as t')
+          .where('t.key_id', db.ref('tk.id'))
+          .where('t.language_code', lang as string)
+          .whereNotNull('t.value')
+          .where('t.value', '!=', '')
+          .select('t.id'),
+      )
+    } else {
+      // Missing for at least one language in the project
+      keysQuery = keysQuery.whereExists(
+        db('languages as l')
+          .where('l.project_id', Number(project_id))
+          .whereNotExists(
+            db('translations as t')
+              .whereRaw('t.key_id = tk.id')
+              .whereRaw('t.language_code = l.code')
+              .whereNotNull('t.value')
+              .where('t.value', '!=', '')
+              .select('t.id'),
+          )
+          .select('l.id'),
+      )
+    }
   } else if (lang && lang !== 'all') {
     if (status && status !== 'all') {
       keysQuery = keysQuery.whereExists(

@@ -32,3 +32,4 @@ export const navigateTo = () => {}
 export const $fetch = () => Promise.resolve(null)
 export const refreshNuxtData = () => {}
 export const useNuxtApp = () => ({ runWithContext: (fn: any) => fn() })
+export const useRoute = () => ({ path: '/test', params: {}, query: {} })

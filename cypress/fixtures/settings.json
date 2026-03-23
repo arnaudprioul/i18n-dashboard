@@ -1,4 +1,0 @@
-{
-  "scan_exclude": "node_modules,dist,.nuxt",
-  "google_translate_api_key": ""
-}
