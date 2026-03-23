@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue'
-import type { TWidgetSize } from '~/types/dashboard.type'
-import type { IWidgetDataSource } from '~/interfaces/dashboard.interface'
+import type { TWidgetSize } from '../../../types/dashboard.type'
+import type { IWidgetDataSource } from '../../../interfaces/dashboard.interface'
 
 const props = defineProps({
   id: {
@@ -64,24 +64,53 @@ function activityIcon(changedBy: string) {
   <UCard class="h-full overflow-hidden">
     <template #header>
       <div class="flex items-center gap-2">
-        <UIcon name="i-heroicons-clock" class="text-gray-400" />
+        <UIcon
+          name="i-heroicons-clock"
+          class="text-gray-400"
+        />
         <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ displayTitle }}</span>
-        <span v-if="sourceLabel" class="ml-auto text-xs text-gray-400 dark:text-gray-500">{{ sourceLabel }}</span>
+        <span
+          v-if="sourceLabel"
+          class="ml-auto text-xs text-gray-400 dark:text-gray-500"
+        >{{ sourceLabel }}</span>
       </div>
     </template>
 
-    <div v-if="pending" class="space-y-2">
-      <USkeleton v-for="i in 4" :key="i" class="h-8 w-full" />
+    <div
+      v-if="pending"
+      class="space-y-2"
+    >
+      <USkeleton
+        v-for="i in 4"
+        :key="i"
+        class="h-8 w-full"
+      />
     </div>
 
-    <div v-else-if="!hasProject" class="flex flex-col items-center justify-center h-full py-6 text-center">
-      <UIcon name="i-heroicons-clock" class="text-3xl text-gray-300 dark:text-gray-600 mb-2" />
-      <p class="text-sm text-gray-400">{{ t('dashboard.select_project', 'Select a project') }}</p>
+    <div
+      v-else-if="!hasProject"
+      class="flex flex-col items-center justify-center h-full py-6 text-center"
+    >
+      <UIcon
+        name="i-heroicons-clock"
+        class="text-3xl text-gray-300 dark:text-gray-600 mb-2"
+      />
+      <p class="text-sm text-gray-400">
+        {{ t('dashboard.select_project', 'Select a project') }}
+      </p>
     </div>
 
-    <div v-else-if="!displayedActivity.length" class="flex flex-col items-center justify-center h-full py-6 text-center">
-      <UIcon name="i-heroicons-clock" class="text-3xl text-gray-300 dark:text-gray-600 mb-2" />
-      <p class="text-sm text-gray-400">{{ t('dashboard.no_activity', 'No recent activity') }}</p>
+    <div
+      v-else-if="!displayedActivity.length"
+      class="flex flex-col items-center justify-center h-full py-6 text-center"
+    >
+      <UIcon
+        name="i-heroicons-clock"
+        class="text-3xl text-gray-300 dark:text-gray-600 mb-2"
+      />
+      <p class="text-sm text-gray-400">
+        {{ t('dashboard.no_activity', 'No recent activity') }}
+      </p>
     </div>
 
     <div
@@ -95,12 +124,22 @@ function activityIcon(changedBy: string) {
         class="flex items-start gap-2 py-1"
       >
         <div class="w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0 mt-0.5">
-          <UIcon :name="activityIcon(item.changed_by)" class="text-xs text-gray-500 dark:text-gray-400" />
+          <UIcon
+            :name="activityIcon(item.changed_by)"
+            class="text-xs text-gray-500 dark:text-gray-400"
+          />
         </div>
         <div class="min-w-0 flex-1">
-          <p class="text-xs font-mono text-gray-700 dark:text-gray-300 truncate">{{ item.key }}</p>
+          <p class="text-xs font-mono text-gray-700 dark:text-gray-300 truncate">
+            {{ item.key }}
+          </p>
           <div class="flex items-center gap-1.5 mt-0.5">
-            <UBadge :label="item.language_code.toUpperCase()" color="neutral" variant="soft" size="xs" />
+            <UBadge
+              :label="item.language_code.toUpperCase()"
+              color="neutral"
+              variant="soft"
+              size="xs"
+            />
             <span class="text-xs text-gray-400">{{ formatRelative(item.changed_at) }}</span>
           </div>
         </div>

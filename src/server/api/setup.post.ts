@@ -1,6 +1,8 @@
 import bcrypt from 'bcryptjs'
 import { getDb } from '../db/index'
-import { getSession, createRefreshToken } from '~/server/utils/auth.util'
+import { getSession, createRefreshToken } from '../utils/auth.util'
+import { getPasswordPolicy, validatePassword } from '../utils/password.util'
+import { useRuntimeConfig } from 'nitropack/runtime'
 
 export default defineEventHandler(async (event) => {
   const db = getDb()
@@ -16,11 +18,15 @@ export default defineEventHandler(async (event) => {
   if (!name || !email || !password) {
     throw createError({ statusCode: 400, message: 'Nom, email et mot de passe requis' })
   }
-  if (password.length < 8) {
-    throw createError({ statusCode: 400, message: 'Le mot de passe doit contenir au moins 8 caractères' })
+
+  const policy = await getPasswordPolicy()
+  const validation = validatePassword(password, policy)
+  if (!validation.valid) {
+    throw createError({ statusCode: 400, message: validation.message! })
   }
 
-  const hash = await bcrypt.hash(password, 12)
+  const config = useRuntimeConfig()
+  const hash = await bcrypt.hash(password, Number(config.bcryptRounds) || 12)
   const [id] = await db('users').insert({
     name: name.trim(),
     email: email.toLowerCase().trim(),

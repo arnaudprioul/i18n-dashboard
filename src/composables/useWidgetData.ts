@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import type { IWidgetDataSource } from '~/interfaces/dashboard.interface'
+import type { IWidgetDataSource } from '../interfaces/dashboard.interface'
 
 export function useWidgetData(widgetId: string, dataSource: Ref<IWidgetDataSource | undefined>) {
   const { currentProject, projects } = useProject()

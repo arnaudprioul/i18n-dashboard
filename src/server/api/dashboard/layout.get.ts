@@ -1,4 +1,4 @@
-import { requireAuth } from '~/server/utils/auth.util'
+import { requireAuth } from '../../utils/auth.util'
 import { getDb } from '../../db/index'
 
 export default defineEventHandler(async (event) => {

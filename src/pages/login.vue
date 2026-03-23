@@ -1,19 +1,40 @@
 <template>
+  <span
+    v-if="isMounted"
+    data-cy="login-mounted"
+    class="sr-only"
+  />
   <UCard class="w-full max-w-md">
     <template #header>
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-xl bg-primary-500 flex items-center justify-center shrink-0">
-          <UIcon name="i-heroicons-language" class="text-white text-lg" />
+          <UIcon
+            name="i-heroicons-language"
+            class="text-white text-lg"
+          />
         </div>
         <div>
-          <h1 data-cy="login-title" class="text-lg font-bold text-gray-900 dark:text-white">i18n Dashboard</h1>
-          <p class="text-xs text-gray-400">{{ t('login.title', 'Log in') }}</p>
+          <h1
+            data-cy="login-title"
+            class="text-lg font-bold text-gray-900 dark:text-white"
+          >
+            i18n Dashboard
+          </h1>
+          <p class="text-xs text-gray-400">
+            {{ t('login.title', 'Log in') }}
+          </p>
         </div>
       </div>
     </template>
 
-    <form class="space-y-4" @submit.prevent="handleLogin">
-      <UFormField :label="t('login.email', 'Email')" required>
+    <form
+      class="space-y-4"
+      @submit.prevent="handleLogin"
+    >
+      <UFormField
+        :label="t('login.email', 'Email')"
+        required
+      >
         <UInput
           v-model="form.email"
           type="email"
@@ -25,7 +46,10 @@
         />
       </UFormField>
 
-      <UFormField :label="t('login.password', 'Password')" required>
+      <UFormField
+        :label="t('login.password', 'Password')"
+        required
+      >
         <UInput
           v-model="form.password"
           type="password"
@@ -36,14 +60,35 @@
         />
       </UFormField>
 
-      <p v-if="error" data-cy="login-error" class="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2">
-        <UIcon name="i-heroicons-exclamation-circle" class="inline mr-1" />
+      <p
+        v-if="error"
+        data-cy="login-error"
+        class="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2"
+      >
+        <UIcon
+          name="i-heroicons-exclamation-circle"
+          class="inline mr-1"
+        />
         {{ error }}
       </p>
 
-      <UButton type="submit" block :loading="loading" class="mt-2" data-cy="login-submit">
+      <UButton
+        type="submit"
+        block
+        :loading="loading"
+        class="mt-2"
+        data-cy="login-submit"
+      >
         {{ t('login.submit', 'Sign in') }}
       </UButton>
+
+      <NuxtLink
+        to="/forgot-password"
+        class="block text-center text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 mt-2"
+        data-cy="forgot-password-link"
+      >
+        {{ t('login.forgot_password', 'Forgot password?') }}
+      </NuxtLink>
     </form>
   </UCard>
 </template>
@@ -58,6 +103,11 @@ const { t } = useT()
 const form = ref({ email: '', password: '' })
 const loading = ref(false)
 const error = ref('')
+
+// Hydration sentinel — only rendered after onMounted() fires (Vue fully hydrated).
+// Cypress tests wait for [data-cy="login-mounted"] before interacting with the form.
+const isMounted = ref(false)
+onMounted(() => { isMounted.value = true })
 
 async function handleLogin() {
   if (!form.value.email || !form.value.password) return

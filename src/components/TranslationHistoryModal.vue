@@ -1,16 +1,38 @@
 <template>
-  <UModal :open="true" title="Translation History" @update:open="$emit('close')">
+  <UModal
+    :open="true"
+    title="Translation History"
+    @update:open="$emit('close')"
+  >
     <template #body>
-      <div v-if="pending" class="space-y-3">
-        <USkeleton v-for="i in 3" :key="i" class="h-16" />
+      <div
+        v-if="pending"
+        class="space-y-3"
+      >
+        <USkeleton
+          v-for="i in 3"
+          :key="i"
+          class="h-16"
+        />
       </div>
 
-      <div v-else-if="!history?.length" class="text-center py-8">
-        <UIcon name="i-heroicons-clock" class="text-4xl text-gray-300 dark:text-gray-600 mb-2" />
-        <p class="text-gray-400">No history available</p>
+      <div
+        v-else-if="!history?.length"
+        class="text-center py-8"
+      >
+        <UIcon
+          name="i-heroicons-clock"
+          class="text-4xl text-gray-300 dark:text-gray-600 mb-2"
+        />
+        <p class="text-gray-400">
+          No history available
+        </p>
       </div>
 
-      <div v-else class="space-y-3 max-h-96 overflow-y-auto">
+      <div
+        v-else
+        class="space-y-3 max-h-96 overflow-y-auto"
+      >
         <div
           v-for="entry in history"
           :key="entry.id"
@@ -28,13 +50,17 @@
 
           <div class="grid grid-cols-2 gap-2">
             <div>
-              <p class="text-xs text-gray-400 mb-1">Before</p>
+              <p class="text-xs text-gray-400 mb-1">
+                Before
+              </p>
               <p class="text-sm text-gray-600 dark:text-gray-400 bg-red-50 dark:bg-red-900/20 rounded px-2 py-1 min-h-8">
                 {{ entry.old_value || '—' }}
               </p>
             </div>
             <div>
-              <p class="text-xs text-gray-400 mb-1">After</p>
+              <p class="text-xs text-gray-400 mb-1">
+                After
+              </p>
               <p class="text-sm text-gray-800 dark:text-gray-200 bg-green-50 dark:bg-green-900/20 rounded px-2 py-1 min-h-8">
                 {{ entry.new_value || '—' }}
               </p>
@@ -44,7 +70,13 @@
       </div>
     </template>
     <template #footer>
-      <UButton color="neutral" variant="outline" @click="$emit('close')">Close</UButton>
+      <UButton
+        color="neutral"
+        variant="outline"
+        @click="$emit('close')"
+      >
+        Close
+      </UButton>
     </template>
   </UModal>
 </template>

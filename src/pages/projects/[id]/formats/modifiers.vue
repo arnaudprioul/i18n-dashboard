@@ -2,99 +2,204 @@
   <div class="p-6 max-w-4xl mx-auto space-y-6">
     <div class="flex items-center justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ t('formats.modifiers_title', 'Custom modifiers') }}</h1>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+          {{ t('formats.modifiers_title', 'Custom modifiers') }}
+        </h1>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
           {{ t('formats.modifiers_subtitle', 'Add custom') }} <code class="font-mono text-xs bg-gray-100 dark:bg-gray-800 px-1 rounded">@.modifier:key</code> {{ t('formats.modifiers_subtitle2', 'modifiers.') }}
         </p>
       </div>
-      <UButton icon="i-heroicons-plus" @click="openCreate">{{ t('formats.add_modifier', 'Add a modifier') }}</UButton>
+      <UButton
+        icon="i-heroicons-plus"
+        @click="openCreate"
+      >
+        {{ t('formats.add_modifier', 'Add a modifier') }}
+      </UButton>
     </div>
 
     <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg px-4 py-3 text-sm text-blue-700 dark:text-blue-300 flex gap-2">
-      <UIcon name="i-heroicons-information-circle" class="shrink-0 mt-0.5" />
+      <UIcon
+        name="i-heroicons-information-circle"
+        class="shrink-0 mt-0.5"
+      />
       <div>
         {{ t('formats.modifiers_info', 'Define JS functions that receive a string and return a modified string. Example:') }} <code class="font-mono text-xs bg-blue-100 dark:bg-blue-900/40 px-1 rounded">snakeCase</code> → {{ t('formats.modifiers_info2', 'use') }} <code class="font-mono text-xs bg-blue-100 dark:bg-blue-900/40 px-1 rounded">@.snakeCase:common.title</code> {{ t('formats.modifiers_info3', 'in your translations.') }}
-        <NuxtLink to="https://vue-i18n.intlify.dev/guide/essentials/syntax.html#custom-modifiers" target="_blank" class="underline ml-1">{{ t('formats.documentation', 'Documentation') }} ↗</NuxtLink>
+        <NuxtLink
+          to="https://vue-i18n.intlify.dev/guide/essentials/syntax.html#custom-modifiers"
+          target="_blank"
+          class="underline ml-1"
+        >
+          {{ t('formats.documentation', 'Documentation') }} ↗
+        </NuxtLink>
       </div>
     </div>
 
     <!-- Built-in modifiers reminder -->
     <UCard>
       <template #header>
-        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">{{ t('formats.builtin_modifiers', 'Built-in modifiers') }}</p>
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+          {{ t('formats.builtin_modifiers', 'Built-in modifiers') }}
+        </p>
       </template>
       <div class="grid grid-cols-3 gap-2">
-        <div v-for="mod in BUILTIN_MODIFIERS" :key="mod.name" class="bg-gray-50 dark:bg-gray-800 rounded p-2">
+        <div
+          v-for="mod in BUILTIN_MODIFIERS"
+          :key="mod.name"
+          class="bg-gray-50 dark:bg-gray-800 rounded p-2"
+        >
           <code class="text-xs font-mono text-violet-600 dark:text-violet-400 font-semibold">@.{{ mod.name }}:</code>
-          <p class="text-xs text-gray-400 mt-0.5">{{ mod.desc }}</p>
-          <p class="text-xs font-mono text-gray-500 mt-1">{{ mod.example }}</p>
+          <p class="text-xs text-gray-400 mt-0.5">
+            {{ mod.desc }}
+          </p>
+          <p class="text-xs font-mono text-gray-500 mt-1">
+            {{ mod.example }}
+          </p>
         </div>
       </div>
     </UCard>
 
     <!-- Empty -->
-    <div v-if="!modifiers?.length" class="text-center py-12 text-gray-400">
-      <UIcon name="i-heroicons-code-bracket" class="text-4xl mb-3" />
-      <p class="font-medium">{{ t('formats.no_modifier', 'No custom modifier') }}</p>
-      <p class="text-sm mt-1">{{ t('formats.add_custom_modifiers', 'Add your own text transformations.') }}</p>
-      <UButton class="mt-4" icon="i-heroicons-plus" @click="openCreate">{{ t('formats.add_modifier', 'Add a modifier') }}</UButton>
+    <div
+      v-if="!modifiers?.length"
+      class="text-center py-12 text-gray-400"
+    >
+      <UIcon
+        name="i-heroicons-code-bracket"
+        class="text-4xl mb-3"
+      />
+      <p class="font-medium">
+        {{ t('formats.no_modifier', 'No custom modifier') }}
+      </p>
+      <p class="text-sm mt-1">
+        {{ t('formats.add_custom_modifiers', 'Add your own text transformations.') }}
+      </p>
+      <UButton
+        class="mt-4"
+        icon="i-heroicons-plus"
+        @click="openCreate"
+      >
+        {{ t('formats.add_modifier', 'Add a modifier') }}
+      </UButton>
     </div>
 
     <!-- List -->
-    <div v-else class="space-y-3">
-      <UCard v-for="mod in modifiers" :key="mod.id">
+    <div
+      v-else
+      class="space-y-3"
+    >
+      <UCard
+        v-for="mod in modifiers"
+        :key="mod.id"
+      >
         <div class="flex items-start justify-between gap-3">
           <div class="min-w-0 flex-1">
             <div class="flex items-center gap-2 mb-2">
               <code class="text-sm font-mono font-semibold text-violet-600 dark:text-violet-400">@.{{ mod.name }}:</code>
-              <UBadge size="xs" color="violet" variant="soft">custom</UBadge>
+              <UBadge
+                size="xs"
+                color="violet"
+                variant="soft"
+              >
+                custom
+              </UBadge>
             </div>
             <code class="text-xs font-mono text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 px-2 py-1 rounded block">{{ mod.body }}</code>
             <!-- Live test -->
             <div class="mt-2 flex items-center gap-2">
-              <UInput v-model="testInputs[mod.id]" size="xs" :placeholder="t('formats.test_placeholder', 'Test with a text...')" class="flex-1" />
+              <UInput
+                v-model="testInputs[mod.id]"
+                size="xs"
+                :placeholder="t('formats.test_placeholder', 'Test with a text...')"
+                class="flex-1"
+              />
               <code class="text-xs font-mono text-gray-500 dark:text-gray-400 shrink-0">→ {{ testModifier(mod, testInputs[mod.id] || '') }}</code>
             </div>
           </div>
           <div class="flex gap-1 shrink-0">
-            <UButton icon="i-heroicons-pencil" size="xs" color="neutral" variant="ghost" @click="openEdit(mod)" />
-            <UButton icon="i-heroicons-trash" size="xs" color="error" variant="ghost" @click="remove(mod.id)" />
+            <UButton
+              icon="i-heroicons-pencil"
+              size="xs"
+              color="neutral"
+              variant="ghost"
+              @click="openEdit(mod)"
+            />
+            <UButton
+              icon="i-heroicons-trash"
+              size="xs"
+              color="error"
+              variant="ghost"
+              @click="remove(mod.id)"
+            />
           </div>
         </div>
       </UCard>
     </div>
 
     <!-- Create/Edit modal -->
-    <UModal v-model:open="showModal" :title="editing ? t('formats.edit_modifier', 'Edit modifier') : t('formats.new_modifier', 'New modifier')">
+    <UModal
+      v-model:open="showModal"
+      :title="editing ? t('formats.edit_modifier', 'Edit modifier') : t('formats.new_modifier', 'New modifier')"
+    >
       <template #body>
         <div class="space-y-4">
-          <UFormField :label="t('formats.modifier_name', 'Name')" :hint="t('formats.modifier_name_hint', 'Used in @.name:key')" required>
-            <UInput v-model="form.name" placeholder="snakeCase" class="w-full" />
+          <UFormField
+            :label="t('formats.modifier_name', 'Name')"
+            :hint="t('formats.modifier_name_hint', 'Used in @.name:key')"
+            required
+          >
+            <UInput
+              v-model="form.name"
+              placeholder="snakeCase"
+              class="w-full"
+            />
           </UFormField>
 
-          <UFormField :label="t('formats.js_function', 'JavaScript function')" :hint="t('formats.js_function_hint', 'Arrow function receiving str and returning string')" required>
-            <UTextarea v-model="form.body" :rows="4" class="w-full font-mono text-sm" placeholder="(str) => str.split(' ').join('_')" />
+          <UFormField
+            :label="t('formats.js_function', 'JavaScript function')"
+            :hint="t('formats.js_function_hint', 'Arrow function receiving str and returning string')"
+            required
+          >
+            <UTextarea
+              v-model="form.body"
+              :rows="4"
+              class="w-full font-mono text-sm"
+              placeholder="(str) => str.split(' ').join('_')"
+            />
           </UFormField>
 
           <!-- Quick templates -->
           <div>
-            <p class="text-xs text-gray-400 mb-2">{{ t('formats.quick_templates', 'Quick templates:') }}</p>
+            <p class="text-xs text-gray-400 mb-2">
+              {{ t('formats.quick_templates', 'Quick templates:') }}
+            </p>
             <div class="flex flex-wrap gap-1.5">
               <button
                 v-for="tpl in QUICK_TEMPLATES"
                 :key="tpl.name"
                 class="px-2 py-1 rounded text-xs border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-violet-300 dark:hover:border-violet-600 text-gray-600 dark:text-gray-400 transition-colors"
                 @click="applyTemplate(tpl)"
-              >{{ tpl.name }}</button>
+              >
+                {{ tpl.name }}
+              </button>
             </div>
           </div>
 
           <!-- Test -->
           <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 space-y-2">
-            <p class="text-xs text-gray-400">{{ t('formats.live_test', 'Live test:') }}</p>
+            <p class="text-xs text-gray-400">
+              {{ t('formats.live_test', 'Live test:') }}
+            </p>
             <div class="flex items-center gap-2">
-              <UInput v-model="liveTest" size="xs" placeholder="Hello World" class="flex-1" />
-              <UIcon name="i-heroicons-arrow-right" class="text-gray-400 shrink-0" />
+              <UInput
+                v-model="liveTest"
+                size="xs"
+                placeholder="Hello World"
+                class="flex-1"
+              />
+              <UIcon
+                name="i-heroicons-arrow-right"
+                class="text-gray-400 shrink-0"
+              />
               <code class="text-xs font-mono text-violet-600 dark:text-violet-400 shrink-0">{{ liveResult }}</code>
             </div>
           </div>
@@ -102,8 +207,19 @@
       </template>
       <template #footer>
         <div class="flex justify-end gap-2">
-          <UButton color="neutral" variant="ghost" @click="showModal = false">{{ t('common.cancel', 'Cancel') }}</UButton>
-          <UButton :loading="saving" @click="save">{{ editing ? t('formats.update', 'Update') : t('common.create', 'Create') }}</UButton>
+          <UButton
+            color="neutral"
+            variant="ghost"
+            @click="showModal = false"
+          >
+            {{ t('common.cancel', 'Cancel') }}
+          </UButton>
+          <UButton
+            :loading="saving"
+            @click="save"
+          >
+            {{ editing ? t('formats.update', 'Update') : t('common.create', 'Create') }}
+          </UButton>
         </div>
       </template>
     </UModal>
@@ -143,7 +259,7 @@ const liveResult = computed(() => {
 function testModifier(mod: { body: string }, input: string): string {
   if (!mod.body || !input) return ''
   try {
-    // eslint-disable-next-line no-new-func
+     
     const fn = new Function('str', `return (${mod.body})(str)`)
     return String(fn(input))
   } catch {

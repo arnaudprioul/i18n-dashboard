@@ -1,9 +1,10 @@
 import bcrypt from 'bcryptjs'
 import { randomBytes } from 'crypto'
 import { getDb } from '../../db/index'
-import { getUserRole, canManageUsers } from '~/server/utils/auth.util'
-import { sendEmail, inviteEmailHtml } from '~/server/utils/mailer.util'
-import { useRuntimeConfig } from '#imports'
+import { getUserRole, canManageUsers } from '../../utils/auth.util'
+import { sendEmail, inviteEmailHtml } from '../../utils/mailer.util'
+import { useRuntimeConfig } from 'nitropack/runtime'
+import { getPasswordPolicy, validatePassword } from '../../utils/password.util'
 
 function generateTempPassword(): string {
   const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789'
@@ -39,7 +40,8 @@ export default defineEventHandler(async (event) => {
   if (existing) throw createError({ statusCode: 409, message: 'Cet email est déjà utilisé' })
 
   const tempPassword = generateTempPassword()
-  const hash = await bcrypt.hash(tempPassword, 12)
+  const config = useRuntimeConfig()
+  const hash = await bcrypt.hash(tempPassword, Number(config.bcryptRounds) || 12)
 
   const [userId] = await db('users').insert({
     name: name.trim(),
@@ -65,10 +67,13 @@ export default defineEventHandler(async (event) => {
   }
 
   // Send invitation email
-  const config = useRuntimeConfig()
   const projectName = body.project_id
     ? (await db('projects').where({ id: Number(body.project_id) }).first())?.name
     : undefined
+
+  // Read dashboardUrl from settings table, fall back to runtime config
+  const dashboardUrlRow = await db('settings').where({ key: 'dashboard_url' }).first()
+  const dashboardUrl = dashboardUrlRow?.value || (config.dashboardUrl as string) || 'http://localhost:3333'
 
   try {
     await sendEmail({
@@ -78,7 +83,7 @@ export default defineEventHandler(async (event) => {
         name,
         email: email.toLowerCase().trim(),
         tempPassword,
-        dashboardUrl: config.dashboardUrl as string,
+        dashboardUrl,
         projectName,
         role,
       }),

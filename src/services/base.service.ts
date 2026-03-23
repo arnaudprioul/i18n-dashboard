@@ -49,7 +49,17 @@ export abstract class SBase {
   private async _handleAuthFailure(): Promise<void> {
     try { await $fetch('/api/auth/logout', { method: 'POST' }) } catch {}
     try {
-      await useNuxtApp().runWithContext(() => navigateTo('/login', { replace: true }))
+      await useNuxtApp().runWithContext(() => {
+        let currentPath: string | undefined
+        try { currentPath = useRoute()?.path } catch {}
+        // Only redirect if we know we're on a protected route.
+        // If the path is unknown/empty, do NOT redirect — safer than a spurious /login.
+        const publicPaths = ['/login', '/onboarding', '/forgot-password', '/reset-password']
+        const isKnownProtected = currentPath && !publicPaths.some(p => currentPath!.startsWith(p))
+        if (isKnownProtected) {
+          return navigateTo('/login', { replace: true })
+        }
+      })
     } catch {}
   }
 

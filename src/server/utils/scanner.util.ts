@@ -1,9 +1,9 @@
 import { readdirSync, readFileSync, statSync, existsSync } from 'fs'
 import { resolve, extname, relative, basename } from 'path'
 
-import type { IDetectedLanguage, IKeyUsage, IScanResult } from '~/interfaces/scanner.interface'
-import { AVAILABLE_LOCALES_PATTERN, LOCALE_ARRAY_PATTERN, LOCALE_SINGLE_PATTERN } from '~/consts/scanner.const'
-import { LANGUAGES } from '~/consts/languages.const'
+import type { IDetectedLanguage, IKeyUsage, IScanResult } from '../../interfaces/scanner.interface'
+import { AVAILABLE_LOCALES_PATTERN, LOCALE_ARRAY_PATTERN, LOCALE_SINGLE_PATTERN } from '../../consts/scanner.const'
+import { LANGUAGES } from '../../consts/languages.const'
 
 function langName(code: string): string {
   return LANGUAGES[code.toLowerCase()] || code.toUpperCase()

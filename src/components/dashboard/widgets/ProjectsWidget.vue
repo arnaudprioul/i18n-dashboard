@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { TWidgetSize } from '~/types/dashboard.type'
+import type { TWidgetSize } from '../../../types/dashboard.type'
 
 const props = defineProps<{
   size: TWidgetSize
@@ -28,19 +28,44 @@ function navigate(id: number) {
   <UCard class="h-full overflow-hidden">
     <template #header>
       <div class="flex items-center gap-2">
-        <UIcon name="i-heroicons-rectangle-stack" class="text-gray-400" />
+        <UIcon
+          name="i-heroicons-rectangle-stack"
+          class="text-gray-400"
+        />
         <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ t('nav.projects', 'Projects') }}</span>
-        <UBadge v-if="visibleProjects.length" :label="String(visibleProjects.length)" color="neutral" variant="soft" size="xs" class="ml-auto" />
+        <UBadge
+          v-if="visibleProjects.length"
+          :label="String(visibleProjects.length)"
+          color="neutral"
+          variant="soft"
+          size="xs"
+          class="ml-auto"
+        />
       </div>
     </template>
 
-    <div v-if="pending" class="space-y-2">
-      <USkeleton v-for="i in 3" :key="i" class="h-10 w-full" />
+    <div
+      v-if="pending"
+      class="space-y-2"
+    >
+      <USkeleton
+        v-for="i in 3"
+        :key="i"
+        class="h-10 w-full"
+      />
     </div>
 
-    <div v-else-if="!displayedProjects.length" class="flex flex-col items-center justify-center h-full py-6 text-center">
-      <UIcon name="i-heroicons-folder-open" class="text-3xl text-gray-300 dark:text-gray-600 mb-2" />
-      <p class="text-sm text-gray-400">{{ t('projects.none', 'No project') }}</p>
+    <div
+      v-else-if="!displayedProjects.length"
+      class="flex flex-col items-center justify-center h-full py-6 text-center"
+    >
+      <UIcon
+        name="i-heroicons-folder-open"
+        class="text-3xl text-gray-300 dark:text-gray-600 mb-2"
+      />
+      <p class="text-sm text-gray-400">
+        {{ t('projects.none', 'No project') }}
+      </p>
     </div>
 
     <div
@@ -66,7 +91,9 @@ function navigate(id: number) {
           />
         </div>
         <div class="min-w-0 flex-1">
-          <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ project.name }}</p>
+          <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+            {{ project.name }}
+          </p>
           <p class="text-xs text-gray-400">
             {{ project.key_count ?? 0 }} {{ t('translations.keys_count', 'keys') }} · {{ project.language_count ?? 0 }} {{ t('translations.langs_count', 'languages') }}
           </p>

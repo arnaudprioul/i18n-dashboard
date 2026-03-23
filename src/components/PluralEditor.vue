@@ -1,9 +1,10 @@
 <template>
   <div class="space-y-4">
-
     <!-- Template picker -->
     <div>
-      <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">{{ t('plural.template_title', 'Pluralization template') }}</p>
+      <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">
+        {{ t('plural.template_title', 'Pluralization template') }}
+      </p>
       <div class="grid grid-cols-1 gap-1.5">
         <button
           v-for="tpl in TEMPLATES"
@@ -21,7 +22,11 @@
             </div>
             <code class="text-xs font-mono text-green-600 dark:text-green-400 mt-0.5 block truncate">{{ tpl.preview }}</code>
           </div>
-          <UBadge size="xs" :color="activeTplId === tpl.id ? 'success' : 'neutral'" variant="soft">
+          <UBadge
+            size="xs"
+            :color="activeTplId === tpl.id ? 'success' : 'neutral'"
+            variant="soft"
+          >
             {{ tpl.forms.length }} {{ t('plural.forms', 'forms') }}
           </UBadge>
         </button>
@@ -30,7 +35,10 @@
 
     <!-- Implicit params hint -->
     <div class="flex items-start gap-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg px-3 py-2 text-xs text-amber-700 dark:text-amber-300">
-      <UIcon name="i-heroicons-information-circle" class="shrink-0 mt-0.5" />
+      <UIcon
+        name="i-heroicons-information-circle"
+        class="shrink-0 mt-0.5"
+      />
       <div>
         <span class="font-semibold">{{ t('plural.implicit_params_title', 'Implicit parameters:') }}</span>
         <code class="font-mono mx-1 bg-amber-100 dark:bg-amber-900/40 px-1 rounded">{count}</code> {{ t('plural.and', 'and') }}
@@ -41,7 +49,9 @@
 
     <!-- Form fields -->
     <div class="space-y-2">
-      <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">{{ t('plural.forms_title', 'Forms') }}</p>
+      <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+        {{ t('plural.forms_title', 'Forms') }}
+      </p>
       <div
         v-for="(form, i) in forms"
         :key="i"
@@ -55,13 +65,18 @@
             </span>
             <span class="text-xs text-gray-500 dark:text-gray-400">{{ formLabel(i) }}</span>
           </div>
-          <p class="text-xs text-gray-400 font-mono">count={{ triggerCount(i) }}</p>
+          <p class="text-xs text-gray-400 font-mono">
+            count={{ triggerCount(i) }}
+          </p>
           <button
             v-if="forms.length > 2"
             class="text-xs text-gray-300 hover:text-red-400 transition-colors flex items-center gap-0.5"
             @click="removeForm(i)"
           >
-            <UIcon name="i-heroicons-trash" class="text-xs" />
+            <UIcon
+              name="i-heroicons-trash"
+              class="text-xs"
+            />
             {{ t('plural.remove', 'Remove') }}
           </button>
         </div>
@@ -83,7 +98,10 @@
               class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-mono bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700 hover:bg-amber-100 transition-colors"
               @mousedown.prevent="insertInForm(i, `{${p}}`)"
             >
-              <UIcon name="i-heroicons-cursor-arrow-rays" class="text-xs mr-0.5 opacity-60" />
+              <UIcon
+                name="i-heroicons-cursor-arrow-rays"
+                class="text-xs mr-0.5 opacity-60"
+              />
               {{ `{/${p}/}` }}
             </button>
           </div>
@@ -94,24 +112,34 @@
         class="text-xs text-green-600 dark:text-green-400 hover:text-green-700 flex items-center gap-1 transition-colors mt-1"
         @click="addForm"
       >
-        <UIcon name="i-heroicons-plus-circle" class="text-sm" />
+        <UIcon
+          name="i-heroicons-plus-circle"
+          class="text-sm"
+        />
         {{ t('plural.add_form', 'Add a form') }}
       </button>
     </div>
 
     <!-- Live preview -->
     <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 space-y-2">
-      <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">{{ t('formats.preview', 'Preview') }}</p>
+      <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+        {{ t('formats.preview', 'Preview') }}
+      </p>
       <div class="grid grid-cols-3 gap-2">
         <div
           v-for="n in PREVIEW_COUNTS"
           :key="n"
           class="bg-white dark:bg-gray-900 rounded border border-gray-200 dark:border-gray-700 px-2.5 py-2"
         >
-          <p class="text-xs text-gray-400 mb-1">count = <strong class="text-gray-600 dark:text-gray-300">{{ n }}</strong></p>
+          <p class="text-xs text-gray-400 mb-1">
+            count = <strong class="text-gray-600 dark:text-gray-300">{{ n }}</strong>
+          </p>
           <p class="text-sm text-gray-700 dark:text-gray-300 font-medium min-h-[1.25rem]">
             <span v-if="resolvePreview(n)">{{ resolvePreview(n) }}</span>
-            <span v-else class="text-gray-300 italic text-xs">{{ t('plural.empty', 'empty') }}</span>
+            <span
+              v-else
+              class="text-gray-300 italic text-xs"
+            >{{ t('plural.empty', 'empty') }}</span>
           </p>
         </div>
       </div>

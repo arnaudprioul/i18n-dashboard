@@ -1,5 +1,5 @@
 import { getDb } from '../../db/index'
-import { TRANSLATION_STATUS } from '~/enums/translation.enum'
+import { TRANSLATION_STATUS } from '../../../enums/translation.enum'
 
 // Update only the status of a translation (Draft → Reviewed → Approved)
 export default defineEventHandler(async (event) => {

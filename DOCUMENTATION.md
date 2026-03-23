@@ -1,5 +1,7 @@
 # Documentation
 
+> Version 0.13.4
+
 ## Installation
 
 ```bash

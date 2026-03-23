@@ -1,16 +1,15 @@
 import { randomBytes, createHash } from 'node:crypto'
 import type { H3Event } from 'h3'
 import { useSession, getCookie, setCookie, deleteCookie } from 'h3'
-import { useRuntimeConfig } from '#imports'
+import { useRuntimeConfig } from 'nitropack/runtime'
 
-import { getDb } from '~/server/db/index'
-import { ROLES } from '~/enums/auth.enum'
-import type { TRole } from '~/types/auth.type'
+import { getDb } from '../db'
+import { ROLES } from '../../enums/auth.enum'
+import type { TRole } from '../../types/auth.type'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const REFRESH_COOKIE = 'i18n-refresh-token'
-const REFRESH_TTL_SECONDS = 60 * 60 * 24 * 7 // 7 days
 
 // ── Session (access token) ─────────────────────────────────────────────────────
 
@@ -19,7 +18,7 @@ export function sessionConfig() {
   return {
     password: config.sessionSecret as string,
     name: 'i18n-dashboard-session',
-    maxAge: 60 * 15, // 15 minutes
+    maxAge: 60 * (Number(config.sessionTtlMinutes) || 15),
   }
 }
 
@@ -54,9 +53,11 @@ function hashToken(token: string): string {
  */
 export async function createRefreshToken(event: H3Event, userId: number): Promise<void> {
   const db = getDb()
+  const config = useRuntimeConfig()
+  const refreshTtlSeconds = (Number(config.refreshTokenTtlDays) || 7) * 60 * 60 * 24
   const token = randomBytes(32).toString('hex')
   const hash = hashToken(token)
-  const expiresAt = new Date(Date.now() + REFRESH_TTL_SECONDS * 1000)
+  const expiresAt = new Date(Date.now() + refreshTtlSeconds * 1000)
 
   // Housekeeping: remove expired tokens for this user
   await db('refresh_tokens')
@@ -74,7 +75,7 @@ export async function createRefreshToken(event: H3Event, userId: number): Promis
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
-    maxAge: REFRESH_TTL_SECONDS,
+    maxAge: refreshTtlSeconds,
     path: '/',
   })
 }

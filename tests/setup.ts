@@ -45,7 +45,7 @@ vi.stubGlobal('createError', ({ statusCode, message }: any) => {
 })
 
 // ── Nuxt router / route ───────────────────────────────────────────────────────
-vi.stubGlobal('useRoute', vi.fn(() => ({ params: {}, query: {} })))
+vi.stubGlobal('useRoute', vi.fn(() => ({ path: '/dashboard', params: {}, query: {} })))
 vi.stubGlobal('useRouter', vi.fn(() => ({ push: vi.fn(), replace: vi.fn() })))
 vi.stubGlobal('useCookie', vi.fn(() => ref('')))
 

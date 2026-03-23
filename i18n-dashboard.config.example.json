@@ -1,0 +1,18 @@
+{
+  "_comment": "Copy this file to i18n-dashboard.config.json and fill in your values. All settings are optional — you can also use environment variables.",
+  "database": {
+    "client": "better-sqlite3",
+    "connection": "./i18n-dashboard.db"
+  },
+  "smtp": {
+    "host": "smtp.example.com",
+    "port": 587,
+    "secure": false,
+    "user": "user@example.com",
+    "pass": "mypassword",
+    "from": "noreply@example.com"
+  },
+  "app": {
+    "url": "http://localhost:3333"
+  }
+}

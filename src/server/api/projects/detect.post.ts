@@ -2,7 +2,7 @@ import { resolve, relative, basename, join } from 'path'
 import { mkdtempSync, rmSync, existsSync, readdirSync, readFileSync, statSync } from 'fs'
 import { tmpdir } from 'os'
 import { execSync } from 'child_process'
-import { LANGUAGES } from '~/consts/languages.const'
+import { LANGUAGES } from '../../../consts/languages.const'
 
 function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1)

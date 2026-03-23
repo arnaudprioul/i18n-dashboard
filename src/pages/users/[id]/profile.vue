@@ -1,8 +1,10 @@
 <template>
   <div class="p-4 lg:p-6 max-w-5xl mx-auto space-y-6">
-
     <!-- Loading: shown server-side, before mount, and while client fetch runs -->
-    <div v-if="!mounted || pending" class="space-y-4">
+    <div
+      v-if="!mounted || pending"
+      class="space-y-4"
+    >
       <USkeleton class="h-24" />
       <div class="space-y-3">
         <div class="flex items-center justify-between">
@@ -10,7 +12,11 @@
           <USkeleton class="h-8 w-52" />
         </div>
         <div class="grid grid-cols-2 gap-4">
-          <USkeleton v-for="i in 2" :key="i" class="h-20" />
+          <USkeleton
+            v-for="i in 2"
+            :key="i"
+            class="h-20"
+          />
         </div>
       </div>
     </div>
@@ -25,19 +31,42 @@
         </div>
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
-            <h1 data-cy="profile-username" class="text-2xl font-bold text-gray-900 dark:text-white">{{ profile.user.name }}</h1>
-            <UBadge v-if="profile.user.is_super_admin" color="warning" variant="soft">
-              <UIcon name="i-heroicons-star" class="mr-1" />
+            <h1
+              data-cy="profile-username"
+              class="text-2xl font-bold text-gray-900 dark:text-white"
+            >
+              {{ profile.user.name }}
+            </h1>
+            <UBadge
+              v-if="profile.user.is_super_admin"
+              color="warning"
+              variant="soft"
+            >
+              <UIcon
+                name="i-heroicons-star"
+                class="mr-1"
+              />
               Super Admin
             </UBadge>
           </div>
-          <p data-cy="profile-email" class="text-sm text-gray-400 mt-0.5">{{ profile.user.email }}</p>
+          <p
+            data-cy="profile-email"
+            class="text-sm text-gray-400 mt-0.5"
+          >
+            {{ profile.user.email }}
+          </p>
           <div class="flex items-center gap-3 mt-1 text-xs text-gray-400 flex-wrap">
-            <span data-cy="profile-member-since" class="flex items-center gap-1">
+            <span
+              data-cy="profile-member-since"
+              class="flex items-center gap-1"
+            >
               <UIcon name="i-heroicons-calendar" />
               {{ t('profile.member_since', 'Member since') }} {{ formatDate(profile.user.created_at) }}
             </span>
-            <span v-if="profile.user.last_login_at" class="flex items-center gap-1">
+            <span
+              v-if="profile.user.last_login_at"
+              class="flex items-center gap-1"
+            >
               <UIcon name="i-heroicons-clock" />
               {{ t('profile.last_login', 'Last login') }} {{ formatDate(profile.user.last_login_at) }}
             </span>
@@ -46,11 +75,23 @@
 
         <div class="flex items-center gap-2 shrink-0">
           <!-- Edit own account -->
-          <UButton v-if="isSelf" color="neutral" variant="outline" icon="i-heroicons-pencil" @click="openEdit">
+          <UButton
+            v-if="isSelf"
+            color="neutral"
+            variant="outline"
+            icon="i-heroicons-pencil"
+            @click="openEdit"
+          >
             {{ t('profile.edit_account', 'Edit my account') }}
           </UButton>
           <!-- Manage roles (authorized viewers only) -->
-          <UButton v-if="canManageRoles" color="neutral" variant="outline" icon="i-heroicons-shield-check" @click="openRoles">
+          <UButton
+            v-if="canManageRoles"
+            color="neutral"
+            variant="outline"
+            icon="i-heroicons-shield-check"
+            @click="openRoles"
+          >
             {{ t('users.manage_access', 'Manage access') }}
           </UButton>
         </div>
@@ -59,10 +100,12 @@
       <!-- Stats -->
       <div class="space-y-3">
         <div class="flex items-center justify-between gap-4">
-          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">{{ t('profile.stats_title', 'Activity') }}</p>
+          <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+            {{ t('profile.stats_title', 'Activity') }}
+          </p>
           <USelect
-            data-cy="profile-period-select"
             v-model="period"
+            data-cy="profile-period-select"
             :items="periodOptions"
             class="w-52"
             value-key="value"
@@ -70,14 +113,31 @@
           />
         </div>
         <div class="grid grid-cols-2 gap-4">
-          <UCard v-for="(stat, idx) in statCards" :key="stat.label">
+          <UCard
+            v-for="(stat, idx) in statCards"
+            :key="stat.label"
+          >
             <div class="flex items-center gap-3">
-              <div class="p-2 rounded-lg" :class="stat.bg">
-                <UIcon :name="stat.icon" class="text-xl" :class="stat.color" />
+              <div
+                class="p-2 rounded-lg"
+                :class="stat.bg"
+              >
+                <UIcon
+                  :name="stat.icon"
+                  class="text-xl"
+                  :class="stat.color"
+                />
               </div>
               <div>
-                <p class="text-xs text-gray-500 dark:text-gray-400">{{ stat.label }}</p>
-                <p :data-cy="idx === 0 ? 'profile-stat-translations' : undefined" class="text-2xl font-bold text-gray-900 dark:text-white">{{ stat.value }}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                  {{ stat.label }}
+                </p>
+                <p
+                  :data-cy="idx === 0 ? 'profile-stat-translations' : undefined"
+                  class="text-2xl font-bold text-gray-900 dark:text-white"
+                >
+                  {{ stat.value }}
+                </p>
               </div>
             </div>
           </UCard>
@@ -85,20 +145,34 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-
         <!-- Left column -->
         <div class="space-y-4">
-
           <!-- Roles & Projects -->
           <UCard>
             <template #header>
               <div class="flex items-center gap-2">
-                <UIcon name="i-heroicons-briefcase" class="text-gray-400" />
-                <p data-cy="profile-projects-roles" class="text-xs font-semibold text-gray-400 uppercase tracking-wide">{{ t('profile.projects_roles', 'Projects & Roles') }}</p>
+                <UIcon
+                  name="i-heroicons-briefcase"
+                  class="text-gray-400"
+                />
+                <p
+                  data-cy="profile-projects-roles"
+                  class="text-xs font-semibold text-gray-400 uppercase tracking-wide"
+                >
+                  {{ t('profile.projects_roles', 'Projects & Roles') }}
+                </p>
               </div>
             </template>
-            <div v-if="!profile.roles.length" class="text-sm text-gray-400 italic">{{ t('profile.no_roles', 'No role assigned') }}</div>
-            <div v-else class="space-y-2">
+            <div
+              v-if="!profile.roles.length"
+              class="text-sm text-gray-400 italic"
+            >
+              {{ t('profile.no_roles', 'No role assigned') }}
+            </div>
+            <div
+              v-else
+              class="space-y-2"
+            >
               <div
                 v-for="role in profile.roles"
                 :key="`${role.project_id}-${role.role}`"
@@ -110,12 +184,21 @@
                     class="w-2 h-2 rounded-full shrink-0"
                     :class="`bg-${role.project_color || 'primary'}-500`"
                   />
-                  <UIcon v-else name="i-heroicons-globe-alt" class="text-gray-400 text-xs shrink-0" />
+                  <UIcon
+                    v-else
+                    name="i-heroicons-globe-alt"
+                    class="text-gray-400 text-xs shrink-0"
+                  />
                   <span class="text-sm text-gray-700 dark:text-gray-300 truncate">
                     {{ role.project_name ?? t('users.all_projects', 'All projects') }}
                   </span>
                 </div>
-                <UBadge :color="roleColor(role.role)" variant="soft" size="xs" class="shrink-0">
+                <UBadge
+                  :color="roleColor(role.role)"
+                  variant="soft"
+                  size="xs"
+                  class="shrink-0"
+                >
                   {{ roleLabel(role.role) }}
                 </UBadge>
               </div>
@@ -126,14 +209,30 @@
           <UCard>
             <template #header>
               <div class="flex items-center gap-2">
-                <UIcon name="i-heroicons-language" class="text-gray-400" />
-                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">{{ t('nav.languages', 'Languages') }}</p>
+                <UIcon
+                  name="i-heroicons-language"
+                  class="text-gray-400"
+                />
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">
+                  {{ t('nav.languages', 'Languages') }}
+                </p>
               </div>
             </template>
-            <div v-if="!profile.languages.length" class="text-sm text-gray-400 italic">{{ t('profile.no_languages', 'No language available') }}</div>
+            <div
+              v-if="!profile.languages.length"
+              class="text-sm text-gray-400 italic"
+            >
+              {{ t('profile.no_languages', 'No language available') }}
+            </div>
             <div v-else>
-              <div v-for="(langs, projectName) in languagesByProject" :key="projectName" class="mb-3 last:mb-0">
-                <p class="text-xs text-gray-400 mb-1.5 font-medium">{{ projectName }}</p>
+              <div
+                v-for="(langs, projectName) in languagesByProject"
+                :key="projectName"
+                class="mb-3 last:mb-0"
+              >
+                <p class="text-xs text-gray-400 mb-1.5 font-medium">
+                  {{ projectName }}
+                </p>
                 <div class="flex flex-wrap gap-1.5">
                   <UBadge
                     v-for="lang in langs"
@@ -157,17 +256,36 @@
           <UCard>
             <template #header>
               <div class="flex items-center gap-2">
-                <UIcon name="i-heroicons-clock" class="text-gray-400" />
-                <p data-cy="profile-recent-activity" class="text-xs font-semibold text-gray-400 uppercase tracking-wide">{{ t('dashboard.recent_activity', 'Recent activity') }}</p>
+                <UIcon
+                  name="i-heroicons-clock"
+                  class="text-gray-400"
+                />
+                <p
+                  data-cy="profile-recent-activity"
+                  class="text-xs font-semibold text-gray-400 uppercase tracking-wide"
+                >
+                  {{ t('dashboard.recent_activity', 'Recent activity') }}
+                </p>
               </div>
             </template>
 
-            <div v-if="!profile.recentTranslations.length" class="text-center py-10">
-              <UIcon name="i-heroicons-pencil-square" class="text-4xl text-gray-300 dark:text-gray-600 mb-2" />
-              <p class="text-sm text-gray-400">{{ t('profile.no_translations', 'No translations yet') }}</p>
+            <div
+              v-if="!profile.recentTranslations.length"
+              class="text-center py-10"
+            >
+              <UIcon
+                name="i-heroicons-pencil-square"
+                class="text-4xl text-gray-300 dark:text-gray-600 mb-2"
+              />
+              <p class="text-sm text-gray-400">
+                {{ t('profile.no_translations', 'No translations yet') }}
+              </p>
             </div>
 
-            <div v-else class="space-y-1">
+            <div
+              v-else
+              class="space-y-1"
+            >
               <NuxtLink
                 v-for="tr in profile.recentTranslations"
                 :key="tr.id"
@@ -183,12 +301,22 @@
                     <span class="text-sm font-mono font-medium text-gray-700 dark:text-gray-300 truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
                       {{ tr.key }}
                     </span>
-                    <span class="w-1.5 h-1.5 rounded-full shrink-0" :class="`bg-${tr.project_color || 'primary'}-500`" />
+                    <span
+                      class="w-1.5 h-1.5 rounded-full shrink-0"
+                      :class="`bg-${tr.project_color || 'primary'}-500`"
+                    />
                     <span class="text-xs text-gray-400 shrink-0">{{ tr.project_name }}</span>
                   </div>
                   <div class="flex items-center gap-2 mt-0.5">
-                    <span v-if="tr.old_value" class="text-xs text-red-400 line-through truncate max-w-[120px]">{{ tr.old_value }}</span>
-                    <UIcon v-if="tr.old_value" name="i-heroicons-arrow-right" class="text-gray-300 text-xs shrink-0" />
+                    <span
+                      v-if="tr.old_value"
+                      class="text-xs text-red-400 line-through truncate max-w-[120px]"
+                    >{{ tr.old_value }}</span>
+                    <UIcon
+                      v-if="tr.old_value"
+                      name="i-heroicons-arrow-right"
+                      class="text-gray-300 text-xs shrink-0"
+                    />
                     <span class="text-xs text-gray-600 dark:text-gray-400 truncate max-w-xs">{{ tr.new_value }}</span>
                   </div>
                 </div>
@@ -201,35 +329,87 @@
     </template>
 
     <!-- Error state -->
-    <div v-else class="text-center py-20">
-      <UIcon name="i-heroicons-exclamation-circle" class="text-5xl text-gray-300 mb-3" />
-      <p class="text-gray-400">{{ t('profile.not_found', 'Profile not found or access denied.') }}</p>
-      <UButton to="/users" class="mt-4" variant="outline" color="neutral">{{ t('profile.back', 'Back') }}</UButton>
+    <div
+      v-else
+      class="text-center py-20"
+    >
+      <UIcon
+        name="i-heroicons-exclamation-circle"
+        class="text-5xl text-gray-300 mb-3"
+      />
+      <p class="text-gray-400">
+        {{ t('profile.not_found', 'Profile not found or access denied.') }}
+      </p>
+      <UButton
+        to="/users"
+        class="mt-4"
+        variant="outline"
+        color="neutral"
+      >
+        {{ t('profile.back', 'Back') }}
+      </UButton>
     </div>
 
     <!-- Edit account modal (self only) -->
-    <UModal v-model:open="showEdit" :title="t('profile.edit_modal_title', 'Edit my account')">
+    <UModal
+      v-model:open="showEdit"
+      :title="t('profile.edit_modal_title', 'Edit my account')"
+    >
       <template #body>
         <div class="space-y-4">
-          <UFormField :label="t('profile.name_label', 'Name')" required>
-            <UInput v-model="editForm.name" :placeholder="t('profile.name_placeholder', 'Your name')" class="w-full" />
+          <UFormField
+            :label="t('profile.name_label', 'Name')"
+            required
+          >
+            <UInput
+              v-model="editForm.name"
+              :placeholder="t('profile.name_placeholder', 'Your name')"
+              class="w-full"
+            />
           </UFormField>
-          <UFormField :label="t('login.email', 'Email')" required>
-            <UInput v-model="editForm.email" type="email" placeholder="you@example.com" class="w-full" />
+          <UFormField
+            :label="t('login.email', 'Email')"
+            required
+          >
+            <UInput
+              v-model="editForm.email"
+              type="email"
+              placeholder="you@example.com"
+              class="w-full"
+            />
           </UFormField>
-          <p v-if="editError" class="text-sm text-red-500">{{ editError }}</p>
+          <p
+            v-if="editError"
+            class="text-sm text-red-500"
+          >
+            {{ editError }}
+          </p>
         </div>
       </template>
       <template #footer>
         <div class="flex justify-end gap-3">
-          <UButton color="neutral" variant="ghost" @click="showEdit = false">{{ t('common.cancel', 'Cancel') }}</UButton>
-          <UButton :loading="editSaving" @click="saveEdit">{{ t('common.save', 'Save') }}</UButton>
+          <UButton
+            color="neutral"
+            variant="ghost"
+            @click="showEdit = false"
+          >
+            {{ t('common.cancel', 'Cancel') }}
+          </UButton>
+          <UButton
+            :loading="editSaving"
+            @click="saveEdit"
+          >
+            {{ t('common.save', 'Save') }}
+          </UButton>
         </div>
       </template>
     </UModal>
 
     <!-- Roles modal (authorized viewers) -->
-    <UModal v-model:open="showRolesModal" :title="t('users.manage_access_title', 'Manage access')">
+    <UModal
+      v-model:open="showRolesModal"
+      :title="t('users.manage_access_title', 'Manage access')"
+    >
       <template #body>
         <div class="space-y-4">
           <div class="flex items-center gap-3 pb-4 border-b border-gray-100 dark:border-gray-800">
@@ -239,8 +419,12 @@
               </span>
             </div>
             <div>
-              <p class="font-semibold text-gray-900 dark:text-white text-sm">{{ profile?.user.name }}</p>
-              <p class="text-xs text-gray-400">{{ profile?.user.email }}</p>
+              <p class="font-semibold text-gray-900 dark:text-white text-sm">
+                {{ profile?.user.name }}
+              </p>
+              <p class="text-xs text-gray-400">
+                {{ profile?.user.email }}
+              </p>
             </div>
           </div>
 
@@ -251,19 +435,42 @@
               class="flex items-center justify-between gap-3"
             >
               <div class="flex items-center gap-2 min-w-0 flex-1">
-                <UIcon v-if="item.project_id === null" name="i-heroicons-globe-alt" class="text-gray-400 shrink-0" />
-                <span v-else class="w-2 h-2 rounded-full shrink-0" :class="`bg-${item.project_color || 'primary'}-500`" />
+                <UIcon
+                  v-if="item.project_id === null"
+                  name="i-heroicons-globe-alt"
+                  class="text-gray-400 shrink-0"
+                />
+                <span
+                  v-else
+                  class="w-2 h-2 rounded-full shrink-0"
+                  :class="`bg-${item.project_color || 'primary'}-500`"
+                />
                 <span class="text-sm text-gray-700 dark:text-gray-300 truncate">{{ item.project_name }}</span>
               </div>
-              <USelect v-model="item.role" :items="accessOptions(item.project_id)" class="w-44 shrink-0" />
+              <USelect
+                v-model="item.role"
+                :items="accessOptions(item.project_id)"
+                class="w-44 shrink-0"
+              />
             </div>
           </div>
         </div>
       </template>
       <template #footer>
         <div class="flex justify-end gap-3">
-          <UButton color="neutral" variant="ghost" @click="showRolesModal = false">{{ t('common.cancel', 'Cancel') }}</UButton>
-          <UButton :loading="rolesSaving" @click="doSaveRoles">{{ t('common.save', 'Save') }}</UButton>
+          <UButton
+            color="neutral"
+            variant="ghost"
+            @click="showRolesModal = false"
+          >
+            {{ t('common.cancel', 'Cancel') }}
+          </UButton>
+          <UButton
+            :loading="rolesSaving"
+            @click="doSaveRoles"
+          >
+            {{ t('common.save', 'Save') }}
+          </UButton>
         </div>
       </template>
     </UModal>

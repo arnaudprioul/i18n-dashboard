@@ -31,16 +31,24 @@ function makeDb() {
     first: vi.fn().mockResolvedValue(null),   // no existing user with that email
     insert: vi.fn().mockResolvedValue([42]),   // new user id = 42
   }
-  const rolesChain = { insert: vi.fn().mockResolvedValue([1]) }
+  const rolesChain = {
+    where: vi.fn().mockReturnThis(),
+    insert: vi.fn().mockResolvedValue([1]),
+  }
   const projectsChain = {
     where: vi.fn().mockReturnThis(),
     first: vi.fn().mockResolvedValue({ id: 1, name: 'My Project' }),
+  }
+  const settingsChain = {
+    where: vi.fn().mockReturnThis(),
+    first: vi.fn().mockResolvedValue(null),   // no dashboard_url override in settings
   }
 
   const db = vi.fn((table: string) => {
     if (table === 'users') return usersChain
     if (table === 'user_project_roles') return rolesChain
     if (table === 'projects') return projectsChain
+    if (table === 'settings') return settingsChain
     return usersChain
   }) as any
 

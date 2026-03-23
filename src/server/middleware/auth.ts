@@ -1,7 +1,7 @@
 import { useSession } from 'h3'
 
 import { getDb } from '../db/index'
-import { sessionConfig } from '~/server/utils/auth.util'
+import { sessionConfig } from '../utils/auth.util'
 import { PUBLIC_ROUTES, SETUP_ONLY_ROUTES } from '../../consts/commons.const'
 
 export default defineEventHandler(async (event) => {
@@ -17,11 +17,16 @@ export default defineEventHandler(async (event) => {
 	// (i.e. onboarding is not yet complete). Once any user is created they
 	// require a valid super_admin session.
 	if (SETUP_ONLY_ROUTES.includes(path)) {
-		const db = getDb()
-		const userCount = await db('users').count('* as count').first()
-		const count = Number((userCount as any)?.count ?? 0)
-		if (count === 0) return // still in onboarding — allow through
-		// Onboarding complete: fall through to normal session check below
+		try {
+			const db = getDb()
+			const userCount = await db('users').count('* as count').first()
+			const count = Number((userCount as any)?.count ?? 0)
+			if (count === 0) return // still in onboarding — allow through
+			// Onboarding complete: fall through to normal session check below
+		} catch {
+			// DB not ready yet — allow through so onboarding can configure it
+			return
+		}
 	}
 
 	// Check session

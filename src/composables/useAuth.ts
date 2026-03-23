@@ -6,9 +6,11 @@ const _currentUser = ref<IAuthUser | null>(null)
 export function useAuth() {
   const currentUser = _currentUser
 
+  // fetchMe uses $fetch directly (not the service layer) to avoid the 401→redirect
+  // logic in base.service. This is a "try to get current user" call, not "require auth".
   const fetchMe = async () => {
     try {
-      const user = await authService.me()
+      const user = await $fetch<IAuthUser>('/api/auth/me')
       _currentUser.value = user
       return user
     } catch {

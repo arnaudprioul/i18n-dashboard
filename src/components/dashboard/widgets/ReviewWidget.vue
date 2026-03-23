@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { PropType } from 'vue'
-import type { TWidgetSize } from '~/types/dashboard.type'
-import type { IWidgetDataSource } from '~/interfaces/dashboard.interface'
-import { TRANSLATION_STATUS } from '~/enums/translation.enum'
+import type { TWidgetSize } from '../../../types/dashboard.type'
+import type { IWidgetDataSource } from '../../../interfaces/dashboard.interface'
+import { TRANSLATION_STATUS } from '../../../enums/translation.enum'
 
 const props = defineProps({
   id: {
@@ -102,38 +102,86 @@ async function setStatus(item: { id: number }, status: string): Promise<void> {
   <UCard class="h-full overflow-hidden">
     <template #header>
       <div class="flex items-center gap-2">
-        <UIcon name="i-heroicons-clipboard-document-check" class="text-gray-400" />
+        <UIcon
+          name="i-heroicons-clipboard-document-check"
+          class="text-gray-400"
+        />
         <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ displayTitle }}</span>
-        <UBadge v-if="reviewItems.length" :label="String(reviewItems.length)" color="warning" variant="soft" size="xs" class="ml-auto" />
-        <span v-else-if="sourceLabel" class="ml-auto text-xs text-gray-400 dark:text-gray-500">{{ sourceLabel }}</span>
+        <UBadge
+          v-if="reviewItems.length"
+          :label="String(reviewItems.length)"
+          color="warning"
+          variant="soft"
+          size="xs"
+          class="ml-auto"
+        />
+        <span
+          v-else-if="sourceLabel"
+          class="ml-auto text-xs text-gray-400 dark:text-gray-500"
+        >{{ sourceLabel }}</span>
       </div>
     </template>
 
-    <div v-if="pending" class="space-y-2">
-      <USkeleton v-for="i in 3" :key="i" class="h-12 w-full" />
+    <div
+      v-if="pending"
+      class="space-y-2"
+    >
+      <USkeleton
+        v-for="i in 3"
+        :key="i"
+        class="h-12 w-full"
+      />
     </div>
 
-    <div v-else-if="!hasProject" class="flex flex-col items-center justify-center h-full py-6 text-center">
-      <UIcon name="i-heroicons-clipboard-document-check" class="text-3xl text-gray-300 dark:text-gray-600 mb-2" />
-      <p class="text-sm text-gray-400">{{ t('dashboard.select_project', 'Select a project') }}</p>
+    <div
+      v-else-if="!hasProject"
+      class="flex flex-col items-center justify-center h-full py-6 text-center"
+    >
+      <UIcon
+        name="i-heroicons-clipboard-document-check"
+        class="text-3xl text-gray-300 dark:text-gray-600 mb-2"
+      />
+      <p class="text-sm text-gray-400">
+        {{ t('dashboard.select_project', 'Select a project') }}
+      </p>
     </div>
 
-    <div v-else-if="!displayedItems.length" class="flex flex-col items-center justify-center h-full py-6 text-center">
-      <UIcon name="i-heroicons-check-circle" class="text-3xl text-green-400 mb-2" />
-      <p class="text-sm text-gray-400">{{ t('review.empty_title', 'No translations pending') }}</p>
+    <div
+      v-else-if="!displayedItems.length"
+      class="flex flex-col items-center justify-center h-full py-6 text-center"
+    >
+      <UIcon
+        name="i-heroicons-check-circle"
+        class="text-3xl text-green-400 mb-2"
+      />
+      <p class="text-sm text-gray-400">
+        {{ t('review.empty_title', 'No translations pending') }}
+      </p>
     </div>
 
-    <div v-else class="overflow-y-auto space-y-2">
+    <div
+      v-else
+      class="overflow-y-auto space-y-2"
+    >
       <div
         v-for="item in displayedItems"
         :key="item.id"
         class="flex items-center gap-2 p-2 rounded-lg bg-gray-50 dark:bg-gray-800"
       >
         <div class="min-w-0 flex-1">
-          <p class="text-xs font-mono text-gray-700 dark:text-gray-300 truncate">{{ item.key }}</p>
+          <p class="text-xs font-mono text-gray-700 dark:text-gray-300 truncate">
+            {{ item.key }}
+          </p>
           <div class="flex items-center gap-1.5 mt-0.5">
-            <UBadge :label="item.language_code.toUpperCase()" color="neutral" variant="soft" size="xs" />
-            <p class="text-xs text-gray-500 truncate">{{ item.value }}</p>
+            <UBadge
+              :label="item.language_code.toUpperCase()"
+              color="neutral"
+              variant="soft"
+              size="xs"
+            />
+            <p class="text-xs text-gray-500 truncate">
+              {{ item.value }}
+            </p>
           </div>
         </div>
         <UButton

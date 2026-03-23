@@ -1,9 +1,15 @@
+import { dirname } from 'path'
+import { fileURLToPath } from 'url'
+
 export const PUBLIC_ROUTES = [
 	'/api/auth/login',
 	'/api/auth/logout',
 	'/api/auth/me',
 	'/api/auth/refresh',
 	'/api/auth/status',
+	'/api/auth/forgot-password',
+	'/api/auth/reset-password',
+	'/api/settings/password-policy',
 	'/api/setup',
 	'/api/ui-locale',
 	'/api/config',
@@ -19,3 +25,7 @@ export const PUBLIC_ROUTES = [
 export const SETUP_ONLY_ROUTES = [
 	'/api/db-config',
 ]
+
+export const __DIRNAME = typeof __dirname !== 'undefined'
+	? __dirname
+	: dirname(fileURLToPath(import.meta.url))

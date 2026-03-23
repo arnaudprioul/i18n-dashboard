@@ -1,7 +1,7 @@
 import { profileService } from '../services/profile.service'
 import { authService } from '../services/auth.service'
 import { userService } from '../services/user.service'
-import type { ProfilePeriod } from '~/interfaces/profile.interface'
+import type { ProfilePeriod } from '../interfaces/profile.interface'
 
 export function useProfile(userId?: MaybeRefOrGetter<number | string>) {
   const toast = useToast()

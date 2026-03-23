@@ -1,5 +1,5 @@
 import { getDb } from '../../db/index'
-import { unflattenObject } from '~/utils/lang-api.util'
+import { unflattenObject } from '../../../utils/lang-api.util'
 import type { Knex } from 'knex'
 
 /**

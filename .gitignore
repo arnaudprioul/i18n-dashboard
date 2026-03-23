@@ -15,6 +15,9 @@ node_modules
 .env.*
 !.env.example
 
+# Local config file (may contain passwords/secrets)
+i18n-dashboard.config.json
+
 # OS
 .DS_Store
 Thumbs.db
@@ -29,8 +32,6 @@ Thumbs.db
 # npm auth config (never commit tokens)
 .npmrc
 
-# Cypress artifacts (generated during test runs)
-cypress/screenshots/
-cypress/videos/
-cypress/downloads/
-cypress.env.json
+# Coverage
+coverage/
+coverage/*

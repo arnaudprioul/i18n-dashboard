@@ -1,5 +1,5 @@
 import { getDb } from '../../db/index'
-import { TRANSLATION_STATUS } from '~/enums/translation.enum'
+import { TRANSLATION_STATUS } from '../../../enums/translation.enum'
 
 // Bulk update status for multiple translations by their IDs
 export default defineEventHandler(async (event) => {

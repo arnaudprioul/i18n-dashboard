@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { TWidgetSize } from '~/types/dashboard.type'
-import type { IWidgetConfig } from '~/interfaces/dashboard.interface'
-import { WIDGET_REGISTRY } from '~/consts/dashboard.const'
+import type { TWidgetSize } from '../../types/dashboard.type'
+import type { IWidgetConfig } from '../../interfaces/dashboard.interface'
+import { WIDGET_REGISTRY } from '../../consts/dashboard.const'
 
 const { t } = useT()
 
@@ -34,7 +34,11 @@ function addWidget(type: string) {
 </script>
 
 <template>
-  <UModal v-model:open="open" :title="t('dashboard.add_widget', 'Add a widget')" :ui="{ width: 'max-w-2xl' }">
+  <UModal
+    v-model:open="open"
+    :title="t('dashboard.add_widget', 'Add a widget')"
+    :ui="{ width: 'max-w-2xl' }"
+  >
     <template #body>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-1">
         <div
@@ -44,11 +48,18 @@ function addWidget(type: string) {
         >
           <div class="flex items-start gap-3">
             <div class="w-9 h-9 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0">
-              <UIcon :name="config.icon" class="text-gray-600 dark:text-gray-400" />
+              <UIcon
+                :name="config.icon"
+                class="text-gray-600 dark:text-gray-400"
+              />
             </div>
             <div class="min-w-0">
-              <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ config.label }}</p>
-              <p class="text-xs text-gray-400 mt-0.5">{{ config.description }}</p>
+              <p class="text-sm font-semibold text-gray-900 dark:text-white">
+                {{ config.label }}
+              </p>
+              <p class="text-xs text-gray-400 mt-0.5">
+                {{ config.description }}
+              </p>
             </div>
           </div>
 
@@ -66,7 +77,12 @@ function addWidget(type: string) {
             </button>
           </div>
 
-          <UButton size="xs" variant="soft" class="w-full justify-center" @click="addWidget(type)">
+          <UButton
+            size="xs"
+            variant="soft"
+            class="w-full justify-center"
+            @click="addWidget(type)"
+          >
             {{ t('common.add', 'Add') }}
           </UButton>
         </div>

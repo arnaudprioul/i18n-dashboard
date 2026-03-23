@@ -49,19 +49,19 @@ describe('useAuth', () => {
   })
 
   describe('fetchMe', () => {
-    it('calls authService.me() and sets currentUser on success', async () => {
-      vi.mocked(authService.me).mockResolvedValue(mockUser)
+    it('calls $fetch /api/auth/me and sets currentUser on success', async () => {
+      vi.mocked(globalThis.$fetch as any).mockResolvedValueOnce(mockUser)
       const { currentUser, fetchMe } = useAuth()
 
       const result = await fetchMe()
 
-      expect(authService.me).toHaveBeenCalledOnce()
+      expect(globalThis.$fetch).toHaveBeenCalledWith('/api/auth/me')
       expect(currentUser.value).toEqual(mockUser)
       expect(result).toEqual(mockUser)
     })
 
     it('sets currentUser to null and returns null on failure', async () => {
-      vi.mocked(authService.me).mockRejectedValue(new Error('Unauthorized'))
+      vi.mocked(globalThis.$fetch as any).mockRejectedValueOnce(new Error('Unauthorized'))
       const { currentUser, fetchMe } = useAuth()
 
       const result = await fetchMe()
@@ -86,7 +86,7 @@ describe('useAuth', () => {
 
   describe('logout', () => {
     it('calls authService.logout and sets currentUser to null', async () => {
-      vi.mocked(authService.me).mockResolvedValue(mockUser)
+      vi.mocked(globalThis.$fetch as any).mockResolvedValueOnce(mockUser)
       vi.mocked(authService.logout).mockResolvedValue(undefined)
       const { currentUser, fetchMe, logout } = useAuth()
 
@@ -119,7 +119,7 @@ describe('useAuth', () => {
     })
 
     it('returns super_admin when user is_super_admin', async () => {
-      vi.mocked(authService.me).mockResolvedValue({ ...mockUser, is_super_admin: true })
+      vi.mocked(globalThis.$fetch as any).mockResolvedValueOnce({ ...mockUser, is_super_admin: true })
       const { fetchMe, getRoleForProject } = useAuth()
       await fetchMe()
 
@@ -127,7 +127,7 @@ describe('useAuth', () => {
     })
 
     it('returns specific project role when found', async () => {
-      vi.mocked(authService.me).mockResolvedValue({
+      vi.mocked(globalThis.$fetch as any).mockResolvedValueOnce({
         ...mockUser,
         roles: [{ role: 'moderator', project_id: 5 }],
       })
@@ -138,7 +138,7 @@ describe('useAuth', () => {
     })
 
     it('falls back to global role (project_id: null) when no specific role', async () => {
-      vi.mocked(authService.me).mockResolvedValue({
+      vi.mocked(globalThis.$fetch as any).mockResolvedValueOnce({
         ...mockUser,
         roles: [
           { role: 'translator', project_id: null },
@@ -153,7 +153,7 @@ describe('useAuth', () => {
     })
 
     it('returns null when no specific or global role found', async () => {
-      vi.mocked(authService.me).mockResolvedValue({
+      vi.mocked(globalThis.$fetch as any).mockResolvedValueOnce({
         ...mockUser,
         roles: [{ role: 'admin', project_id: 99 }],
       })
@@ -166,7 +166,7 @@ describe('useAuth', () => {
 
   describe('canApprove', () => {
     it('returns true for super_admin', async () => {
-      vi.mocked(authService.me).mockResolvedValue({ ...mockUser, is_super_admin: true })
+      vi.mocked(globalThis.$fetch as any).mockResolvedValueOnce({ ...mockUser, is_super_admin: true })
       const { fetchMe, canApprove } = useAuth()
       await fetchMe()
 
@@ -174,7 +174,7 @@ describe('useAuth', () => {
     })
 
     it('returns true for admin role', async () => {
-      vi.mocked(authService.me).mockResolvedValue({
+      vi.mocked(globalThis.$fetch as any).mockResolvedValueOnce({
         ...mockUser,
         roles: [{ role: 'admin', project_id: 1 }],
       })
@@ -185,7 +185,7 @@ describe('useAuth', () => {
     })
 
     it('returns true for moderator role', async () => {
-      vi.mocked(authService.me).mockResolvedValue({
+      vi.mocked(globalThis.$fetch as any).mockResolvedValueOnce({
         ...mockUser,
         roles: [{ role: 'moderator', project_id: 1 }],
       })
@@ -196,7 +196,7 @@ describe('useAuth', () => {
     })
 
     it('returns false for translator role', async () => {
-      vi.mocked(authService.me).mockResolvedValue({
+      vi.mocked(globalThis.$fetch as any).mockResolvedValueOnce({
         ...mockUser,
         roles: [{ role: 'translator', project_id: 1 }],
       })
@@ -214,7 +214,7 @@ describe('useAuth', () => {
 
   describe('canManageProject', () => {
     it('returns true for super_admin', async () => {
-      vi.mocked(authService.me).mockResolvedValue({ ...mockUser, is_super_admin: true })
+      vi.mocked(globalThis.$fetch as any).mockResolvedValueOnce({ ...mockUser, is_super_admin: true })
       const { fetchMe, canManageProject } = useAuth()
       await fetchMe()
 
@@ -222,7 +222,7 @@ describe('useAuth', () => {
     })
 
     it('returns true for admin role', async () => {
-      vi.mocked(authService.me).mockResolvedValue({
+      vi.mocked(globalThis.$fetch as any).mockResolvedValueOnce({
         ...mockUser,
         roles: [{ role: 'admin', project_id: 1 }],
       })
@@ -233,7 +233,7 @@ describe('useAuth', () => {
     })
 
     it('returns false for moderator role', async () => {
-      vi.mocked(authService.me).mockResolvedValue({
+      vi.mocked(globalThis.$fetch as any).mockResolvedValueOnce({
         ...mockUser,
         roles: [{ role: 'moderator', project_id: 1 }],
       })
@@ -244,7 +244,7 @@ describe('useAuth', () => {
     })
 
     it('returns false for translator role', async () => {
-      vi.mocked(authService.me).mockResolvedValue({
+      vi.mocked(globalThis.$fetch as any).mockResolvedValueOnce({
         ...mockUser,
         roles: [{ role: 'translator', project_id: 1 }],
       })
@@ -262,7 +262,7 @@ describe('useAuth', () => {
     })
 
     it('returns true for super_admin regardless of projectId', async () => {
-      vi.mocked(authService.me).mockResolvedValue({ ...mockUser, is_super_admin: true })
+      vi.mocked(globalThis.$fetch as any).mockResolvedValueOnce({ ...mockUser, is_super_admin: true })
       const { fetchMe, canManageUsers } = useAuth()
       await fetchMe()
 
@@ -272,7 +272,7 @@ describe('useAuth', () => {
     })
 
     it('returns false when no projectId provided for non-super-admin', async () => {
-      vi.mocked(authService.me).mockResolvedValue({
+      vi.mocked(globalThis.$fetch as any).mockResolvedValueOnce({
         ...mockUser,
         roles: [{ role: 'admin', project_id: null }],
       })
@@ -283,7 +283,7 @@ describe('useAuth', () => {
     })
 
     it('returns true for admin with projectId', async () => {
-      vi.mocked(authService.me).mockResolvedValue({
+      vi.mocked(globalThis.$fetch as any).mockResolvedValueOnce({
         ...mockUser,
         roles: [{ role: 'admin', project_id: 1 }],
       })
@@ -294,7 +294,7 @@ describe('useAuth', () => {
     })
 
     it('returns false for moderator with projectId', async () => {
-      vi.mocked(authService.me).mockResolvedValue({
+      vi.mocked(globalThis.$fetch as any).mockResolvedValueOnce({
         ...mockUser,
         roles: [{ role: 'moderator', project_id: 1 }],
       })

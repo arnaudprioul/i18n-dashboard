@@ -1,5 +1,5 @@
 import { getDb } from '../db/index'
-import type { IProjectSnapshot } from '~/interfaces/project-snapshot.interface'
+import type { IProjectSnapshot } from '../../interfaces/project-snapshot.interface'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
