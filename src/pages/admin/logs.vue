@@ -24,17 +24,26 @@
     <UCard class="mb-6 max-w-2xl">
       <template #header>
         <div class="flex items-center gap-2">
-          <UIcon class="text-primary-500" name="i-heroicons-cog-6-tooth" />
+          <UIcon
+            class="text-primary-500"
+            name="i-heroicons-cog-6-tooth"
+          />
           <h2 class="font-semibold text-gray-900 dark:text-white">
             {{ t('logs.settings_title', 'Auto-purge settings') }}
           </h2>
         </div>
       </template>
-      <div v-if="settingsPending" class="space-y-3">
+      <div
+        v-if="settingsPending"
+        class="space-y-3"
+      >
         <USkeleton class="h-8" />
         <USkeleton class="h-8" />
       </div>
-      <div v-else class="space-y-4">
+      <div
+        v-else
+        class="space-y-4"
+      >
         <UFormField :label="t('logs.retention_days_label', 'Retain logs for (days)')">
           <UInput
             v-model="retentionDays"
@@ -96,7 +105,10 @@
       v-if="!pending && !data?.data?.length"
       class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 py-16 text-center"
     >
-      <UIcon name="i-heroicons-check-circle" class="text-5xl text-green-400 mb-3" />
+      <UIcon
+        name="i-heroicons-check-circle"
+        class="text-5xl text-green-400 mb-3"
+      />
       <p class="text-gray-500 font-medium">
         {{ t('logs.empty', 'No logs found') }}
       </p>
@@ -108,8 +120,15 @@
       class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden"
     >
       <!-- Loading -->
-      <div v-if="pending" class="space-y-0">
-        <div v-for="i in 8" :key="i" class="px-4 py-3 border-b border-gray-100 dark:border-gray-800 last:border-0">
+      <div
+        v-if="pending"
+        class="space-y-0"
+      >
+        <div
+          v-for="i in 8"
+          :key="i"
+          class="px-4 py-3 border-b border-gray-100 dark:border-gray-800 last:border-0"
+        >
           <USkeleton class="h-4 w-full" />
         </div>
       </div>
@@ -138,7 +157,10 @@
               <p class="text-sm text-gray-700 dark:text-gray-300">
                 {{ log.message }}
               </p>
-              <details v-if="log.details" class="mt-1">
+              <details
+                v-if="log.details"
+                class="mt-1"
+              >
                 <summary class="text-xs text-gray-400 cursor-pointer hover:text-gray-600">
                   {{ t('logs.show_details', 'Details') }}
                 </summary>
@@ -151,7 +173,10 @@
     </div>
 
     <!-- Pagination -->
-    <div v-if="(data?.total || 0) > limit" class="flex justify-center mt-5">
+    <div
+      v-if="(data?.total || 0) > limit"
+      class="flex justify-center mt-5"
+    >
       <UPagination
         v-model:page="page"
         :total="data?.total || 0"
