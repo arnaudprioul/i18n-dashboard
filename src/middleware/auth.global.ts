@@ -1,8 +1,16 @@
-export default defineNuxtRouteMiddleware(async (to) => {
+export default defineNuxtRouteMiddleware(async (to, from) => {
   // Skip on SSR — auth checks run client-side only so Cypress intercepts apply.
   // useFetch does not properly block in client-side route middleware (it resolves
   // immediately with data = null). Use $fetch which is truly awaitable.
   if (import.meta.server) return
+
+  const publicPages = ['/login', '/forgot-password', '/reset-password']
+
+  // Skip the status fetch when navigating between public pages — no auth check needed
+  // and avoids a blank-screen flash caused by out-in page transitions waiting on the fetch.
+  if (publicPages.includes(to.path) && from && publicPages.includes(from.path)) {
+    return
+  }
 
   let status: {
     isLoggedIn: boolean
@@ -36,7 +44,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   // Non connecté → login (sauf si déjà sur /login ou pages publiques)
-  const publicPages = ['/login', '/forgot-password', '/reset-password']
   if (!status.isLoggedIn) {
     if (!publicPages.includes(to.path)) return navigateTo('/login')
     return
