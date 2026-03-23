@@ -67,7 +67,9 @@ jobs:
           NEW_VERSION=$(node -p "require('./package.json').version")
           NEW_TAG="v${NEW_VERSION}"
           echo "NEW_TAG=${NEW_TAG}" >> "$GITHUB_ENV"
-          git add package.json package-lock.json
+          # Update version badge in docs — keeps the existing tagline, only bumps the number
+          sed -i "s/v[0-9]\+\.[0-9]\+\.[0-9]\+ —/v${NEW_VERSION} —/" docs/index.html
+          git add package.json package-lock.json docs/index.html
           git commit -m "chore: bump version to ${NEW_TAG} [skip ci]"
           if git rev-parse "${NEW_TAG}" >/dev/null 2>&1; then
             echo "Tag ${NEW_TAG} already exists, skipping tag creation"
