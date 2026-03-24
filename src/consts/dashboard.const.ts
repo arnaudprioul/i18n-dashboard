@@ -84,6 +84,19 @@ export const WIDGET_REGISTRY: Record<TWidgetType, { label: string; description: 
   },
 }
 
+export function DEFAULT_PROJECT_LAYOUT(projectId: number): IWidgetConfig[] {
+  const ds = { type: 'project' as const, projectId }
+  return [
+    { id: 'proj-default-1', type: 'stat-keys', size: 'sm', dataSource: ds },
+    { id: 'proj-default-2', type: 'stat-coverage', size: 'sm', dataSource: ds },
+    { id: 'proj-default-3', type: 'stat-languages', size: 'sm', dataSource: ds },
+    { id: 'proj-default-4', type: 'stat-unused', size: 'sm', dataSource: ds },
+    { id: 'proj-default-5', type: 'languages-coverage', size: 'wide', dataSource: ds },
+    { id: 'proj-default-6', type: 'last-activity', size: 'md', dataSource: ds },
+    { id: 'proj-default-7', type: 'review-queue', size: 'md', dataSource: ds },
+  ]
+}
+
 export const DEFAULT_LAYOUT: IWidgetConfig[] = [
   { id: 'default-1', type: 'stat-keys', size: 'sm' },
   { id: 'default-2', type: 'stat-coverage', size: 'sm' },

@@ -105,7 +105,7 @@ export default defineEventHandler(async (event) => {
   const langStats = Array.from(langMap.values()).map(l => ({
     ...l,
     missing: l.total - l.translated,
-    coverage: l.total > 0 ? Math.round((l.translated / l.total) * 100) : 0,
+    coverage: l.total > 0 ? parseFloat(((l.translated / l.total) * 100).toFixed(2)) : 0,
   }))
 
   // Recent activity across all accessible projects

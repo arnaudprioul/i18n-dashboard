@@ -112,6 +112,7 @@
   "review.awaiting_approval": "Awaiting approval",
   "review.translations_approved": "translation(s) approved",
   "languages.deleted": "Language deleted",
+  "languages.translate_missing": "Translate missing",
   "languages.translating": "Translating",
   "languages.translate_done": "Translation complete",
   "languages.with_errors": "with errors",

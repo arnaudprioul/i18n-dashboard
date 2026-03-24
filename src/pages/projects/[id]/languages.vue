@@ -95,7 +95,7 @@
               :data-cy="'lang-coverage-' + lang.code"
               class="font-medium text-gray-700 dark:text-gray-300"
             >
-              {{ getCoverage(lang.code) }}%
+              {{ getCoverage(lang.code).toFixed(2) }}%
             </span>
           </div>
           <div class="mt-2 h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
@@ -108,6 +108,25 @@
           <p class="text-xs text-gray-400 mt-1">
             {{ getTranslatedCount(lang.code) }} / {{ totalKeys }} {{ t('languages.keys_translated', 'keys translated') }}
           </p>
+
+          <!-- Translate missing shortcut -->
+          <div
+            v-if="!lang.is_default && getMissingCount(lang.code) > 0"
+            class="mt-2"
+          >
+            <UButton
+              size="xs"
+              variant="ghost"
+              color="warning"
+              icon="i-heroicons-sparkles"
+              :loading="translatingLang === lang.code"
+              :disabled="showProgress || (translatingLang !== null && translatingLang !== lang.code)"
+              @click="translateMissing(lang)"
+            >
+              {{ t('languages.translate_missing', 'Translate missing') }}
+              <span class="opacity-60">({{ getMissingCount(lang.code) }})</span>
+            </UButton>
+          </div>
 
           <!-- Fallback indicator -->
           <div class="mt-3 pt-2 border-t border-gray-100 dark:border-gray-800">
@@ -398,7 +417,7 @@
                     {{ findLanguage(l.code)?.nativeName || l.name }}
                     <code class="font-mono text-xs bg-gray-100 dark:bg-gray-800 px-1 rounded ml-1">{{ l.code }}</code>
                   </p>
-                  <p class="text-xs text-gray-400">{{ getCoverage(l.code) }}% {{ t('languages.translated', 'translated') }}</p>
+                  <p class="text-xs text-gray-400">{{ getCoverage(l.code).toFixed(2) }}% {{ t('languages.translated', 'translated') }}</p>
                 </div>
                 <UBadge
                   v-if="l.is_default"
@@ -723,6 +742,24 @@ function sendToBackground() {
     refreshLanguages()
     refreshNuxtData('project-stats')
   })
+}
+
+const translatingLang = ref<string | null>(null)
+
+function getMissingCount(code: string): number {
+  return Math.max(0, totalKeys.value - getTranslatedCount(code))
+}
+
+async function translateMissing(lang: any) {
+  if (translatingLang.value) return
+  translatingLang.value = lang.code
+  try {
+    const langName = findLanguage(lang.code)?.nativeName || lang.name
+    const jobId = await startTranslateAll(lang.code, lang.name)
+    if (jobId) startPolling(jobId, langName)
+  } finally {
+    translatingLang.value = null
+  }
 }
 
 // ── Add language ─────────────────────────────────────────────────────────
