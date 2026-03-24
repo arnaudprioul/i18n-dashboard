@@ -78,14 +78,14 @@ const coverage = computed(() => {
   const langs = stats.value?.languages
   if (!langs?.length) return 0
   const total = langs.reduce((sum: number, l: any) => sum + l.coverage, 0)
-  return Math.round(total / langs.length)
+  return parseFloat((total / langs.length).toFixed(2))
 })
 
 const displayValue = computed(() => {
   if (!stats.value) return '—'
   switch (props.type) {
     case 'stat-keys': return stats.value.totalKeys ?? '—'
-    case 'stat-coverage': return `${coverage.value}%`
+    case 'stat-coverage': return `${coverage.value.toFixed(2)}%`
     case 'stat-languages': return stats.value.languages?.length ?? '—'
     case 'stat-unused': return stats.value.unusedKeys ?? '—'
     default: return '—'

@@ -48,7 +48,7 @@ export default defineEventHandler(async (event) => {
         draft: statusMap.draft,
         reviewed: statusMap.reviewed,
         approved: statusMap.approved,
-        coverage: total > 0 ? Math.round((translatedCount / total) * 100) : 0,
+        coverage: total > 0 ? parseFloat(((translatedCount / total) * 100).toFixed(2)) : 0,
       }
     }),
   )

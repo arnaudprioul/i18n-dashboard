@@ -122,7 +122,7 @@ function coverageColor(coverage: number) {
             class="font-semibold"
             :class="lang.coverage >= 90 ? 'text-green-600' : lang.coverage >= 60 ? 'text-yellow-500' : 'text-red-500'"
           >
-            {{ lang.coverage }}%
+            {{ lang.coverage.toFixed(2) }}%
           </span>
         </div>
         <div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-1.5">

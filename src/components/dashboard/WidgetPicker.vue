@@ -7,6 +7,7 @@ const { t } = useT()
 
 const props = defineProps<{
   modelValue: boolean
+  excludeTypes?: string[]
 }>()
 
 const emit = defineEmits<{
@@ -18,6 +19,10 @@ const open = computed({
   get: () => props.modelValue,
   set: (v) => emit('update:modelValue', v),
 })
+
+const availableWidgets = computed(() =>
+  Object.entries(WIDGET_REGISTRY).filter(([type]) => !props.excludeTypes?.includes(type)),
+)
 
 const selectedSizes = ref<Record<string, TWidgetSize>>({})
 
@@ -42,7 +47,7 @@ function addWidget(type: string) {
     <template #body>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-1">
         <div
-          v-for="(config, type) in WIDGET_REGISTRY"
+          v-for="[type, config] in availableWidgets"
           :key="type"
           class="border border-gray-200 dark:border-gray-700 rounded-xl p-4 space-y-3 hover:border-primary-300 dark:hover:border-primary-600 transition-colors"
         >
