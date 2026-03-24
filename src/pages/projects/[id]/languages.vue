@@ -95,7 +95,7 @@
               :data-cy="'lang-coverage-' + lang.code"
               class="font-medium text-gray-700 dark:text-gray-300"
             >
-              {{ getCoverage(lang.code) }}%
+              {{ getCoverage(lang.code).toFixed(2) }}%
             </span>
           </div>
           <div class="mt-2 h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
@@ -417,7 +417,7 @@
                     {{ findLanguage(l.code)?.nativeName || l.name }}
                     <code class="font-mono text-xs bg-gray-100 dark:bg-gray-800 px-1 rounded ml-1">{{ l.code }}</code>
                   </p>
-                  <p class="text-xs text-gray-400">{{ getCoverage(l.code) }}% {{ t('languages.translated', 'translated') }}</p>
+                  <p class="text-xs text-gray-400">{{ getCoverage(l.code).toFixed(2) }}% {{ t('languages.translated', 'translated') }}</p>
                 </div>
                 <UBadge
                   v-if="l.is_default"
