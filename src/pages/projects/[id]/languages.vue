@@ -109,6 +109,25 @@
             {{ getTranslatedCount(lang.code) }} / {{ totalKeys }} {{ t('languages.keys_translated', 'keys translated') }}
           </p>
 
+          <!-- Translate missing shortcut -->
+          <div
+            v-if="!lang.is_default && getMissingCount(lang.code) > 0"
+            class="mt-2"
+          >
+            <UButton
+              size="xs"
+              variant="ghost"
+              color="warning"
+              icon="i-heroicons-sparkles"
+              :loading="translatingLang === lang.code"
+              :disabled="showProgress || (translatingLang !== null && translatingLang !== lang.code)"
+              @click="translateMissing(lang)"
+            >
+              {{ t('languages.translate_missing', 'Translate missing') }}
+              <span class="opacity-60">({{ getMissingCount(lang.code) }})</span>
+            </UButton>
+          </div>
+
           <!-- Fallback indicator -->
           <div class="mt-3 pt-2 border-t border-gray-100 dark:border-gray-800">
             <button
@@ -723,6 +742,24 @@ function sendToBackground() {
     refreshLanguages()
     refreshNuxtData('project-stats')
   })
+}
+
+const translatingLang = ref<string | null>(null)
+
+function getMissingCount(code: string): number {
+  return Math.max(0, totalKeys.value - getTranslatedCount(code))
+}
+
+async function translateMissing(lang: any) {
+  if (translatingLang.value) return
+  translatingLang.value = lang.code
+  try {
+    const langName = findLanguage(lang.code)?.nativeName || lang.name
+    const jobId = await startTranslateAll(lang.code, lang.name)
+    if (jobId) startPolling(jobId, langName)
+  } finally {
+    translatingLang.value = null
+  }
 }
 
 // ── Add language ─────────────────────────────────────────────────────────
