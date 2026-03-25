@@ -232,7 +232,7 @@
             name="i-heroicons-shield-check"
             class="text-base shrink-0"
           />
-          <span class="flex-1">Sécurité</span>
+          <span class="flex-1">{{ t('security.nav_label', 'Security') }}</span>
         </NuxtLink>
         <NuxtLink
           to="/admin/customization"

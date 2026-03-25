@@ -14,6 +14,36 @@ const PRIMARY_COLORS = [
 
 const NEUTRAL_COLORS = ['slate', 'gray', 'zinc', 'neutral', 'stone']
 
+// Hardcoded palette values (shade 500 for primary, shade 400 for neutral).
+// Tailwind v4 only generates CSS variables for statically-referenced colors,
+// so dynamic `var(--color-${color}-500)` references are undefined at runtime.
+const COLOR_HEX: Record<string, string> = {
+  // primary (500)
+  red: '#ef4444',
+  orange: '#f97316',
+  amber: '#f59e0b',
+  yellow: '#eab308',
+  lime: '#84cc16',
+  green: '#22c55e',
+  emerald: '#10b981',
+  teal: '#14b8a6',
+  cyan: '#06b6d4',
+  sky: '#0ea5e9',
+  blue: '#3b82f6',
+  indigo: '#6366f1',
+  violet: '#8b5cf6',
+  purple: '#a855f7',
+  fuchsia: '#d946ef',
+  pink: '#ec4899',
+  rose: '#f43f5e',
+  // neutral (400)
+  slate: '#94a3b8',
+  gray: '#9ca3af',
+  zinc: '#a1a1aa',
+  neutral: '#a3a3a3',
+  stone: '#a8a29e',
+}
+
 const appConfig = useAppConfig()
 
 // ── State ──────────────────────────────────────────────────────────────────
@@ -217,16 +247,16 @@ function removeWidget(index: number) {
             <div class="w-8 h-8 rounded-lg bg-primary-500 flex items-center justify-center overflow-hidden shrink-0">
               <img
                 :src="branding.logoUrl"
-                :alt="branding.name || 'logo'"
+                :alt="branding.name || t('customization.logo_alt', 'logo')"
                 class="w-full h-full object-cover"
               >
             </div>
             <div>
               <p class="text-sm font-bold text-gray-900 dark:text-white">
-                {{ branding.name || 'i18n Dashboard' }}
+                {{ branding.name || t('customization.default_app_name', 'i18n Dashboard') }}
               </p>
               <p class="text-xs text-gray-400">
-                {{ branding.subtitle || 'vue-i18n manager' }}
+                {{ branding.subtitle || t('customization.default_subtitle', 'vue-i18n manager') }}
               </p>
             </div>
           </div>
@@ -257,8 +287,8 @@ function removeWidget(index: number) {
                 class="w-7 h-7 rounded-full border-2 transition-all"
                 :class="theme.primary === color
                   ? 'border-gray-900 dark:border-white scale-110'
-                  : 'border-transparent hover:scale-105'"
-                :style="{ backgroundColor: `var(--color-${color}-500)` }"
+                  : 'border-black/10 hover:scale-105'"
+                :style="{ backgroundColor: COLOR_HEX[color] }"
                 :title="color"
                 @click="theme.primary = theme.primary === color ? '' : color"
               />
@@ -291,8 +321,8 @@ function removeWidget(index: number) {
                 class="w-7 h-7 rounded-full border-2 transition-all"
                 :class="theme.neutral === color
                   ? 'border-gray-900 dark:border-white scale-110'
-                  : 'border-transparent hover:scale-105'"
-                :style="{ backgroundColor: `var(--color-${color}-400)` }"
+                  : 'border-black/10 hover:scale-105'"
+                :style="{ backgroundColor: COLOR_HEX[color] }"
                 :title="color"
                 @click="theme.neutral = theme.neutral === color ? '' : color"
               />
@@ -430,7 +460,7 @@ function removeWidget(index: number) {
             >
               <UInput
                 v-model="widgetForm.type"
-                placeholder="my-metrics"
+                :placeholder="t('customization.widget_type_placeholder', 'my-metrics')"
                 :disabled="editingIndex !== -1"
                 class="w-full"
               />
