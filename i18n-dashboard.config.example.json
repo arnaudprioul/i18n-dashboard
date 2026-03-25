@@ -1,9 +1,11 @@
 {
   "_comment": "Copy this file to i18n-dashboard.config.json and fill in your values. All settings are optional — you can also use environment variables.",
+
   "database": {
     "client": "better-sqlite3",
     "connection": "./i18n-dashboard.db"
   },
+
   "smtp": {
     "host": "smtp.example.com",
     "port": 587,
@@ -12,7 +14,42 @@
     "pass": "mypassword",
     "from": "noreply@example.com"
   },
+
   "app": {
     "url": "http://localhost:3333"
+  },
+
+  "branding": {
+    "_comment": "Customize the dashboard identity shown in the sidebar.",
+    "name": "My i18n Dashboard",
+    "subtitle": "Translation Manager",
+    "logoUrl": "https://example.com/logo.png"
+  },
+
+  "theme": {
+    "_comment": "Override the primary color using any Tailwind color name.",
+    "_primary_options": "blue | violet | green | red | orange | teal | cyan | indigo | purple | pink | rose | sky | emerald | amber | lime | fuchsia | yellow",
+    "_neutral_options": "slate | gray | zinc | neutral | stone",
+    "primary": "violet",
+    "neutral": "slate"
+  },
+
+  "widgets": {
+    "_comment": "Define custom iframe widgets that appear in the widget picker.",
+    "custom": [
+      {
+        "_comment": "Example: embed an external metrics dashboard",
+        "type": "my-metrics",
+        "label": "My Metrics",
+        "description": "Shows custom metrics from an external source",
+        "icon": "i-heroicons-chart-bar",
+        "sizes": ["md", "lg", "wide", "xl"],
+        "defaultSize": "wide",
+        "config": {
+          "kind": "iframe",
+          "url": "https://example.com/embed/metrics"
+        }
+      }
+    ]
   }
 }
