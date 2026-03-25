@@ -5,7 +5,7 @@ export interface IWidgetDataSource {
 
 export interface IWidgetConfig {
   id: string
-  type: 'stat-keys' | 'stat-coverage' | 'stat-languages' | 'stat-unused' | 'projects' | 'languages-coverage' | 'last-activity' | 'review-queue'
+  type: string  // built-in TWidgetType or any custom widget type defined in config
   size: 'sm' | 'md' | 'lg' | 'wide' | 'xl'
   dataSource?: IWidgetDataSource // default = 'global'
   title?: string // optional custom title override

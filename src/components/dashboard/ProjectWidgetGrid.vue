@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import type { TWidgetType } from '../../types/dashboard.type'
-import { WIDGET_REGISTRY, WIDGET_SIZE_CLASSES } from '../../consts/dashboard.const'
+import { WIDGET_SIZE_CLASSES } from '../../consts/dashboard.const'
 
 const props = defineProps<{
   projectId: number
@@ -28,12 +27,13 @@ const showPicker = ref(false)
 const configIndex = ref(-1)
 
 const activeLayout = computed(() => editing.value ? localLayout.value : layout.value)
+const { registry: widgetRegistry, getEntry } = useWidgetRegistry()
 
 function sizeClass(size: string) {
   return WIDGET_SIZE_CLASSES[size as keyof typeof WIDGET_SIZE_CLASSES] ?? 'col-span-1 row-span-1'
 }
 
-function widgetComponent(type: TWidgetType) {
+function widgetComponent(type: string) {
   switch (type) {
     case 'stat-keys':
     case 'stat-coverage':
@@ -49,6 +49,9 @@ function widgetComponent(type: TWidgetType) {
     case 'review-queue':
       return resolveComponent('DashboardWidgetsReviewWidget')
     default:
+      if (getEntry(type)?.isCustom) {
+        return resolveComponent('DashboardWidgetsCustomIframeWidget')
+      }
       return 'div'
   }
 }
@@ -150,7 +153,7 @@ function onSaveConfig(patch: { dataSource?: any; title?: string | undefined }) {
           class="absolute -top-2 right-0 z-10 flex gap-0.5"
         >
           <button
-            v-for="s in WIDGET_REGISTRY[widget.type].sizes"
+            v-for="s in widgetRegistry[widget.type]?.sizes ?? []"
             :key="s"
             class="px-1 py-0.5 text-xs rounded shadow-sm transition-colors"
             :class="widget.size === s
@@ -164,7 +167,7 @@ function onSaveConfig(patch: { dataSource?: any; title?: string | undefined }) {
 
         <!-- Config button -->
         <button
-          v-if="editing && WIDGET_REGISTRY[widget.type].hasDataSource"
+          v-if="editing && widgetRegistry[widget.type]?.hasDataSource"
           class="absolute bottom-1 right-1 z-10 w-6 h-6 bg-gray-600/80 dark:bg-gray-400/80 rounded-full text-white flex items-center justify-center text-xs hover:bg-gray-700 transition-colors"
           @click.stop="configIndex = index"
         >
