@@ -1,32 +1,30 @@
 <script setup lang="ts">
+/**
+ * Theme application: update appConfig.ui.colors so the @nuxt/ui colors plugin
+ * regenerates --ui-color-primary-* / --ui-color-neutral-* CSS variables.
+ * The plugin (node_modules/@nuxt/ui/dist/runtime/plugins/colors.js) is reactive —
+ * any change to appConfig.ui.colors triggers an automatic style tag update.
+ *
+ * useFetch is SSR-compatible, so the correct color is applied before the page
+ * reaches the browser (no flash of the default colour).
+ */
 const { theme } = useModuleConfig()
+const appConfig = useAppConfig()
 
-const SHADES = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]
-
-const themeStyle = computed(() => {
-  const color = theme.value?.primary
-  if (!color) return ''
-  const vars = SHADES.map(s => `--color-primary-${s}: var(--color-${color}-${s})`).join('; ')
-  return `:root { ${vars} }`
-})
-
-useHead({
-  style: computed(() =>
-    themeStyle.value ? [{ id: 'module-theme', innerHTML: themeStyle.value }] : [],
-  ),
-})
-
-const loadingColor = computed(() =>
-  theme.value?.primary
-    ? `var(--color-${theme.value.primary}-500)`
-    : 'rgb(var(--ui-primary))',
+watch(
+  theme,
+  (t) => {
+    if (t?.primary) appConfig.ui.colors.primary = t.primary
+    if (t?.neutral) appConfig.ui.colors.neutral = t.neutral
+  },
+  { immediate: true },
 )
 </script>
 
 <template>
   <UApp>
     <NuxtLoadingIndicator
-      :color="loadingColor"
+      color="var(--color-primary-500)"
       :height="3"
       :throttle="100"
     />

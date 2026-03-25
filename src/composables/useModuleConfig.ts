@@ -6,9 +6,11 @@ interface IAppConfigResponse {
   widgets: { custom?: ICustomWidgetDef[] } | null
 }
 
-let _moduleConfig: ReturnType<typeof _createModuleConfig> | null = null
-
-function _createModuleConfig() {
+/**
+ * Fetches branding / theme / custom-widget config from the server.
+ * useFetch deduplicates by key — all callers share the same cached response.
+ */
+export function useModuleConfig() {
   const { data, refresh } = useFetch<IAppConfigResponse>('/api/app-config', {
     key: 'module-config',
     default: () => ({ branding: null, theme: null, widgets: null }),
@@ -19,11 +21,4 @@ function _createModuleConfig() {
   const customWidgets = computed<ICustomWidgetDef[]>(() => data.value?.widgets?.custom ?? [])
 
   return { branding, theme, customWidgets, refresh }
-}
-
-export function useModuleConfig() {
-  if (!_moduleConfig) {
-    _moduleConfig = _createModuleConfig()
-  }
-  return _moduleConfig
 }

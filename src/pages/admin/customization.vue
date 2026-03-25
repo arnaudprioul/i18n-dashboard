@@ -5,14 +5,6 @@ const { t } = useT()
 const toast = useToast()
 const { refresh: refreshModuleConfig } = useModuleConfig()
 
-const TAILWIND_COLORS = [
-  'slate', 'gray', 'zinc', 'neutral', 'stone',
-  'red', 'orange', 'amber', 'yellow', 'lime',
-  'green', 'emerald', 'teal', 'cyan', 'sky',
-  'blue', 'indigo', 'violet', 'purple', 'fuchsia',
-  'pink', 'rose',
-]
-
 const PRIMARY_COLORS = [
   'red', 'orange', 'amber', 'yellow', 'lime',
   'green', 'emerald', 'teal', 'cyan', 'sky',
@@ -21,6 +13,12 @@ const PRIMARY_COLORS = [
 ]
 
 const NEUTRAL_COLORS = ['slate', 'gray', 'zinc', 'neutral', 'stone']
+
+// Live preview: update appConfig so the @nuxt/ui colors plugin applies
+// changes immediately as the user clicks swatches (before saving to DB)
+const appConfig = useAppConfig()
+watch(() => theme.primary, (color) => { if (color) appConfig.ui.colors.primary = color })
+watch(() => theme.neutral, (color) => { if (color) appConfig.ui.colors.neutral = color })
 
 // ── State ──────────────────────────────────────────────────────────────────
 
@@ -256,12 +254,10 @@ function removeWidget(index: number) {
                 v-for="color in PRIMARY_COLORS"
                 :key="color"
                 class="w-7 h-7 rounded-full border-2 transition-all"
-                :class="[
-                  `bg-${color}-500`,
-                  theme.primary === color
-                    ? 'border-gray-900 dark:border-white scale-110'
-                    : 'border-transparent hover:scale-105',
-                ]"
+                :class="theme.primary === color
+                  ? 'border-gray-900 dark:border-white scale-110'
+                  : 'border-transparent hover:scale-105'"
+                :style="{ backgroundColor: `var(--color-${color}-500)` }"
                 :title="color"
                 @click="theme.primary = theme.primary === color ? '' : color"
               />
@@ -292,12 +288,10 @@ function removeWidget(index: number) {
                 v-for="color in NEUTRAL_COLORS"
                 :key="color"
                 class="w-7 h-7 rounded-full border-2 transition-all"
-                :class="[
-                  `bg-${color}-400`,
-                  theme.neutral === color
-                    ? 'border-gray-900 dark:border-white scale-110'
-                    : 'border-transparent hover:scale-105',
-                ]"
+                :class="theme.neutral === color
+                  ? 'border-gray-900 dark:border-white scale-110'
+                  : 'border-transparent hover:scale-105'"
+                :style="{ backgroundColor: `var(--color-${color}-400)` }"
                 :title="color"
                 @click="theme.neutral = theme.neutral === color ? '' : color"
               />
