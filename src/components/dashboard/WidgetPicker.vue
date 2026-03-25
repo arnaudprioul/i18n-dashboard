@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import type { TWidgetSize } from '../../types/dashboard.type'
 import type { IWidgetConfig } from '../../interfaces/dashboard.interface'
-import { WIDGET_REGISTRY } from '../../consts/dashboard.const'
 
 const { t } = useT()
 
@@ -20,20 +19,22 @@ const open = computed({
   set: (v) => emit('update:modelValue', v),
 })
 
+const { registry } = useWidgetRegistry()
+
 const availableWidgets = computed(() =>
-  Object.entries(WIDGET_REGISTRY).filter(([type]) => !props.excludeTypes?.includes(type)),
+  Object.entries(registry.value).filter(([type]) => !props.excludeTypes?.includes(type)),
 )
 
 const selectedSizes = ref<Record<string, TWidgetSize>>({})
 
 function getSelectedSize(type: string): TWidgetSize {
-  return selectedSizes.value[type] ?? WIDGET_REGISTRY[type as keyof typeof WIDGET_REGISTRY].defaultSize
+  return selectedSizes.value[type] ?? registry.value[type]?.defaultSize ?? 'md'
 }
 
 function addWidget(type: string) {
   const size = getSelectedSize(type)
   const id = Date.now().toString(36)
-  emit('add', { id, type: type as IWidgetConfig['type'], size })
+  emit('add', { id, type, size })
   open.value = false
 }
 </script>
@@ -52,16 +53,27 @@ function addWidget(type: string) {
           class="border border-gray-200 dark:border-gray-700 rounded-xl p-4 space-y-3 hover:border-primary-300 dark:hover:border-primary-600 transition-colors"
         >
           <div class="flex items-start gap-3">
-            <div class="w-9 h-9 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0">
+            <div
+              class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+              :class="config.isCustom ? 'bg-primary-50 dark:bg-primary-950' : 'bg-gray-100 dark:bg-gray-800'"
+            >
               <UIcon
                 :name="config.icon"
-                class="text-gray-600 dark:text-gray-400"
+                :class="config.isCustom ? 'text-primary-500' : 'text-gray-600 dark:text-gray-400'"
               />
             </div>
-            <div class="min-w-0">
-              <p class="text-sm font-semibold text-gray-900 dark:text-white">
-                {{ config.label }}
-              </p>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-1.5">
+                <p class="text-sm font-semibold text-gray-900 dark:text-white">
+                  {{ config.label }}
+                </p>
+                <span
+                  v-if="config.isCustom"
+                  class="text-[10px] px-1.5 py-0.5 rounded-full bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-400 font-medium leading-none"
+                >
+                  {{ t('dashboard.custom', 'Custom') }}
+                </span>
+              </div>
               <p class="text-xs text-gray-400 mt-0.5">
                 {{ config.description }}
               </p>

@@ -24,18 +24,25 @@
           to="/"
           class="flex items-center gap-2.5"
         >
-          <div class="w-8 h-8 rounded-lg bg-primary-500 flex items-center justify-center shrink-0">
+          <div class="w-8 h-8 rounded-lg bg-primary-500 flex items-center justify-center shrink-0 overflow-hidden">
+            <img
+              v-if="logoUrl"
+              :src="logoUrl"
+              :alt="appName"
+              class="w-full h-full object-cover"
+            >
             <UIcon
+              v-else
               name="i-heroicons-language"
               class="text-white text-base"
             />
           </div>
           <div>
             <h1 class="text-sm font-bold text-gray-900 dark:text-white leading-tight">
-              i18n Dashboard
+              {{ appName }}
             </h1>
             <p class="text-xs text-gray-400">
-              vue-i18n manager
+              {{ appSubtitle }}
             </p>
           </div>
         </NuxtLink>
@@ -228,6 +235,19 @@
           <span class="flex-1">Sécurité</span>
         </NuxtLink>
         <NuxtLink
+          to="/admin/customization"
+          class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors"
+          :class="isActive('/admin/customization')
+            ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 font-medium'
+            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'"
+        >
+          <UIcon
+            name="i-heroicons-paint-brush"
+            class="text-base shrink-0"
+          />
+          <span class="flex-1">{{ t('customization.nav_label', 'Customization') }}</span>
+        </NuxtLink>
+        <NuxtLink
           to="/admin/smtp"
           class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors"
           :class="isActive('/admin/smtp')
@@ -390,6 +410,10 @@ const route = useRoute()
 const router = useRouter()
 const toast = useToast()
 const colorMode = useColorMode()
+const { branding } = useModuleConfig()
+const appName = computed(() => branding.value?.name || 'i18n Dashboard')
+const appSubtitle = computed(() => branding.value?.subtitle || 'vue-i18n manager')
+const logoUrl = computed(() => branding.value?.logoUrl || null)
 const { currentProject, projects: projectsData, systemProject, fetchProjects, visibleProjects: userProjects, syncing, syncProject, pending } = useProject()
 
 const appReady = ref(false)
