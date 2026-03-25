@@ -14,11 +14,7 @@ const PRIMARY_COLORS = [
 
 const NEUTRAL_COLORS = ['slate', 'gray', 'zinc', 'neutral', 'stone']
 
-// Live preview: update appConfig so the @nuxt/ui colors plugin applies
-// changes immediately as the user clicks swatches (before saving to DB)
 const appConfig = useAppConfig()
-watch(() => theme.primary, (color) => { if (color) appConfig.ui.colors.primary = color })
-watch(() => theme.neutral, (color) => { if (color) appConfig.ui.colors.neutral = color })
 
 // ── State ──────────────────────────────────────────────────────────────────
 
@@ -28,6 +24,11 @@ const hasConfigFile = ref(false)
 
 const branding = reactive({ name: '', subtitle: '', logoUrl: '' })
 const theme = reactive({ primary: '', neutral: '' })
+
+// Live preview: update appConfig so the @nuxt/ui colors plugin applies
+// changes immediately as the user clicks swatches (before saving to DB)
+watch(() => theme.primary, (color) => { if (color) appConfig.ui.colors.primary = color })
+watch(() => theme.neutral, (color) => { if (color) appConfig.ui.colors.neutral = color })
 const customWidgets = ref<ICustomWidgetDef[]>([])
 
 // Widget editor
