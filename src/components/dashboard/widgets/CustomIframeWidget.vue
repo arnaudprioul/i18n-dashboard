@@ -39,7 +39,7 @@ const label = computed(() => props.title || def.value?.label || props.type)
       :title="label"
       class="w-full h-full border-0"
       loading="lazy"
-      sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+      sandbox="allow-scripts"
     />
     <div
       v-else

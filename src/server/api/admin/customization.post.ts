@@ -1,5 +1,10 @@
 import { getDb } from '../../db/index'
 import type { IBrandingConfig, IThemeConfig, ICustomWidgetDef } from '../../../interfaces/project-config.interface'
+import {
+  validateBranding,
+  validateTheme,
+  validateCustomWidgets,
+} from '../../utils/customization-validation.util'
 
 interface ICustomizationBody {
   branding?: IBrandingConfig
@@ -22,6 +27,28 @@ export default defineEventHandler(async (event) => {
   if (!user?.is_super_admin) throw createError({ statusCode: 403, message: 'Forbidden' })
 
   const body = await readBody<ICustomizationBody>(event)
+  if (!body || typeof body !== 'object')
+    throw createError({ statusCode: 400, message: 'Invalid request body' })
+
+  // ── Validate inputs before touching the DB ────────────────────────────────
+
+  if (body.branding !== undefined) {
+    const err = validateBranding(body.branding)
+    if (err) throw createError({ statusCode: 422, message: err })
+  }
+
+  if (body.theme !== undefined) {
+    const err = validateTheme(body.theme)
+    if (err) throw createError({ statusCode: 422, message: err })
+  }
+
+  if (body.customWidgets !== undefined) {
+    const err = validateCustomWidgets(body.customWidgets)
+    if (err) throw createError({ statusCode: 422, message: err })
+  }
+
+  // ── Persist ───────────────────────────────────────────────────────────────
+
   const db = getDb()
 
   if (body.branding !== undefined) {

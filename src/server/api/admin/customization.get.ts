@@ -19,13 +19,21 @@ export default defineEventHandler(async (event) => {
   const map: Record<string, string> = {}
   for (const r of rows) map[r.key] = r.value || ''
 
+  let customWidgets: unknown[] = []
+  if (map.custom_widgets) {
+    try {
+      const parsed = JSON.parse(map.custom_widgets)
+      customWidgets = Array.isArray(parsed) ? parsed : []
+    }
+    catch {
+      // DB value is corrupted — return empty array rather than crashing
+      customWidgets = []
+    }
+  }
+
   // Indicate whether a config file is active (its values override DB)
   const fileConfig = readProjectConfig()
-  const hasConfigFile = !!(
-    fileConfig.branding
-    || fileConfig.theme
-    || fileConfig.widgets
-  )
+  const hasConfigFile = !!(fileConfig.branding || fileConfig.theme || fileConfig.widgets)
 
   return {
     hasConfigFile,
@@ -38,6 +46,6 @@ export default defineEventHandler(async (event) => {
       primary: map.theme_primary || '',
       neutral: map.theme_neutral || '',
     },
-    customWidgets: map.custom_widgets ? JSON.parse(map.custom_widgets) : [],
+    customWidgets,
   }
 })
