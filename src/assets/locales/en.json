@@ -598,5 +598,20 @@
   "customization.widget_icon_hint": "Heroicons name, e.g. i-heroicons-chart-bar",
   "customization.widget_sizes": "Available sizes",
   "customization.widget_default_size": "Default size",
-  "customization.nav_label": "Customization"
+  "customization.nav_label": "Customization",
+
+  "history.modal_title": "Translation History",
+  "history.no_history": "No history available",
+  "history.before": "Before",
+  "history.after": "After",
+  "history.source_google": "Google Translate",
+  "history.source_sync": "File Sync",
+  "history.source_manual": "Manual",
+
+  "dashboard.widget_no_url": "No URL configured",
+
+  "projects.locales_path_placeholder": "src/locales",
+  "projects.key_separator_placeholder": ".",
+  "projects.detection_failed": "Detection failed",
+  "projects.create_failed": "Could not create project"
 }

@@ -1,16 +1,16 @@
 <template>
   <span
-    v-if="isMounted"
-    data-cy="reset-password-mounted"
-    class="sr-only"
+      v-if="isMounted"
+      class="sr-only"
+      data-cy="reset-password-mounted"
   />
-  <UCard class="w-full max-w-md">
+  <u-card class="w-full max-w-md">
     <template #header>
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-xl bg-primary-500 flex items-center justify-center shrink-0">
-          <UIcon
-            name="i-heroicons-language"
-            class="text-white text-lg"
+          <u-icon
+              class="text-white text-lg"
+              name="i-heroicons-language"
           />
         </div>
         <div>
@@ -25,140 +25,142 @@
     </template>
 
     <div
-      v-if="!token"
-      class="space-y-4"
+        v-if="!token"
+        class="space-y-4"
     >
       <p class="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2">
-        <UIcon
-          name="i-heroicons-exclamation-circle"
-          class="inline mr-1"
+        <u-icon
+            class="inline mr-1"
+            name="i-heroicons-exclamation-circle"
         />
         {{ t('reset_password.invalid_link', 'Invalid link. Please make a new reset request.') }}
       </p>
-      <NuxtLink
-        to="/forgot-password"
-        class="block text-center text-sm text-primary-600 hover:underline mt-2"
+      <nuxt-link
+          class="block text-center text-sm text-primary-600 hover:underline mt-2"
+          to="/forgot-password"
       >
         {{ t('reset_password.request_new_link', 'Request a new link') }}
-      </NuxtLink>
+      </nuxt-link>
     </div>
 
     <div
-      v-else-if="success"
-      class="space-y-4"
+        v-else-if="success"
+        class="space-y-4"
     >
       <p class="text-sm text-green-600 bg-green-50 dark:bg-green-900/20 rounded-lg px-3 py-2">
-        <UIcon
-          name="i-heroicons-check-circle"
-          class="inline mr-1"
+        <u-icon
+            class="inline mr-1"
+            name="i-heroicons-check-circle"
         />
         {{ t('reset_password.success', 'Password changed successfully.') }}
       </p>
-      <NuxtLink
-        to="/login"
-        class="block text-center text-sm text-primary-600 hover:underline mt-2"
+      <nuxt-link
+          class="block text-center text-sm text-primary-600 hover:underline mt-2"
+          to="/login"
       >
         {{ t('reset_password.login', 'Sign in') }}
-      </NuxtLink>
+      </nuxt-link>
     </div>
 
     <form
-      v-else
-      class="space-y-4"
-      @submit.prevent="handleSubmit"
+        v-else
+        class="space-y-4"
+        @submit.prevent="handleSubmit"
     >
-      <UFormField
-        :label="t('reset_password.label_new_password', 'New password')"
-        :hint="t('reset_password.hint_min_length', 'Minimum 8 characters')"
-        required
+      <u-form-field
+          :hint="t('reset_password.hint_min_length', 'Minimum 8 characters')"
+          :label="t('reset_password.label_new_password', 'New password')"
+          required
       >
-        <UInput
-          v-model="form.password"
-          type="password"
-          placeholder="••••••••"
-          class="w-full"
-          autocomplete="new-password"
-          autofocus
+        <u-input
+            v-model="form.password"
+            autocomplete="new-password"
+            autofocus
+            class="w-full"
+            placeholder="••••••••"
+            type="password"
         />
-      </UFormField>
+      </u-form-field>
 
-      <UFormField
-        :label="t('reset_password.label_confirm', 'Confirm password')"
-        required
+      <u-form-field
+          :label="t('reset_password.label_confirm', 'Confirm password')"
+          required
       >
-        <UInput
-          v-model="form.confirm"
-          type="password"
-          placeholder="••••••••"
-          class="w-full"
-          autocomplete="new-password"
+        <u-input
+            v-model="form.confirm"
+            autocomplete="new-password"
+            class="w-full"
+            placeholder="••••••••"
+            type="password"
         />
-      </UFormField>
+      </u-form-field>
 
       <p
-        v-if="error"
-        class="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2"
+          v-if="error"
+          class="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2"
       >
-        <UIcon
-          name="i-heroicons-exclamation-circle"
-          class="inline mr-1"
+        <u-icon
+            class="inline mr-1"
+            name="i-heroicons-exclamation-circle"
         />
         {{ error }}
       </p>
 
-      <UButton
-        type="submit"
-        block
-        :loading="loading"
-        class="mt-2"
+      <u-button
+          :loading="loading"
+          block
+          class="mt-2"
+          type="submit"
       >
         {{ t('reset_password.submit', 'Change password') }}
-      </UButton>
+      </u-button>
     </form>
-  </UCard>
+  </u-card>
 </template>
 
-<script setup lang="ts">
-definePageMeta({ layout: 'auth' })
+<script lang="ts" setup>
+  definePageMeta({ layout: 'auth' })
 
-const { t } = useT()
-const route = useRoute()
-const token = computed(() => route.query.token as string | undefined)
+  const { t } = useT()
+  const route = useRoute()
+  const token = computed(() => route.query.token as string | undefined)
 
-const form = ref({ password: '', confirm: '' })
-const loading = ref(false)
-const error = ref('')
-const success = ref(false)
+  const form = ref({ password: '', confirm: '' })
+  const loading = ref(false)
+  const error = ref('')
+  const success = ref(false)
 
-const isMounted = ref(false)
-onMounted(() => { isMounted.value = true })
+  const isMounted = ref(false)
+  onMounted(() => {
+    isMounted.value = true
+  })
 
-async function handleSubmit() {
-  if (!form.value.password || !form.value.confirm) return
-  if (form.value.password !== form.value.confirm) {
-    error.value = t('reset_password.error_mismatch', 'Passwords do not match')
-    return
+  async function handleSubmit () {
+    if (!form.value.password || !form.value.confirm) return
+    if (form.value.password !== form.value.confirm) {
+      error.value = t('reset_password.error_mismatch', 'Passwords do not match')
+      return
+    }
+    if (form.value.password.length < 8) {
+      error.value = t('reset_password.error_too_short', 'Password must be at least 8 characters')
+      return
+    }
+    loading.value = true
+    error.value = ''
+    try {
+      await $fetch('/api/auth/reset-password', {
+        method: 'POST',
+        body: {
+          token: token.value,
+          password: form.value.password,
+          confirm_password: form.value.confirm,
+        },
+      })
+      success.value = true
+    } catch (e: any) {
+      error.value = e.data?.message || t('reset_password.error_fallback', 'An error occurred')
+    } finally {
+      loading.value = false
+    }
   }
-  if (form.value.password.length < 8) {
-    error.value = t('reset_password.error_too_short', 'Password must be at least 8 characters')
-    return
-  }
-  loading.value = true
-  error.value = ''
-  try {
-    await $fetch('/api/auth/reset-password', {
-      method: 'POST',
-      body: {
-        token: token.value,
-        password: form.value.password,
-        confirm_password: form.value.confirm,
-      },
-    })
-    success.value = true
-  } catch (e: any) {
-    error.value = e.data?.message || t('reset_password.error_fallback', 'An error occurred')
-  } finally {
-    loading.value = false
-  }
-}
 </script>
