@@ -179,7 +179,7 @@
     }
   })
 
-  async function save () {
+  const save = async () => {
     await saveSettings({
       password_min_length: String(form.value.password_min_length),
       password_require_uppercase: String(form.value.password_require_uppercase),

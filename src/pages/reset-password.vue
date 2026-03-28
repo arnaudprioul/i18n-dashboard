@@ -136,7 +136,7 @@
     isMounted.value = true
   })
 
-  async function handleSubmit () {
+  const handleSubmit = async () => {
     if (!form.value.password || !form.value.confirm) return
     if (form.value.password !== form.value.confirm) {
       error.value = t('reset_password.error_mismatch', 'Passwords do not match')

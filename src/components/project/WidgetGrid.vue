@@ -176,11 +176,11 @@
   const activeLayout = computed(() => editing.value ? localLayout.value : layout.value)
   const { registry: widgetRegistry, getEntry } = useWidgetRegistry()
 
-  function sizeClass (size: string) {
+  const sizeClass = (size: string) => {
     return WIDGET_SIZE_CLASSES[size as keyof typeof WIDGET_SIZE_CLASSES] ?? 'col-span-1 row-span-1'
   }
 
-  function widgetComponent (type: string) {
+  const widgetComponent = (type: string) => {
     switch (type) {
       case WIDGET_TYPE.STAT_KEYS:
       case WIDGET_TYPE.STAT_COVERAGE:
@@ -203,7 +203,7 @@
     }
   }
 
-  function onSaveConfig (patch: { dataSource?: any; title?: string | undefined }) {
+  const onSaveConfig = (patch: { dataSource?: any; title?: string | undefined }) => {
     updateWidgetConfig(configIndex.value, patch)
     configIndex.value = -1
   }

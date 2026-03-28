@@ -461,7 +461,7 @@
 
   const isDark = computed(() => colorMode.value === 'dark')
 
-  function toggleDark () {
+  const toggleDark = () => {
     colorMode.preference = isDark.value ? 'light' : 'dark'
   }
 
@@ -475,7 +475,7 @@
   })
 
 
-  function isActive (to: string) {
+  const isActive = (to: string) => {
     const [toPath, toQuery] = to.split('?')
     const projectBase = `/projects/${route.params.id}`
     if (toPath === projectBase) return route.path === projectBase
@@ -577,12 +577,12 @@
   const passwordError = ref('')
   const passwordSaving = ref(false)
 
-  async function handleLogout () {
+  const handleLogout = async () => {
     await logout()
     router.push('/login')
   }
 
-  async function changePassword () {
+  const changePassword = async () => {
     passwordError.value = ''
     if (passwordForm.value.next.length < 8) {
       passwordError.value = t('user.password_hint', 'Minimum 8 characters')
@@ -605,7 +605,7 @@
     }
   }
 
-  async function doSync () {
+  const doSync = async () => {
     if (!currentProject.value) return
     await syncProject(currentProject.value)
   }

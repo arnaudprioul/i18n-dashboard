@@ -486,7 +486,7 @@
 
   // ── Save ───────────────────────────────────────────────────────────────────
 
-  async function save () {
+  const save = async () => {
     const ok = await adminSaveCustomization({
       branding: { ...branding },
       theme: { ...theme },
@@ -497,7 +497,7 @@
 
   // ── Widget editor ──────────────────────────────────────────────────────────
 
-  function openAddWidget () {
+  const openAddWidget = () => {
     Object.assign(widgetForm, {
       type: '',
       label: '',
@@ -511,7 +511,7 @@
     showWidgetEditor.value = true
   }
 
-  function openEditWidget (widget: ICustomWidgetDef, index: number) {
+  const openEditWidget = (widget: ICustomWidgetDef, index: number) => {
     Object.assign(widgetForm, {
       ...widget,
       sizes: [...widget.sizes],
@@ -521,7 +521,7 @@
     showWidgetEditor.value = true
   }
 
-  function toggleWidgetSize (size: string) {
+  const toggleWidgetSize = (size: string) => {
     const idx = widgetForm.sizes.indexOf(size)
     if (idx === -1) {
       widgetForm.sizes.push(size)
@@ -533,7 +533,7 @@
     }
   }
 
-  function saveWidget () {
+  const saveWidget = () => {
     if (!widgetForm.type || !widgetForm.label || !widgetForm.config.url) return
     const widget: ICustomWidgetDef = {
       type: widgetForm.type,
@@ -552,7 +552,7 @@
     showWidgetEditor.value = false
   }
 
-  function removeWidget (index: number) {
+  const removeWidget = (index: number) => {
     customWidgets.value.splice(index, 1)
   }
 </script>

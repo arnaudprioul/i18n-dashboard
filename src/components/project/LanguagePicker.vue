@@ -135,22 +135,22 @@ const filteredList = computed(() => {
   return list
 })
 
-function isSelected(code: string) {
+const isSelected = (code: string) => {
   return props.modelValue.some(l => l.code === code)
 }
 
-function isValidBcp47(code: string): boolean {
+const isValidBcp47 = (code: string): boolean => {
   return /^[a-z]{2,8}(-[A-Za-z0-9]{1,8})*$/i.test(code) && code.length >= 2
 }
 
-function add(lang: { code: string; name: string; nativeName: string }) {
+const add = (lang: { code: string; name: string; nativeName: string }) => {
   if (isSelected(lang.code)) return
   const isFirst = props.modelValue.length === 0
   emit('update:modelValue', [...props.modelValue, { code: lang.code, name: lang.name, is_default: isFirst }])
   search.value = ''
 }
 
-function addCustom(code: string) {
+const addCustom = (code: string) => {
   const normalized = code.trim()
   if (isSelected(normalized)) return
   const isFirst = props.modelValue.length === 0
@@ -158,7 +158,7 @@ function addCustom(code: string) {
   search.value = ''
 }
 
-function remove(code: string) {
+const remove = (code: string) => {
   const updated = props.modelValue.filter(l => l.code !== code)
   // If we removed the default, set the first one as default
   if (updated.length && !updated.some(l => l.is_default)) {
@@ -167,7 +167,7 @@ function remove(code: string) {
   emit('update:modelValue', updated)
 }
 
-function setDefault(code: string) {
+const setDefault = (code: string) => {
   emit('update:modelValue', props.modelValue.map(l => ({ ...l, is_default: l.code === code })))
 }
 </script>

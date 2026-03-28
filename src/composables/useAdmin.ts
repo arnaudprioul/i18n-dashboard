@@ -12,7 +12,7 @@ export function useAdmin() {
   const smtpTesting = ref(false)
   const smtpTestError = ref('')
 
-  async function loadSmtp() {
+  const loadSmtp = async () => {
     smtpPending.value = true
     try {
       return await adminService.getSmtp()
@@ -21,7 +21,7 @@ export function useAdmin() {
     finally { smtpPending.value = false }
   }
 
-  async function saveSmtp(data: ISmtpPayload): Promise<boolean> {
+  const saveSmtp = async (data: ISmtpPayload): Promise<boolean> => {
     smtpSaving.value = true
     try {
       await adminService.saveSmtp(data)
@@ -35,7 +35,7 @@ export function useAdmin() {
     finally { smtpSaving.value = false }
   }
 
-  async function testSmtp(to: string): Promise<{ success: boolean; error: string }> {
+  const testSmtp = async (to: string): Promise<{ success: boolean; error: string }> => {
     smtpTesting.value = true
     smtpTestError.value = ''
     try {
@@ -56,7 +56,7 @@ export function useAdmin() {
   const logsPending = ref(false)
   const logsPurging = ref(false)
 
-  async function getLogs(params: ILogQuery) {
+  const getLogs = async (params: ILogQuery) => {
     logsPending.value = true
     try {
       return await adminService.getLogs(params)
@@ -65,7 +65,7 @@ export function useAdmin() {
     finally { logsPending.value = false }
   }
 
-  async function purgeLogs(): Promise<{ deleted: number } | null> {
+  const purgeLogs = async (): Promise<{ deleted: number } | null> => {
     logsPurging.value = true
     try {
       const result = await adminService.purgeLogs()
@@ -84,14 +84,14 @@ export function useAdmin() {
 
   const customizationSaving = ref(false)
 
-  async function loadCustomization() {
+  const loadCustomization = async () => {
     try {
       return await adminService.getCustomization()
     }
     catch { return null }
   }
 
-  async function saveCustomization(data: Parameters<typeof adminService.saveCustomization>[0]): Promise<boolean> {
+  const saveCustomization = async (data: Parameters<typeof adminService.saveCustomization>[0]): Promise<boolean> => {
     customizationSaving.value = true
     try {
       await adminService.saveCustomization(data)

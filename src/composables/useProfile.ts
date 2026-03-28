@@ -15,7 +15,7 @@ export function useProfile(userId?: MaybeRefOrGetter<number | string>) {
   const profile = ref<any>(null)
   const pending = ref(false)
 
-  async function refresh() {
+  const refresh = async () => {
     pending.value = true
     try {
       profile.value = targetId.value
@@ -38,7 +38,7 @@ export function useProfile(userId?: MaybeRefOrGetter<number | string>) {
   const editSaving = ref(false)
   const editError = ref('')
 
-  async function updateProfile(name: string, email: string): Promise<boolean> {
+  const updateProfile = async (name: string, email: string): Promise<boolean> => {
     editError.value = ''
     editSaving.value = true
     try {
@@ -60,7 +60,7 @@ export function useProfile(userId?: MaybeRefOrGetter<number | string>) {
 
   const rolesSaving = ref(false)
 
-  async function saveRoles(roles: Array<{ project_id: number | null; role: string | null }>): Promise<boolean> {
+  const saveRoles = async (roles: Array<{ project_id: number | null; role: string | null }>): Promise<boolean> => {
     if (!targetId.value) return false
     rolesSaving.value = true
     try {

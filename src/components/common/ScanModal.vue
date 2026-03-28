@@ -204,7 +204,7 @@ watch(open, (val) => {
   }
 })
 
-async function runScan() {
+const runScan = async () => {
   loading.value = true
   error.value = ''
   result.value = null

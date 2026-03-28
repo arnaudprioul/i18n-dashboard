@@ -111,7 +111,7 @@
     isMounted.value = true
   })
 
-  async function handleLogin () {
+  const handleLogin = async () => {
     if (!form.value.email || !form.value.password) return
     loading.value = true
     error.value = ''

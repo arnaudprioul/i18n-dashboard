@@ -110,7 +110,7 @@ const sent = ref(false)
 const isMounted = ref(false)
 onMounted(() => { isMounted.value = true })
 
-async function handleSubmit() {
+const handleSubmit = async () => {
   if (!email.value) return
   loading.value = true
   error.value = ''

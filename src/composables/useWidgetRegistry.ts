@@ -31,7 +31,7 @@ export function useWidgetRegistry() {
     return base
   })
 
-  function getEntry(type: string): IWidgetRegistryEntry | undefined {
+  const getEntry = (type: string): IWidgetRegistryEntry | undefined => {
     return registry.value[type]
   }
 

@@ -301,7 +301,7 @@
 
   const PREVIEW_DATE = new Date(2024, 0, 15, 14, 30, 0)
 
-  function previewDate (opts: Record<string, any>, locale: string) {
+  const previewDate = (opts: Record<string, any>, locale: string) => {
     try {
       const clean: any = {}
       for (const [k, v] of Object.entries(opts)) {
@@ -347,13 +347,13 @@
     return o
   })
 
-  function openCreate () {
+  const openCreate = () => {
     editing.value = null
     form.value = defaultForm()
     showModal.value = true
   }
 
-  function openEdit (fmt: any) {
+  const openEdit = (fmt: any) => {
     editing.value = fmt
     form.value = {
       locale: fmt.locale,
@@ -363,7 +363,7 @@
     showModal.value = true
   }
 
-  async function save () {
+  const save = async () => {
     if (!form.value.locale || !form.value.name) return
     saving.value = true
     try {
@@ -382,7 +382,7 @@
     }
   }
 
-  async function remove (id: number) {
+  const remove = async (id: number) => {
     await deleteDatetimeFormat(id)
     toast.add({ title: t('formats.format_deleted', 'Format deleted'), color: 'success' })
   }

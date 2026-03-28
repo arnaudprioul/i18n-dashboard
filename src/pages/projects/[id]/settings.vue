@@ -619,12 +619,12 @@ const i18n = createI18n({
   }
 })`)
 
-  async function copyToClipboard (text: string) {
+  const copyToClipboard = async (text: string) => {
     await navigator.clipboard.writeText(text)
     toast.add({ title: t('common.copied', 'Copied!'), color: 'success' })
   }
 
-  async function onSave () {
+  const onSave = async () => {
     savingProject.value = true
     try {
       await saveSettings({
@@ -651,20 +651,20 @@ const i18n = createI18n({
     }
   }
 
-  function triggerDownload (url: string, filename: string) {
+  const triggerDownload = (url: string, filename: string) => {
     const a = document.createElement('a')
     a.href = url
     a.download = filename
     a.click()
   }
 
-  function downloadAll () {
+  const downloadAll = () => {
     if (!currentProject.value) return
     const projectName = currentProject.value.name.replace(/[^a-z0-9]/gi, '_')
     triggerDownload(`/api/export?project_id=${currentProject.value.id}`, `${projectName}_all.json`)
   }
 
-  function downloadLang (code: string) {
+  const downloadLang = (code: string) => {
     if (!currentProject.value) return
     const projectName = currentProject.value.name.replace(/[^a-z0-9]/gi, '_')
     triggerDownload(`/api/export?project_id=${currentProject.value.id}&lang=${code}`, `${projectName}_${code}.json`)
@@ -672,7 +672,7 @@ const i18n = createI18n({
 
   // ── Snapshot ───────────────────────────────────────────────────────────────
 
-  function downloadSnapshot () {
+  const downloadSnapshot = () => {
     if (!currentProject.value) return
     const projectName = currentProject.value.name.replace(/[^a-z0-9]/gi, '_')
     triggerDownload(`/api/project-snapshot?project_id=${currentProject.value.id}`, `${projectName}_snapshot.json`)
@@ -686,11 +686,11 @@ const i18n = createI18n({
   const importing = ref(false)
   const fileInput = ref<HTMLInputElement>()
 
-  function triggerImport () {
+  const triggerImport = () => {
     fileInput.value?.click()
   }
 
-  async function onFileSelected (event: Event) {
+  const onFileSelected = async (event: Event) => {
     const file = (event.target as HTMLInputElement).files?.[0]
     if (!file || !currentProject.value) return
         ;

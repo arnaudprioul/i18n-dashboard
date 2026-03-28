@@ -516,7 +516,7 @@
     )
   })
 
-  async function loadAvailableUsers () {
+  const loadAvailableUsers = async () => {
     if (!currentProject.value) return
     loadingAvailable.value = true
     try {
@@ -528,11 +528,11 @@
     }
   }
 
-  function selectUser (u: IUserItem) {
+  const selectUser = (u: IUserItem) => {
     selectedUser.value = selectedUser.value?.id === u.id ? null : u
   }
 
-  function switchToCreate () {
+  const switchToCreate = () => {
     addMode.value = 'create'
     form.value = { name: '', email: '', role: 'translator' }
     createdTempPassword.value = ''
@@ -561,7 +561,7 @@
     getAvailableUsers,
   } = useUsers('project')
 
-  function roleLabel (role: string) {
+  const roleLabel = (role: string) => {
     return {
       translator: t('users.role_translator', 'Translator'),
       moderator: t('users.role_moderator', 'Moderator'),
@@ -569,11 +569,11 @@
     }[role] || role
   }
 
-  function roleColor (role: string) {
+  const roleColor = (role: string) => {
     return { translator: 'primary', moderator: 'warning', admin: 'success' }[role] || 'neutral'
   }
 
-  function formatRelative (date: string) {
+  const formatRelative = (date: string) => {
     const diff = Date.now() - new Date(date).getTime()
     const min = Math.floor(diff / 60000)
     if (min < 1) return t('common.just_now', 'just now')
@@ -583,7 +583,7 @@
     return `${t('common.ago', 'ago')} ${Math.floor(h / 24)}d`
   }
 
-  function userActions (user: any) {
+  const userActions = (user: any) => {
     const isSelf = user.id === currentUser.value?.id
     return [
       [
@@ -612,7 +612,7 @@
     ]
   }
 
-  function openAdd () {
+  const openAdd = () => {
     addMode.value = 'select'
     search.value = ''
     selectedUser.value = null
@@ -623,19 +623,19 @@
     loadAvailableUsers()
   }
 
-  function openRoleModal (user: any) {
+  const openRoleModal = (user: any) => {
     roleModalUser.value = user
     roleModalValue.value = user.role || 'translator'
     showRoleModal.value = true
   }
 
-  function closeModal () {
+  const closeModal = () => {
     showModal.value = false
     createdTempPassword.value = ''
     selectedUser.value = null
   }
 
-  async function addExistingUser () {
+  const addExistingUser = async () => {
     if (!selectedUser.value || !currentProject.value) return
     const ok = await updateRoles(selectedUser.value.id, [
       { project_id: currentProject.value.id, role: selectRole.value },
@@ -643,7 +643,7 @@
     if (ok) closeModal()
   }
 
-  async function saveUser () {
+  const saveUser = async () => {
     if (!form.value.name || !form.value.email || !currentProject.value) return
     const tempPassword = await createUser({
       ...form.value,
@@ -654,7 +654,7 @@
     if (tempPassword) createdTempPassword.value = tempPassword
   }
 
-  async function saveRole () {
+  const saveRole = async () => {
     if (!roleModalUser.value || !currentProject.value) return
     const ok = await updateRoles(roleModalUser.value.id, [
       { project_id: currentProject.value.id, role: roleModalValue.value },
@@ -662,13 +662,13 @@
     if (ok) showRoleModal.value = false
   }
 
-  async function deleteUser () {
+  const deleteUser = async () => {
     if (!deletingUser.value) return
     const ok = await doDeleteUser(deletingUser.value.id)
     if (ok) showDeleteConfirm.value = false
   }
 
-  async function copyTemp () {
+  const copyTemp = async () => {
     await navigator.clipboard.writeText(createdTempPassword.value)
     toast.add({ title: t('common.copied', 'Copied!'), color: 'success' })
   }

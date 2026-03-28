@@ -110,7 +110,7 @@
     return WIDGET_REGISTRY[props.widget.type].hasDataSource
   })
 
-  function save () {
+  const save = () => {
     const dataSource: IWidgetDataSource = draftSource.value === DATA_SOURCE_TYPE.PROJECT
         ? { type: DATA_SOURCE_TYPE.PROJECT, projectId: draftProjectId.value }
         : { type: DATA_SOURCE_TYPE.GLOBAL }

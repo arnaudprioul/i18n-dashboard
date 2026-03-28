@@ -8,7 +8,7 @@ export function useSettings() {
   const data = ref<Record<string, string>>({})
   const pending = ref(false)
 
-  async function refresh() {
+  const refresh = async () => {
     pending.value = true
     try {
       data.value = await settingsService.getSettings()
@@ -26,7 +26,7 @@ export function useSettings() {
   const settings = computed(() => data.value ?? {})
 
   const saving = ref(false)
-  async function saveSettings(payload: ISettingsPayload): Promise<void> {
+  const saveSettings = async (payload: ISettingsPayload): Promise<void> => {
     saving.value = true
     try {
       await settingsService.saveSettings(payload)

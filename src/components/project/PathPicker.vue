@@ -159,12 +159,12 @@ const emit = defineEmits<IPathPickerEmits>()
 
 const open = ref(false)
 
-async function openBrowser() {
+const openBrowser = async () => {
   open.value = true
   await browse(props.modelValue || undefined)
 }
 
-function select() {
+const select = () => {
   if (data.value?.current) {
     emit('update:modelValue', data.value.current)
   }

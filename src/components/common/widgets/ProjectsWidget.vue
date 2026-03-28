@@ -96,7 +96,7 @@
 
   const displayedProjects = computed(() => visibleProjects.value.slice(0, maxItems.value))
 
-  function navigate (id: number) {
+  const navigate = (id: number) => {
     if (props.editing) return
     router.push(`/projects/${id}`)
   }

@@ -6,7 +6,7 @@ export function useFs() {
   const browseError = ref('')
   const data = ref<IFsBrowseResult | null>(null)
 
-  async function browse(path?: string): Promise<void> {
+  const browse = async (path?: string): Promise<void> => {
     loading.value = true
     browseError.value = ''
     try {

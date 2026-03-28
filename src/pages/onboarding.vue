@@ -705,7 +705,7 @@
     }, 400)
   })
 
-  async function createSqliteFile () {
+  const createSqliteFile = async () => {
     creatingFile.value = true
     dbError.value = ''
     try {
@@ -718,7 +718,7 @@
     }
   }
 
-  function dbBody () {
+  const dbBody = () => {
     return {
       type: dbForm.value.type,
       connection: dbForm.value.connection,
@@ -730,7 +730,7 @@
     }
   }
 
-  async function testDbConnection () {
+  const testDbConnection = async () => {
     testingDb.value = true
     dbConnected.value = false
     dbError.value = ''
@@ -744,7 +744,7 @@
     }
   }
 
-  async function applyDbConfig () {
+  const applyDbConfig = async () => {
     applyingDb.value = true
     dbError.value = ''
     try {
@@ -765,7 +765,7 @@
   const adminForm = ref({ name: '', email: '', password: '', confirm: '' })
   const adminError = ref('')
 
-  async function createAdmin () {
+  const createAdmin = async () => {
     adminError.value = ''
     if (!adminForm.value.name || !adminForm.value.email || !adminForm.value.password) {
       adminError.value = t('onboarding.all_fields_required', 'All fields are required.')
@@ -808,7 +808,7 @@
     }),
   )
 
-  function toggleUiLang (lang: { code: string; name: string; nativeName: string }) {
+  const toggleUiLang = (lang: { code: string; name: string; nativeName: string }) => {
     const idx = selectedUiLangs.value.indexOf(lang.code)
     if (idx >= 0) {
       if (selectedUiLangs.value.length === 1) return
@@ -820,7 +820,7 @@
     }
   }
 
-  async function onSaveLanguages () {
+  const onSaveLanguages = async () => {
     saving.value = true
     try {
       const langs = selectedUiLangs.value.map((code) => {
@@ -849,7 +849,7 @@
   })
   const projectError = ref('')
 
-  async function saveProject () {
+  const saveProject = async () => {
     projectError.value = ''
     if (!projectForm.value.name.trim()) {
       projectError.value = t('onboarding.project_name_required', 'Project name is required.')
@@ -887,7 +887,7 @@
     }
   }
 
-  function skipProject () {
+  const skipProject = () => {
     currentStep.value = 4
   }
 
@@ -900,7 +900,7 @@
 
   // ─── Step 4 : Done ─────────────────────────────────────────────────────────────
 
-  async function goToDashboard () {
+  const goToDashboard = async () => {
     await clearNuxtData('auth-status')
     await router.push('/')
   }

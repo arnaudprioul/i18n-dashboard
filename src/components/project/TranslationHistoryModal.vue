@@ -98,7 +98,7 @@ const { data: history, pending } = await useFetch(
   () => props.translationId ? `/api/history/${props.translationId}` : null,
 )
 
-function formatDate(date: string) {
+const formatDate = (date: string) => {
   return new Date(date).toLocaleString()
 }
 </script>

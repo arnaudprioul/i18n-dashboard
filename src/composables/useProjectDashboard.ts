@@ -16,18 +16,18 @@ export function useProjectDashboard(projectId: number) {
   const editing = ref(false)
   const localLayout = ref<IWidgetConfig[]>([])
 
-  function startEditing() {
+  const startEditing = () => {
     localLayout.value = [...layout.value]
     editing.value = true
   }
 
   const draggingIndex = ref<number | null>(null)
 
-  function onDragStart(index: number) {
+  const onDragStart = (index: number) => {
     draggingIndex.value = index
   }
 
-  function onDragOver(e: DragEvent, index: number) {
+  const onDragOver = (e: DragEvent, index: number) => {
     e.preventDefault()
     if (draggingIndex.value === null || draggingIndex.value === index) return
     const arr = [...localLayout.value]
@@ -37,15 +37,15 @@ export function useProjectDashboard(projectId: number) {
     draggingIndex.value = index
   }
 
-  function onDragEnd() {
+  const onDragEnd = () => {
     draggingIndex.value = null
   }
 
-  function removeWidget(index: number) {
+  const removeWidget = (index: number) => {
     localLayout.value.splice(index, 1)
   }
 
-  function addWidget(widget: IWidgetConfig) {
+  const addWidget = (widget: IWidgetConfig) => {
     // Force data source to this project when not explicitly set
     const withSource: IWidgetConfig = widget.dataSource
       ? widget
@@ -53,18 +53,18 @@ export function useProjectDashboard(projectId: number) {
     localLayout.value.push(withSource)
   }
 
-  function resizeWidget(index: number, size: TWidgetSize) {
+  const resizeWidget = (index: number, size: TWidgetSize) => {
     localLayout.value[index].size = size
   }
 
-  function updateWidgetConfig(index: number, patch: { dataSource?: IWidgetDataSource | undefined; title?: string | undefined }) {
+  const updateWidgetConfig = (index: number, patch: { dataSource?: IWidgetDataSource | undefined; title?: string | undefined }) => {
     if (index < 0 || index >= localLayout.value.length) return
     localLayout.value[index] = { ...localLayout.value[index], ...patch }
   }
 
   const saving = ref(false)
 
-  async function saveLayout() {
+  const saveLayout = async () => {
     saving.value = true
     try {
       await dashboardService.saveProjectLayout(projectId, localLayout.value)
@@ -75,7 +75,7 @@ export function useProjectDashboard(projectId: number) {
     }
   }
 
-  function cancelEditing() {
+  const cancelEditing = () => {
     editing.value = false
     localLayout.value = []
   }

@@ -16,7 +16,7 @@ export function useReview(options: { projectId?: Ref<number | undefined> } = {})
   const reviewedData = ref<any>(null)
   const pending = ref(false)
 
-  async function refresh() {
+  const refresh = async () => {
     if (!resolvedProjectId.value) return
     pending.value = true
     try {
@@ -72,7 +72,7 @@ export function useReview(options: { projectId?: Ref<number | undefined> } = {})
   const processingId = ref<number | null>(null)
   const processingAction = ref('')
 
-  async function setStatus(item: IReviewItem, status: TRANSLATION_STATUS): Promise<void> {
+  const setStatus = async (item: IReviewItem, status: TRANSLATION_STATUS): Promise<void> => {
     processingId.value = item.id
     processingAction.value = status
     try {
@@ -86,7 +86,7 @@ export function useReview(options: { projectId?: Ref<number | undefined> } = {})
   }
 
   const approvingAll = ref(false)
-  async function markAllReviewed(): Promise<void> {
+  const markAllReviewed = async (): Promise<void> => {
     approvingAll.value = true
     try {
       const ids = reviewItems.value.map(i => i.id)
@@ -105,7 +105,7 @@ export function useReview(options: { projectId?: Ref<number | undefined> } = {})
   }
 
   const approvingAllReviewed = ref(false)
-  async function approveAllReviewed(): Promise<void> {
+  const approveAllReviewed = async (): Promise<void> => {
     approvingAllReviewed.value = true
     try {
       const ids = reviewedItems.value.map(i => i.id)

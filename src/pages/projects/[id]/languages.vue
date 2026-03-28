@@ -650,11 +650,11 @@
 
   const totalKeys = computed(() => (stats.value?.languages?.[0] as any)?.total || (stats.value as any)?.totalKeys || 0)
 
-  function getTranslatedCount (code: string): number {
+  const getTranslatedCount = (code: string): number => {
     return (stats.value?.languages as any[])?.find((l: any) => l.code === code)?.translated || 0
   }
 
-  function getCoverage (code: string): number {
+  const getCoverage = (code: string): number => {
     return (stats.value?.languages as any[])?.find((l: any) => l.code === code)?.coverage || 0
   }
 
@@ -666,18 +666,18 @@
       filteredLanguages.value.filter((l) => !existingCodes.value.includes(l.code)),
   )
 
-  function selectWorldLang (lang: { code: string; name: string; nativeName: string }) {
+  const selectWorldLang = (lang: { code: string; name: string; nativeName: string }) => {
     selectedWorldLang.value = lang
     newLang.value.code = lang.code
     newLang.value.name = lang.name
   }
 
   // BCP 47 custom code: language[-Script][-REGION][-variant]
-  function isValidBcp47 (code: string): boolean {
+  const isValidBcp47 = (code: string): boolean => {
     return /^[a-z]{2,8}(-[A-Za-z0-9]{1,8})*$/i.test(code) && code.length >= 2
   }
 
-  function useCustomCode (code: string) {
+  const useCustomCode = (code: string) => {
     const normalized = code.trim()
     selectedWorldLang.value = { code: normalized, name: normalized, nativeName: normalized }
     newLang.value.code = normalized
@@ -690,7 +690,7 @@
   const fallbackChoice = ref<string>('__auto__')
   const savingFallback = ref(false)
 
-  function getAutoBcp47Fallback (code: string): string | null {
+  const getAutoBcp47Fallback = (code: string): string | null => {
     const parts = code.split('-')
     if (parts.length <= 1) return null
     parts.pop()
@@ -726,7 +726,7 @@
     return chain
   })
 
-  function openFallbackModal (lang: any) {
+  const openFallbackModal = (lang: any) => {
     fallbackTarget.value = lang
     if (lang.fallback_code) {
       fallbackChoice.value = lang.fallback_code
@@ -738,7 +738,7 @@
     showFallbackModal.value = true
   }
 
-  async function saveFallback () {
+  const saveFallback = async () => {
     if (!fallbackTarget.value) return
     savingFallback.value = true
     try {
@@ -755,7 +755,7 @@
     }
   }
 
-  function getLangActions (lang: any) {
+  const getLangActions = (lang: any) => {
     return [
       [
         ...(lang.is_default ? [] : [{
@@ -773,7 +773,7 @@
     ]
   }
 
-  function sendToBackground () {
+  const sendToBackground = () => {
     doSendToBackground(() => {
       refreshLanguages()
       refreshNuxtData('project-stats')
@@ -782,11 +782,11 @@
 
   const translatingLang = ref<string | null>(null)
 
-  function getMissingCount (code: string): number {
+  const getMissingCount = (code: string): number => {
     return Math.max(0, totalKeys.value - getTranslatedCount(code))
   }
 
-  async function translateMissing (lang: any) {
+  const translateMissing = async (lang: any) => {
     if (translatingLang.value) return
     translatingLang.value = lang.code
     try {
@@ -799,7 +799,7 @@
   }
 
   // ── Add language ─────────────────────────────────────────────────────────
-  async function addLanguage () {
+  const addLanguage = async () => {
     if (!newLang.value.code || !newLang.value.name || !currentProject.value) return
     try {
       await doAddLanguage({ code: newLang.value.code, name: newLang.value.name, is_default: newLang.value.is_default })
@@ -821,12 +821,12 @@
     }
   }
 
-  function confirmDelete (lang: any) {
+  const confirmDelete = (lang: any) => {
     deletingLang.value = lang
     showDeleteConfirm.value = true
   }
 
-  async function deleteLanguage () {
+  const deleteLanguage = async () => {
     if (!deletingLang.value) return
     await doDeleteLanguage(deletingLang.value.code)
     showDeleteConfirm.value = false

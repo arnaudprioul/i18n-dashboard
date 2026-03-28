@@ -211,7 +211,7 @@ const levelOptions = computed(() => [
 
 const data = ref<{ data: any[]; total: number } | null>(null)
 
-async function refresh() {
+const refresh = async () => {
   const params: Record<string, any> = { page: page.value, limit }
   if (filterLevel.value !== 'all') params.level = filterLevel.value
   if (filterContext.value) params.context = filterContext.value
@@ -219,14 +219,14 @@ async function refresh() {
 }
 
 let _debounceTimer: ReturnType<typeof setTimeout>
-function debouncedRefresh() {
+const debouncedRefresh = () => {
   clearTimeout(_debounceTimer)
   _debounceTimer = setTimeout(() => { page.value = 1; refresh() }, 300)
 }
 
 onMounted(refresh)
 
-async function purgeAll() {
+const purgeAll = async () => {
   await purgeLogs()
   await refresh()
 }
@@ -240,14 +240,14 @@ watch(settings, (s) => {
   if (s.log_purge_interval_hours) purgeIntervalHours.value = s.log_purge_interval_hours
 }, { immediate: true })
 
-async function onSaveSettings() {
+const onSaveSettings = async () => {
   await saveSettings({
     log_retention_days: retentionDays.value,
     log_purge_interval_hours: purgeIntervalHours.value,
   })
 }
 
-function levelClass(level: string) {
+const levelClass = (level: string) => {
   switch (level) {
     case 'error': return 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300'
     case 'warn': return 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300'
@@ -255,11 +255,11 @@ function levelClass(level: string) {
   }
 }
 
-function formatDate(d: string) {
+const formatDate = (d: string) => {
   return new Date(d).toLocaleString()
 }
 
-function formatDetails(details: string) {
+const formatDetails = (details: string) => {
   try { return JSON.stringify(JSON.parse(details), null, 2) }
   catch { return details }
 }

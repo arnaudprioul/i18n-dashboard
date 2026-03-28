@@ -645,11 +645,11 @@
   )
 
   // ── Helpers ───────────────────────────────────────────────────────────────────
-  function getTranslationValue (langCode: string): string {
+  const getTranslationValue = (langCode: string): string => {
     return keyData.value?.translations[langCode]?.value || ''
   }
 
-  function getStatus (langCode: string): string {
+  const getStatus = (langCode: string): string => {
     return keyData.value?.translations[langCode]?.status || 'draft'
   }
 
@@ -666,17 +666,17 @@
     rejected: t('key.status_rejected', 'Rejected'),
   }))
 
-  function statusColor (langCode: string) {
+  const statusColor = (langCode: string) => {
     return STATUS_COLORS[getStatus(langCode)] || 'neutral'
   }
 
-  function statusLabel (langCode: string) {
+  const statusLabel = (langCode: string) => {
     if (!getTranslationValue(langCode)) return t('status.missing', 'Missing')
     return STATUS_LABELS.value[getStatus(langCode)] || getStatus(langCode)
   }
 
   // ── Status actions ────────────────────────────────────────────────────────────
-  function statusActions (langCode: string) {
+  const statusActions = (langCode: string) => {
     if (!getTranslationValue(langCode)) return []
     const current = getStatus(langCode)
 
@@ -702,7 +702,7 @@
     ]
   }
 
-  async function setStatus (langCode: string, status: string) {
+  const setStatus = async (langCode: string, status: string) => {
     await _setStatus(langCode, status)
     refreshNuxtData('project-stats')
   }
@@ -727,12 +727,12 @@
   const PLURAL_SEP = ' | '
   const pluralMode = ref(false)
 
-  function getPluralForms (langCode: string): string[] {
+  const getPluralForms = (langCode: string): string[] => {
     const val = getTranslationValue(langCode)
     return val.includes(PLURAL_SEP) ? val.split(PLURAL_SEP) : [val]
   }
 
-  function togglePluralMode (langCode: string) {
+  const togglePluralMode = (langCode: string) => {
     if (!pluralMode.value && !editValue.value.includes(PLURAL_SEP)) {
       // Entering plural mode: seed with current value as first form
       editValue.value = editValue.value ? `${editValue.value} | ` : ' | '
@@ -799,7 +799,7 @@
     return [...params]
   })
 
-  function insertAtCursor (insertion: string) {
+  const insertAtCursor = (insertion: string) => {
     const textarea = activeTextareaWrapper.value?.querySelector('textarea')
     if (textarea) {
       const start = textarea.selectionStart ?? editValue.value.length
@@ -814,24 +814,24 @@
     }
   }
 
-  function insertLinkedKey (value: string) {
+  const insertLinkedKey = (value: string) => {
     insertAtCursor(value)
   }
 
-  function startEdit (lang: any) {
+  const startEdit = (lang: any) => {
     editingLang.value = lang.code
     editValue.value = getTranslationValue(lang.code)
     pluralMode.value = editValue.value.includes(PLURAL_SEP)
   }
 
-  async function saveTranslation (langCode: string) {
+  const saveTranslation = async (langCode: string) => {
     await _saveTranslation(langCode, editValue.value)
     editingLang.value = null
     pluralMode.value = false
     refreshNuxtData('project-stats')
   }
 
-  async function autoTranslate (lang: any) {
+  const autoTranslate = async (lang: any) => {
     if (!sourceText.value) return
     translating.value = lang.code
     const sourceLang = keyData.value?.languages.find((l: any) => l.is_default)?.code || 'en'
@@ -846,7 +846,7 @@
   // ── Restore historical version ────────────────────────────────────────────────
   const restoring = ref<string | null>(null)
 
-  async function restoreVersion (langCode: string, entry: any) {
+  const restoreVersion = async (langCode: string, entry: any) => {
     restoring.value = `${langCode}-${entry.id}`
     await _restoreVersion(langCode, entry.new_value)
     restoring.value = null
@@ -855,7 +855,7 @@
   // ── History ───────────────────────────────────────────────────────────────────
   const expandedHistory = ref<string[]>([])
 
-  function toggleHistory (langCode: string) {
+  const toggleHistory = (langCode: string) => {
     const idx = expandedHistory.value.indexOf(langCode)
     if (idx >= 0) expandedHistory.value.splice(idx, 1)
     else expandedHistory.value.push(langCode)
@@ -865,12 +865,12 @@
   const editingDescription = ref(false)
   const descriptionDraft = ref('')
 
-  function startEditDescription () {
+  const startEditDescription = () => {
     descriptionDraft.value = keyData.value?.description || ''
     editingDescription.value = true
   }
 
-  async function saveDescription () {
+  const saveDescription = async () => {
     await updateDescription(descriptionDraft.value || null)
     editingDescription.value = false
   }
@@ -890,13 +890,13 @@
     }]]
   })
 
-  async function deleteKey () {
+  const deleteKey = async () => {
     await _deleteKey()
     refreshNuxtData('project-stats')
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────────
-  function formatDate (date: string) {
+  const formatDate = (date: string) => {
     if (!date) return '—'
     return new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(date))
   }

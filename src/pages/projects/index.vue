@@ -696,7 +696,7 @@ const { createLanguageForProject } = useLanguages()
 const showScanModal = ref(false)
 const scanningProject = ref<any>(null)
 
-function openScanModal(project: any) {
+const openScanModal = (project: any) => {
   scanningProject.value = project
   showScanModal.value = true
 }
@@ -711,7 +711,7 @@ watch(() => form.value.name, (name) => {
   }, 400)
 })
 
-function openAdd() {
+const openAdd = () => {
   editingProject.value = null
   nameError.value = ''
   step.value = 1
@@ -719,7 +719,7 @@ function openAdd() {
   showModal.value = true
 }
 
-function openEdit(project: any) {
+const openEdit = (project: any) => {
   editingProject.value = project
   step.value = 1
   form.value = {
@@ -735,7 +735,7 @@ function openEdit(project: any) {
   showModal.value = true
 }
 
-function projectActions(project: any) {
+const projectActions = (project: any) => {
   return [
     [
       { label: t('common.edit', 'Edit'), icon: 'i-heroicons-pencil', onSelect: () => openEdit(project) },
@@ -749,7 +749,7 @@ function projectActions(project: any) {
   ]
 }
 
-async function detectAndNext() {
+const detectAndNext = async () => {
   detecting.value = true
   try {
     const body: Record<string, string> = {}
@@ -780,7 +780,7 @@ async function detectAndNext() {
   }
 }
 
-async function saveProject() {
+const saveProject = async () => {
   if (!form.value.name || nameError.value) return
   nameError.value = ''
   if (editingProject.value) {
@@ -844,7 +844,7 @@ async function saveProject() {
   }
 }
 
-async function deleteProject() {
+const deleteProject = async () => {
   if (!deletingProject.value) return
   const ok = await doDeleteProject(deletingProject.value.id)
   if (ok) showDeleteConfirm.value = false

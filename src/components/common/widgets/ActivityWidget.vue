@@ -113,7 +113,7 @@
     return props.title || t('dashboard.recent_activity', 'Recent activity')
   })
 
-  function formatRelative (date: string) {
+  const formatRelative = (date: string) => {
     const diff = Date.now() - new Date(date).getTime()
     const min = Math.floor(diff / 60000)
     if (min < 1) return t('common.just_now', 'just now')
@@ -123,7 +123,7 @@
     return `${Math.floor(h / 24)}d ${t('common.ago', 'ago')}`
   }
 
-  function activityIcon (changedBy: string) {
+  const activityIcon = (changedBy: string) => {
     if (changedBy === 'google-translate') return 'i-heroicons-sparkles'
     if (changedBy === 'sync') return 'i-heroicons-arrow-path'
     return 'i-heroicons-pencil'

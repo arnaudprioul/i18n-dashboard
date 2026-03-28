@@ -408,15 +408,15 @@
   const { projects } = useProject()
   const { users, pending, saving, createUser, rolesSaving, updateRoles, toggleActive, deleting, deleteUser: doDeleteUser } = useUsers('global')
 
-  function roleLabel(role: string) {
+  const roleLabel = (role: string) => {
     return { translator: t('users.role_translator', 'Translator'), moderator: t('users.role_moderator', 'Moderator'), admin: t('users.role_admin', 'Admin') }[role] || role
   }
 
-  function roleColor(role: string) {
+  const roleColor = (role: string) => {
     return { translator: 'primary', moderator: 'warning', admin: 'success' }[role] || 'neutral'
   }
 
-  function formatRelative(date: string) {
+  const formatRelative = (date: string) => {
     const diff = Date.now() - new Date(date).getTime()
     const min = Math.floor(diff / 60000)
     if (min < 1) return t('common.just_now', 'just now')
@@ -426,12 +426,12 @@
     return `${t('common.ago', 'ago')} ${Math.floor(h / 24)}d`
   }
 
-  function toggleProject(id: number, checked: boolean) {
+  const toggleProject = (id: number, checked: boolean) => {
     if (checked) form.value.project_ids = [...form.value.project_ids, id]
     else form.value.project_ids = form.value.project_ids.filter((p) => p !== id)
   }
 
-  function userActions(user: any) {
+  const userActions = (user: any) => {
     const isSelf = user.id === currentUser.value?.id
     const canEdit = !user.is_super_admin && !isSelf
 
@@ -459,13 +459,13 @@
     ]
   }
 
-  function openAdd() {
+  const openAdd = () => {
     createdTempPassword.value = ''
     form.value = { name: '', email: '', role: 'translator', project_ids: [], global_access: false }
     showModal.value = true
   }
 
-  function openRoles(user: any) {
+  const openRoles = (user: any) => {
     rolesUser.value = user
     const globalRole = user.roles?.find((r: any) => r.project_id === null)
     rolesForm.value = [
@@ -488,18 +488,18 @@
     showRolesModal.value = true
   }
 
-  function closeModal() {
+  const closeModal = () => {
     showModal.value = false
     createdTempPassword.value = ''
   }
 
-  async function saveUser() {
+  const saveUser = async () => {
     if (!form.value.name || !form.value.email) return
     const tempPassword = await createUser({ ...form.value })
     if (tempPassword) createdTempPassword.value = tempPassword
   }
 
-  async function saveRoles() {
+  const saveRoles = async () => {
     const roles = rolesForm.value.map(({ project_id, role }) => ({
       project_id,
       role: role === 'none' ? null : role,
@@ -508,13 +508,13 @@
     if (ok) showRolesModal.value = false
   }
 
-  async function deleteUser() {
+  const deleteUser = async () => {
     if (!deletingUser.value) return
     const ok = await doDeleteUser(deletingUser.value.id)
     if (ok) showDeleteConfirm.value = false
   }
 
-  async function copyTemp() {
+  const copyTemp = async () => {
     await navigator.clipboard.writeText(createdTempPassword.value)
     toast.add({ title: t('common.copied', 'Copied!'), color: 'success' })
   }

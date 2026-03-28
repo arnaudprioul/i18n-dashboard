@@ -381,7 +381,7 @@
 
   let searchTimeout: ReturnType<typeof setTimeout>
 
-  function debouncedRefresh () {
+  const debouncedRefresh = () => {
     clearTimeout(searchTimeout)
     searchTimeout = setTimeout(() => {
       page.value = 1
@@ -389,7 +389,7 @@
     }, 300)
   }
 
-  async function addKey () {
+  const addKey = async () => {
     if (!newKey.value.key.trim() || !currentProject.value) return
     const ok = await createKey(currentProject.value.id, newKey.value.key, newKey.value.description)
     if (ok) {
@@ -398,19 +398,19 @@
     }
   }
 
-  async function scanProject () {
+  const scanProject = async () => {
     if (!currentProject.value) return
     await scan(currentProject.value.id)
   }
 
-  async function syncFiles () {
+  const syncFiles = async () => {
     if (!currentProject.value) return
     await sync(currentProject.value.id)
   }
 
   const loadingLangs = ref(new Set<string>())
 
-  async function batchTranslateForLang (langCode: string) {
+  const batchTranslateForLang = async (langCode: string) => {
     if (!currentProject.value || loadingLangs.value.has(langCode)) return
     loadingLangs.value = new Set(loadingLangs.value).add(langCode)
     try {

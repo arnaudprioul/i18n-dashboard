@@ -90,11 +90,11 @@
 
   const selectedSizes = ref<Record<string, TWidgetSize>>({})
 
-  function getSelectedSize (type: string): TWidgetSize {
+  const getSelectedSize = (type: string): TWidgetSize => {
     return selectedSizes.value[type] ?? registry.value[type]?.defaultSize ?? 'md'
   }
 
-  function addWidget (type: string) {
+  const addWidget = (type: string) => {
     const size = getSelectedSize(type)
     const id = Date.now().toString(36)
     emit('add', { id, type, size })

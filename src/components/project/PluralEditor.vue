@@ -251,7 +251,7 @@ const joinedValue = computed(() => forms.value.join(PLURAL_SEP))
 
 // ── Label helpers ─────────────────────────────────────────────────────────────
 
-function formLabel(index: number): string {
+const formLabel = (index: number): string => {
   const len = forms.value.length
   if (len === 2) return index === 0 ? t('plural.singular', 'singular') : t('plural.plural_form', 'plural')
   if (len === 3) return [t('plural.zero', 'zero'), t('plural.singular', 'singular'), t('plural.plural_form', 'plural')][index] ?? `${t('plural.form', 'form')} ${index}`
@@ -259,7 +259,7 @@ function formLabel(index: number): string {
   return `${t('plural.form', 'form')} ${index}`
 }
 
-function triggerCount(index: number): string {
+const triggerCount = (index: number): string => {
   const len = forms.value.length
   if (len === 2) return index === 0 ? '1' : '0, 2, 3…'
   if (len === 3) return ['0', '1', '2, 3…'][index] ?? '…'
@@ -267,7 +267,7 @@ function triggerCount(index: number): string {
   return '…'
 }
 
-function formPlaceholder(index: number): string {
+const formPlaceholder = (index: number): string => {
   const len = forms.value.length
   if (len === 2) return index === 0 ? 'car' : 'cars'
   if (len === 3) {
@@ -278,7 +278,7 @@ function formPlaceholder(index: number): string {
 
 // ── Preview ───────────────────────────────────────────────────────────────────
 
-function resolvePreview(n: number): string {
+const resolvePreview = (n: number): string => {
   const len = forms.value.length
   if (!len) return ''
   const idx = activeRule.value(n, len)
@@ -288,7 +288,7 @@ function resolvePreview(n: number): string {
 
 // ── Actions ───────────────────────────────────────────────────────────────────
 
-function applyTemplate(tpl: ReturnType<typeof TEMPLATES.value[0]['rule']> extends Function ? any : any) {
+const applyTemplate = (tpl: ReturnType<typeof TEMPLATES.value[0]['rule']> extends Function ? any : any) => {
   activeTplId.value = tpl.id
   if (tpl.id !== 'custom') {
     forms.value = [...tpl.forms]
@@ -298,24 +298,24 @@ function applyTemplate(tpl: ReturnType<typeof TEMPLATES.value[0]['rule']> extend
   emitValue()
 }
 
-function addForm() {
+const addForm = () => {
   forms.value.push('')
   activeTplId.value = 'custom'
   emitValue()
 }
 
-function removeForm(index: number) {
+const removeForm = (index: number) => {
   if (forms.value.length <= 2) return
   forms.value.splice(index, 1)
   emitValue()
 }
 
-function insertInForm(formIndex: number, text: string) {
+const insertInForm = (formIndex: number, text: string) => {
   forms.value[formIndex] = (forms.value[formIndex] ?? '') + text
   emitValue()
 }
 
-function emitValue() {
+const emitValue = () => {
   emit('update:modelValue', joinedValue.value)
 }
 </script>

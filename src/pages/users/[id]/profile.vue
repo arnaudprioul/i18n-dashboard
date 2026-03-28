@@ -524,13 +524,13 @@
   const editForm = ref({ name: '', email: '' })
   const editSaving = selfEditSaving
 
-  function openEdit () {
+  const openEdit = () => {
     editForm.value.name = profile.value?.user.name ?? ''
     editForm.value.email = profile.value?.user.email ?? ''
     showEdit.value = true
   }
 
-  async function saveEdit () {
+  const saveEdit = async () => {
     if (!editForm.value.name.trim() || !editForm.value.email.trim()) {
       editError.value = t('profile.name_email_required', 'Name and email are required.')
       return
@@ -551,7 +551,7 @@
     role: string
   }>>([])
 
-  function accessOptions (projectId: number | null) {
+  const accessOptions = (projectId: number | null) => {
     const base = [
       { label: t('users.no_access', 'No access'), value: 'none' },
       { label: t('users.role_translator', 'Translator'), value: 'translator' },
@@ -566,7 +566,7 @@
     return base
   }
 
-  function openRoles () {
+  const openRoles = () => {
     const targetRoles = profile.value?.roles ?? []
 
     // Super admin sees all projects + global; others see only their admin projects
@@ -592,7 +592,7 @@
     showRolesModal.value = true
   }
 
-  async function doSaveRoles () {
+  const doSaveRoles = async () => {
     const roles = rolesForm.value.map(({ project_id, role }) => ({
       project_id,
       role: role === 'none' ? null : role,
@@ -640,14 +640,14 @@
     return groups
   })
 
-  function nativeName (code: string) {
+  const nativeName = (code: string) => {
     return findLanguage(code)?.nativeName
   }
 
   // ── Role helpers ───────────────────────────────────────────────────────────────
   const ROLE_COLORS: Record<string, string> = { admin: 'error', moderator: 'warning', translator: 'info' }
 
-  function roleLabel (role: string) {
+  const roleLabel = (role: string) => {
     return {
       admin: t('users.role_admin', 'Admin'),
       moderator: t('users.role_moderator', 'Moderator'),
@@ -655,17 +655,17 @@
     }[role] ?? role
   }
 
-  function roleColor (role: string) {
+  const roleColor = (role: string) => {
     return ROLE_COLORS[role] ?? 'neutral'
   }
 
   // ── Date helpers ───────────────────────────────────────────────────────────────
-  function formatDate (date: string | null | undefined) {
+  const formatDate = (date: string | null | undefined) => {
     if (!date) return '—'
     return new Intl.DateTimeFormat('en', { dateStyle: 'long' }).format(new Date(date))
   }
 
-  function timeAgo (date: string) {
+  const timeAgo = (date: string) => {
     const diff = Date.now() - new Date(date).getTime()
     const mins = Math.floor(diff / 60000)
     if (mins < 1) return t('common.just_now', 'just now')

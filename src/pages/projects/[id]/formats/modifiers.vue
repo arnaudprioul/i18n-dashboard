@@ -277,7 +277,7 @@
     return testModifier({ body: form.value.body }, liveTest.value)
   })
 
-  function testModifier (mod: { body: string }, input: string): string {
+  const testModifier = (mod: { body: string }, input: string): string => {
     if (!mod.body || !input) return ''
     try {
 
@@ -288,24 +288,24 @@
     }
   }
 
-  function applyTemplate (tpl: { name: string; body: string }) {
+  const applyTemplate = (tpl: { name: string; body: string }) => {
     form.value.name = form.value.name || tpl.name
     form.value.body = tpl.body
   }
 
-  function openCreate () {
+  const openCreate = () => {
     editing.value = null
     form.value = { name: '', body: '' }
     showModal.value = true
   }
 
-  function openEdit (mod: any) {
+  const openEdit = (mod: any) => {
     editing.value = mod
     form.value = { name: mod.name, body: mod.body }
     showModal.value = true
   }
 
-  async function save () {
+  const save = async () => {
     if (!form.value.name || !form.value.body) return
     saving.value = true
     try {
@@ -324,7 +324,7 @@
     }
   }
 
-  async function remove (id: number) {
+  const remove = async (id: number) => {
     await deleteModifier(id)
     toast.add({ title: t('formats.modifier_deleted', 'Modifier deleted'), color: 'success' })
   }

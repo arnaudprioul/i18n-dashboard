@@ -284,7 +284,7 @@
 
   const selectedProvider = ref<string | null>(null)
 
-  function applyPreset (p: Provider) {
+  const applyPreset = (p: Provider) => {
     selectedProvider.value = p.id
     if (p.id === 'custom') return
     form.value.host = p.host
@@ -323,7 +323,7 @@
   }
 }`
 
-  async function load () {
+  const load = async () => {
     const data = await loadSmtp()
     if (!data) return
     form.value.host = data.host || ''
@@ -339,7 +339,7 @@
     }
   }
 
-  async function save () {
+  const save = async () => {
     const ok = await saveSmtp({
       host: form.value.host,
       port: form.value.port,
@@ -355,7 +355,7 @@
     }
   }
 
-  async function sendTest () {
+  const sendTest = async () => {
     await testSmtp(testEmail.value)
   }
 

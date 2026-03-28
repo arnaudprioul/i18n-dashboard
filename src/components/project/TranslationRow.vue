@@ -310,16 +310,16 @@ const editingDescription = ref(false)
 const descriptionDraft = ref('')
 const savingDescription = ref(false)
 
-function startEditDescription() {
+const startEditDescription = () => {
   descriptionDraft.value = props.translationKey.description || ''
   editingDescription.value = true
 }
 
-function cancelDescription() {
+const cancelDescription = () => {
   editingDescription.value = false
 }
 
-async function saveDescription() {
+const saveDescription = async () => {
   savingDescription.value = true
   try {
     await updateDescriptionById(props.translationKey.id, descriptionDraft.value || null)
@@ -376,7 +376,7 @@ const detectedParams = computed(() => {
   return [...params]
 })
 
-function insertAtCursor(langCode: string, insertion: string) {
+const insertAtCursor = (langCode: string, insertion: string) => {
   const wrapper = textareaWrappers.value[langCode]
   const textarea = wrapper?.querySelector('textarea')
   const current = editValues.value[langCode] || ''
@@ -394,26 +394,26 @@ function insertAtCursor(langCode: string, insertion: string) {
   }
 }
 
-function insertLinkedKey(langCode: string, value: string) {
+const insertLinkedKey = (langCode: string, value: string) => {
   insertAtCursor(langCode, value)
 }
 
-function getTranslation(langCode: string): string {
+const getTranslation = (langCode: string): string => {
   return props.translationKey.translations[langCode]?.value || ''
 }
 
-function getPluralCount(langCode: string): number {
+const getPluralCount = (langCode: string): number => {
   const val = getTranslation(langCode)
   return val ? val.split(' | ').length : 0
 }
 
-function getStatus(langCode: string): TRANSLATION_STATUS | null {
+const getStatus = (langCode: string): TRANSLATION_STATUS | null => {
   const tr = props.translationKey.translations[langCode]
   if (!tr?.value) return null
   return (tr.status as TRANSLATION_STATUS) || TRANSLATION_STATUS.DRAFT
 }
 
-function statusDot(langCode: string): string {
+const statusDot = (langCode: string): string => {
   const status = getStatus(langCode)
   if (!status) return 'bg-gray-200 dark:bg-gray-700'
   const map: Record<TRANSLATION_STATUS, string> = {
@@ -425,7 +425,7 @@ function statusDot(langCode: string): string {
   return map[status] || 'bg-gray-200'
 }
 
-function statusLabel(langCode: string): string {
+const statusLabel = (langCode: string): string => {
   const status = getStatus(langCode)
   if (!status) return t('translations.status_missing', 'Missing — click to add')
   if (status === TRANSLATION_STATUS.DRAFT) return userCanApprove.value
@@ -441,14 +441,14 @@ function statusLabel(langCode: string): string {
   return status
 }
 
-function canClickStatus(langCode: string): boolean {
+const canClickStatus = (langCode: string): boolean => {
   const tr = props.translationKey.translations[langCode]
   if (!tr?.value) return false
   if (!userCanApprove.value && tr.status === TRANSLATION_STATUS.APPROVED) return false
   return true
 }
 
-async function cycleStatus(langCode: string) {
+const cycleStatus = async (langCode: string) => {
   const tr = props.translationKey.translations[langCode]
   if (!tr?.value || cyclingStatusLang.value) return
 
@@ -479,7 +479,7 @@ const hasSourceText = computed(() =>
   Object.values(props.translationKey.translations).some((tr) => tr?.value),
 )
 
-function getSourceText(): { text: string; lang: string } | null {
+const getSourceText = (): => { text: string; lang: string } | null {
   const entries = Object.entries(props.translationKey.translations)
   const withValue = entries.filter(([, tr]) => tr?.value)
   if (!withValue.length) return null
@@ -500,17 +500,17 @@ const usageTooltip = computed(() => {
     .join('\n')
 })
 
-function startEdit(langCode: string) {
+const startEdit = (langCode: string) => {
   editingCell.value = `${props.translationKey.id}-${langCode}`
   editValues.value[langCode] = getTranslation(langCode)
 }
 
-function cancelEdit(langCode: string) {
+const cancelEdit = (langCode: string) => {
   editingCell.value = null
   delete editValues.value[langCode]
 }
 
-async function saveTranslation(langCode: string) {
+const saveTranslation = async (langCode: string) => {
   saving.value = `${props.translationKey.id}-${langCode}`
   try {
     await saveTranslationById(props.translationKey.id, langCode, editValues.value[langCode])
@@ -523,7 +523,7 @@ async function saveTranslation(langCode: string) {
   }
 }
 
-async function autoTranslate(lang: { code: string; name: string }) {
+const autoTranslate = async (lang: { code: string; name: string }) => {
   const source = getSourceText()
   if (!source) return
 
@@ -539,7 +539,7 @@ async function autoTranslate(lang: { code: string; name: string }) {
   }
 }
 
-function viewHistory(langCode: string) {
+const viewHistory = (langCode: string) => {
   const tr = props.translationKey.translations[langCode]
   if (tr) {
     historyTranslationId.value = tr.id
@@ -575,7 +575,7 @@ const rowActions = computed(() => {
   return groups
 })
 
-async function deleteKey() {
+const deleteKey = async () => {
   deletingKey.value = true
   try {
     await deleteKeyById(props.translationKey.id)

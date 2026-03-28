@@ -14,7 +14,7 @@ export function useUsers(scope: 'project' | 'global' = 'project') {
   const data = ref<any[]>([])
   const pending = ref(false)
 
-  async function refresh() {
+  const refresh = async () => {
     pending.value = true
     try {
       data.value = await userService.getUsers(usersQuery.value)
@@ -37,7 +37,7 @@ export function useUsers(scope: 'project' | 'global' = 'project') {
   // ── Mutations ──────────────────────────────────────────────────────────────
 
   const saving = ref(false)
-  async function createUser(payload: ICreateUserPayload): Promise<string | null> {
+  const createUser = async (payload: ICreateUserPayload): Promise<string | null> => {
     saving.value = true
     try {
       const result = await userService.create(payload)
@@ -56,7 +56,7 @@ export function useUsers(scope: 'project' | 'global' = 'project') {
   }
 
   const rolesSaving = ref(false)
-  async function updateRoles(userId: number, roles: IRoleEntry[]): Promise<boolean> {
+  const updateRoles = async (userId: number, roles: IRoleEntry[]): Promise<boolean> => {
     rolesSaving.value = true
     try {
       await userService.updateRoles(userId, roles)
@@ -70,7 +70,7 @@ export function useUsers(scope: 'project' | 'global' = 'project') {
     }
   }
 
-  async function toggleActive(user: { id: number; is_active: boolean }): Promise<void> {
+  const toggleActive = async (user: { id: number; is_active: boolean }): Promise<void> => {
     try {
       await userService.update(user.id, {
         is_active: !user.is_active,
@@ -85,7 +85,7 @@ export function useUsers(scope: 'project' | 'global' = 'project') {
   }
 
   const deleting = ref(false)
-  async function deleteUser(userId: number): Promise<boolean> {
+  const deleteUser = async (userId: number): Promise<boolean> => {
     deleting.value = true
     try {
       const projectId = scope === 'global' || currentUser.value?.is_super_admin
@@ -102,7 +102,7 @@ export function useUsers(scope: 'project' | 'global' = 'project') {
     }
   }
 
-  async function getAvailableUsers(excludeProjectId: number) {
+  const getAvailableUsers = async (excludeProjectId: number) => {
     return userService.getAvailableUsers(excludeProjectId)
   }
 

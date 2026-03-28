@@ -53,7 +53,7 @@ watch(() => props.modelValue, (val) => {
   local.token = val?.token ?? ''
 }, { immediate: true })
 
-function emitCurrent() {
+const emitCurrent = () => {
   emit('update:modelValue', local.url.trim() ? { ...local } : null)
 }
 </script>

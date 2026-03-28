@@ -25,47 +25,47 @@ export function useFormats() {
     { default: () => [], watch: [projectId] },
   )
 
-  async function createNumberFormat(locale: string, name: string, options: Record<string, any>) {
+  const createNumberFormat = async (locale: string, name: string, options: Record<string, any>) => {
     await formatsService.createNumberFormat(projectId.value, locale, name, options)
     await refreshNumber()
   }
 
-  async function updateNumberFormat(id: number, locale: string, name: string, options: Record<string, any>) {
+  const updateNumberFormat = async (id: number, locale: string, name: string, options: Record<string, any>) => {
     await formatsService.updateNumberFormat(id, locale, name, options)
     await refreshNumber()
   }
 
-  async function deleteNumberFormat(id: number) {
+  const deleteNumberFormat = async (id: number) => {
     await formatsService.deleteNumberFormat(id)
     await refreshNumber()
   }
 
-  async function createDatetimeFormat(locale: string, name: string, options: Record<string, any>) {
+  const createDatetimeFormat = async (locale: string, name: string, options: Record<string, any>) => {
     await formatsService.createDatetimeFormat(projectId.value, locale, name, options)
     await refreshDatetime()
   }
 
-  async function updateDatetimeFormat(id: number, locale: string, name: string, options: Record<string, any>) {
+  const updateDatetimeFormat = async (id: number, locale: string, name: string, options: Record<string, any>) => {
     await formatsService.updateDatetimeFormat(id, locale, name, options)
     await refreshDatetime()
   }
 
-  async function deleteDatetimeFormat(id: number) {
+  const deleteDatetimeFormat = async (id: number) => {
     await formatsService.deleteDatetimeFormat(id)
     await refreshDatetime()
   }
 
-  async function createModifier(name: string, body: string) {
+  const createModifier = async (name: string, body: string) => {
     await formatsService.createModifier(projectId.value, name, body)
     await refreshModifiers()
   }
 
-  async function updateModifier(id: number, name: string, body: string) {
+  const updateModifier = async (id: number, name: string, body: string) => {
     await formatsService.updateModifier(id, name, body)
     await refreshModifiers()
   }
 
-  async function deleteModifier(id: number) {
+  const deleteModifier = async (id: number) => {
     await formatsService.deleteModifier(id)
     await refreshModifiers()
   }

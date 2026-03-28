@@ -110,7 +110,7 @@ const previewSyntax = computed(() =>
   selectedModifier.value ? `@.${selectedModifier.value}:` : '@:',
 )
 
-function openModal() {
+const openModal = () => {
   open.value = true
   search.value = ''
   selectedModifier.value = ''
@@ -119,12 +119,12 @@ function openModal() {
 }
 
 let searchTimeout: ReturnType<typeof setTimeout>
-function onSearch() {
+const onSearch = () => {
   clearTimeout(searchTimeout)
   searchTimeout = setTimeout(fetchKeys, 200)
 }
 
-async function fetchKeys() {
+const fetchKeys = async () => {
   if (!props.projectId) return
   loading.value = true
   try {
@@ -136,7 +136,7 @@ async function fetchKeys() {
   }
 }
 
-function selectKey(key: string) {
+const selectKey = (key: string) => {
   emit('select', `${previewSyntax.value}${key}`)
   open.value = false
 }

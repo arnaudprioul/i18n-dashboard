@@ -25,13 +25,13 @@ export function useLanguages() {
     )
   })
 
-  function findLanguage(code: string): ILanguage | undefined {
+  const findLanguage = (code: string): ILanguage | undefined => {
     // Exact match first, then fall back to base language (fr-CA → fr)
     return LANGUAGES.find(l => l.code === code)
       ?? LANGUAGES.find(l => l.code === code.split('-')[0])
   }
 
-  function getLanguageName(code: string): string {
+  const getLanguageName = (code: string): string => {
     const lang = findLanguage(code)
     return lang ? `${lang.nativeName} (${lang.name})` : code
   }
@@ -41,7 +41,7 @@ export function useLanguages() {
   const data = ref<ILanguageItem[]>([])
   const pending = ref(false)
 
-  async function refresh() {
+  const refresh = async () => {
     pending.value = true
     try {
       data.value = await languageService.getLanguages(currentProject.value?.id)
@@ -60,7 +60,7 @@ export function useLanguages() {
   const projectLanguages = computed(() => data.value ?? [])
 
   const adding = ref(false)
-  async function addLanguage(payload: Omit<ICreateLanguagePayload, 'project_id'>): Promise<void> {
+  const addLanguage = async (payload: Omit<ICreateLanguagePayload, 'project_id'>): Promise<void> => {
     if (!currentProject.value) return
     adding.value = true
     try {
@@ -74,7 +74,7 @@ export function useLanguages() {
   }
 
   const deleting = ref(false)
-  async function deleteLanguage(code: string): Promise<void> {
+  const deleteLanguage = async (code: string): Promise<void> => {
     if (!currentProject.value) return
     deleting.value = true
     try {
@@ -88,7 +88,7 @@ export function useLanguages() {
     }
   }
 
-  async function setDefault(lang: ILanguageItem): Promise<void> {
+  const setDefault = async (lang: ILanguageItem): Promise<void> => {
     if (!currentProject.value) return
     try {
       await languageService.setDefault(lang, currentProject.value.id)
@@ -97,16 +97,16 @@ export function useLanguages() {
     catch {}
   }
 
-  async function setFallback(lang: ILanguageItem, fallbackCode: string | null): Promise<void> {
+  const setFallback = async (lang: ILanguageItem, fallbackCode: string | null): Promise<void> => {
     await languageService.update(lang.id, { fallback_code: fallbackCode })
     await refresh()
   }
 
-  async function createLanguageForProject(projectId: number, payload: Omit<ICreateLanguagePayload, 'project_id'>): Promise<void> {
+  const createLanguageForProject = async (projectId: number, payload: Omit<ICreateLanguagePayload, 'project_id'>): Promise<void> => {
     await languageService.create({ ...payload, project_id: projectId })
   }
 
-  async function startTranslateAll(languageCode: string, languageName: string): Promise<string | null> {
+  const startTranslateAll = async (languageCode: string, languageName: string): Promise<string | null> => {
     if (!currentProject.value) return null
     try {
       const job = await translationService.translateAll(currentProject.value.id, languageCode, languageName)
@@ -129,7 +129,7 @@ export function useLanguages() {
 
   let _pollInterval: ReturnType<typeof setInterval> | null = null
 
-  async function _pollJob() {
+  const _pollJob = async () => {
     if (!progressJobId.value) return
     try {
       const job = await jobService.getJob(progressJobId.value)
@@ -144,11 +144,11 @@ export function useLanguages() {
     }
   }
 
-  function _stopPolling() {
+  const _stopPolling = () => {
     if (_pollInterval) { clearInterval(_pollInterval); _pollInterval = null }
   }
 
-  function startPolling(jobId: string, langName: string) {
+  const startPolling = (jobId: string, langName: string) => {
     progressJobId.value = jobId
     progressLangName.value = langName
     progressTotal.value = 0
@@ -160,13 +160,13 @@ export function useLanguages() {
     _pollInterval = setInterval(_pollJob, 800)
   }
 
-  function closeProgress() {
+  const closeProgress = () => {
     showProgress.value = false
     _stopPolling()
     progressJobId.value = null
   }
 
-  function sendToBackground(onDone?: () => void) {
+  const sendToBackground = (onDone?: () => void) => {
     showProgress.value = false
     const langName = progressLangName.value
 

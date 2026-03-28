@@ -114,7 +114,7 @@
 
   const displayTitle = computed(() => props.title || t('dashboard.languages_coverage', 'Language coverage'))
 
-  function coverageColor (coverage: number) {
+  const coverageColor = (coverage: number) => {
     if (coverage >= 90) return 'bg-green-500'
     if (coverage >= 60) return 'bg-yellow-400'
     return 'bg-red-400'
