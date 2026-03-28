@@ -286,6 +286,13 @@
 import { TRANSLATION_STATUS } from '../enums/translation.enum'
 
 const { t } = useT()
+const {
+  saveTranslationById,
+  setTranslationStatusById,
+  autoTranslateById,
+  updateDescriptionById,
+  deleteKeyById,
+} = useKeys()
 
 const props = defineProps<{
   translationKey: {
@@ -326,14 +333,11 @@ function cancelDescription() {
 async function saveDescription() {
   savingDescription.value = true
   try {
-    await $fetch(`/api/keys/${props.translationKey.id}`, {
-      method: 'PATCH',
-      body: { description: descriptionDraft.value || null },
-    })
+    await updateDescriptionById(props.translationKey.id, descriptionDraft.value || null)
     editingDescription.value = false
     emit('updated')
   } catch (e: any) {
-    toast.add({ title: t('common.error', 'Error'), description: e.data?.message || e.message, color: 'error' })
+    toast.add({ title: t('common.error', 'Error'), description: e.message, color: 'error' })
   } finally {
     savingDescription.value = false
   }
@@ -472,14 +476,11 @@ async function cycleStatus(langCode: string) {
 
   cyclingStatusLang.value = langCode
   try {
-    await $fetch('/api/translations/status', {
-      method: 'POST',
-      body: { key_id: props.translationKey.id, language_code: langCode, status: next },
-    })
+    await setTranslationStatusById(props.translationKey.id, langCode, next)
     emit('updated')
     refreshNuxtData('project-stats')
   } catch (e: any) {
-    toast.add({ title: t('common.error', 'Error'), description: e.data?.message || e.message, color: 'error' })
+    toast.add({ title: t('common.error', 'Error'), description: e.message, color: 'error' })
   } finally {
     cyclingStatusLang.value = null
   }
@@ -523,18 +524,11 @@ function cancelEdit(langCode: string) {
 async function saveTranslation(langCode: string) {
   saving.value = `${props.translationKey.id}-${langCode}`
   try {
-    await $fetch('/api/translations', {
-      method: 'POST',
-      body: {
-        key_id: props.translationKey.id,
-        language_code: langCode,
-        value: editValues.value[langCode],
-      },
-    })
+    await saveTranslationById(props.translationKey.id, langCode, editValues.value[langCode])
     editingCell.value = null
     emit('updated')
   } catch (e: any) {
-    toast.add({ title: t('common.error', 'Error'), description: e.data?.message || e.message, color: 'error' })
+    toast.add({ title: t('common.error', 'Error'), description: e.message, color: 'error' })
   } finally {
     saving.value = null
   }
@@ -546,20 +540,11 @@ async function autoTranslate(lang: { code: string; name: string }) {
 
   translateLoading.value = `${props.translationKey.id}-${lang.code}`
   try {
-    await $fetch('/api/translate', {
-      method: 'POST',
-      body: {
-        text: source.text,
-        from: source.lang,
-        to: lang.code,
-        key_id: props.translationKey.id,
-        language_code: lang.code,
-      },
-    })
+    await autoTranslateById(props.translationKey.id, lang.code, source.text, source.lang)
     toast.add({ title: t('translations.translated', 'Translated'), description: `${props.translationKey.key} → ${lang.name}`, color: 'success' })
     emit('updated')
   } catch (e: any) {
-    toast.add({ title: t('translations.translate_error', 'Google Translate error'), description: e.data?.message || e.message, color: 'error' })
+    toast.add({ title: t('translations.translate_error', 'Google Translate error'), description: e.message, color: 'error' })
   } finally {
     translateLoading.value = null
   }
@@ -604,12 +589,12 @@ const rowActions = computed(() => {
 async function deleteKey() {
   deletingKey.value = true
   try {
-    await $fetch(`/api/keys/${props.translationKey.id}`, { method: 'DELETE' })
+    await deleteKeyById(props.translationKey.id)
     toast.add({ title: t('translations.key_deleted', 'Key deleted'), color: 'success' })
     emit('updated')
     refreshNuxtData('project-stats')
   } catch (e: any) {
-    toast.add({ title: t('common.error', 'Error'), description: e.data?.message || e.message, color: 'error' })
+    toast.add({ title: t('common.error', 'Error'), description: e.message, color: 'error' })
   } finally {
     deletingKey.value = false
   }

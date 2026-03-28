@@ -1,9 +1,10 @@
 import type { IWidgetConfig, IWidgetDataSource } from '../interfaces/dashboard.interface'
 import type { TWidgetSize } from '../types/dashboard.type'
 import { DEFAULT_LAYOUT } from '../consts/dashboard.const'
+import { dashboardService } from '../services/dashboard.service'
 
 export function useDashboard() {
-  const { data, refresh } = useAsyncData('dashboard-layout', () => $fetch('/api/dashboard/layout'), { server: false })
+  const { data, refresh } = useAsyncData('dashboard-layout', () => dashboardService.getLayout(), { server: false })
   const layout = computed<IWidgetConfig[]>(() => (data.value as IWidgetConfig[]) ?? DEFAULT_LAYOUT)
 
   const editing = ref(false)
@@ -56,7 +57,7 @@ export function useDashboard() {
   async function saveLayout() {
     saving.value = true
     try {
-      await $fetch('/api/dashboard/layout', { method: 'POST', body: localLayout.value })
+      await dashboardService.saveLayout(localLayout.value)
       await refresh()
       editing.value = false
     } finally {

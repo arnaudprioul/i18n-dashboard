@@ -39,5 +39,9 @@ export function useSettings() {
     }
   }
 
-  return { settings, pending, refresh, saving, saveSettings }
+  const getPasswordPolicy = async () => {
+    return settingsService.getPasswordPolicy()
+  }
+
+  return { settings, pending, refresh, saving, saveSettings, getPasswordPolicy }
 }

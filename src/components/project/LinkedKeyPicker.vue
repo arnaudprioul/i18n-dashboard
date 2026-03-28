@@ -92,6 +92,8 @@ const emit = defineEmits<{
   select: [value: string]
 }>()
 
+const { searchKeys } = useKeys({})
+
 const open = ref(false)
 const search = ref('')
 const loading = ref(false)
@@ -128,15 +130,7 @@ async function fetchKeys() {
   if (!props.projectId) return
   loading.value = true
   try {
-    const res = await $fetch<{ data: Array<{ id: number; key: string }> }>('/api/keys', {
-      query: {
-        project_id: props.projectId,
-        search: search.value || undefined,
-        limit: 50,
-        page: 1,
-      },
-    })
-    keys.value = res.data
+    keys.value = await searchKeys(props.projectId, search.value)
   } catch {
     keys.value = []
   } finally {

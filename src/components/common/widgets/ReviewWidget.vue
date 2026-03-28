@@ -140,40 +140,8 @@
     return undefined // global = unsupported for review queue
   })
 
-  const fetchKey = computed(() => `widget-review-${props.id}-${effectiveProjectId.value ?? 'none'}`)
-
-  const { data: reviewData, pending, refresh } = useAsyncData(
-      () => fetchKey.value,
-      async () => {
-        if (!effectiveProjectId.value) return null
-        return await $fetch<any>('/api/keys', {
-          query: {
-            project_id: effectiveProjectId.value,
-            status: TRANSLATION_STATUS.DRAFT,
-            limit: 200,
-          },
-        })
-      },
-      { server: false, watch: [fetchKey] },
-  )
-
-  const reviewItems = computed(() => {
-    const keys = reviewData.value?.data ?? []
-    const result: Array<{
-      id: number;
-      key: string;
-      key_description?: string;
-      language_code: string;
-      value: string
-    }> = []
-    for (const k of keys) {
-      for (const [lang, tr] of Object.entries(k.translations as Record<string, any>)) {
-        if (tr?.status === TRANSLATION_STATUS.DRAFT && tr?.value) {
-          result.push({ id: tr.id, key: k.key, key_description: k.description, language_code: lang, value: tr.value })
-        }
-      }
-    }
-    return result
+  const { reviewItems: allReviewItems, pending, refresh, processingId, processingAction, setStatus } = useReview({
+    projectId: effectiveProjectId,
   })
 
   const maxItems = computed(() => {
@@ -181,26 +149,7 @@
     return 4
   })
 
-  const displayedItems = computed(() => reviewItems.value.slice(0, maxItems.value))
+  const displayedItems = computed(() => allReviewItems.value.slice(0, maxItems.value))
 
   const displayTitle = computed(() => props.title || t('review.title', 'Review queue'))
-
-  const processingId = ref<number | null>(null)
-  const processingAction = ref('')
-
-  async function setStatus (item: { id: number }, status: string): Promise<void> {
-    processingId.value = item.id
-    processingAction.value = status
-    try {
-      await $fetch('/api/translations/bulk-status', {
-        method: 'POST',
-        body: { ids: [item.id], status },
-      })
-      await refresh()
-    } catch {
-    } finally {
-      processingId.value = null
-      processingAction.value = ''
-    }
-  }
 </script>

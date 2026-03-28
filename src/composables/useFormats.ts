@@ -1,85 +1,72 @@
+import { formatsService } from '../services/formats.service'
+
 export function useFormats() {
   const { currentProject } = useProject()
   const projectId = computed(() => currentProject.value?.id)
 
   // Number formats
-  const { data: numberFormats, refresh: refreshNumber } = useFetch<any[]>('/api/formats/number', {
-    query: computed(() => ({ project_id: projectId.value })),
-    default: () => [],
-  })
+  const { data: numberFormats, refresh: refreshNumber } = useAsyncData(
+    () => `formats-number-${projectId.value}`,
+    () => formatsService.getNumberFormats(projectId.value),
+    { default: () => [], watch: [projectId] },
+  )
 
   // Datetime formats
-  const { data: datetimeFormats, refresh: refreshDatetime } = useFetch<any[]>('/api/formats/datetime', {
-    query: computed(() => ({ project_id: projectId.value })),
-    default: () => [],
-  })
+  const { data: datetimeFormats, refresh: refreshDatetime } = useAsyncData(
+    () => `formats-datetime-${projectId.value}`,
+    () => formatsService.getDatetimeFormats(projectId.value),
+    { default: () => [], watch: [projectId] },
+  )
 
   // Modifiers
-  const { data: modifiers, refresh: refreshModifiers } = useFetch<any[]>('/api/formats/modifiers', {
-    query: computed(() => ({ project_id: projectId.value })),
-    default: () => [],
-  })
+  const { data: modifiers, refresh: refreshModifiers } = useAsyncData(
+    () => `formats-modifiers-${projectId.value}`,
+    () => formatsService.getModifiers(projectId.value),
+    { default: () => [], watch: [projectId] },
+  )
 
   async function createNumberFormat(locale: string, name: string, options: Record<string, any>) {
-    await $fetch('/api/formats/number', {
-      method: 'POST',
-      body: { project_id: projectId.value, locale, name, options },
-    })
+    await formatsService.createNumberFormat(projectId.value, locale, name, options)
     await refreshNumber()
   }
 
   async function updateNumberFormat(id: number, locale: string, name: string, options: Record<string, any>) {
-    await $fetch(`/api/formats/number/${id}`, {
-      method: 'PUT',
-      body: { locale, name, options },
-    })
+    await formatsService.updateNumberFormat(id, locale, name, options)
     await refreshNumber()
   }
 
   async function deleteNumberFormat(id: number) {
-    await $fetch(`/api/formats/number/${id}`, { method: 'DELETE' })
+    await formatsService.deleteNumberFormat(id)
     await refreshNumber()
   }
 
   async function createDatetimeFormat(locale: string, name: string, options: Record<string, any>) {
-    await $fetch('/api/formats/datetime', {
-      method: 'POST',
-      body: { project_id: projectId.value, locale, name, options },
-    })
+    await formatsService.createDatetimeFormat(projectId.value, locale, name, options)
     await refreshDatetime()
   }
 
   async function updateDatetimeFormat(id: number, locale: string, name: string, options: Record<string, any>) {
-    await $fetch(`/api/formats/datetime/${id}`, {
-      method: 'PUT',
-      body: { locale, name, options },
-    })
+    await formatsService.updateDatetimeFormat(id, locale, name, options)
     await refreshDatetime()
   }
 
   async function deleteDatetimeFormat(id: number) {
-    await $fetch(`/api/formats/datetime/${id}`, { method: 'DELETE' })
+    await formatsService.deleteDatetimeFormat(id)
     await refreshDatetime()
   }
 
   async function createModifier(name: string, body: string) {
-    await $fetch('/api/formats/modifiers', {
-      method: 'POST',
-      body: { project_id: projectId.value, name, body },
-    })
+    await formatsService.createModifier(projectId.value, name, body)
     await refreshModifiers()
   }
 
   async function updateModifier(id: number, name: string, body: string) {
-    await $fetch(`/api/formats/modifiers/${id}`, {
-      method: 'PUT',
-      body: { name, body },
-    })
+    await formatsService.updateModifier(id, name, body)
     await refreshModifiers()
   }
 
   async function deleteModifier(id: number) {
-    await $fetch(`/api/formats/modifiers/${id}`, { method: 'DELETE' })
+    await formatsService.deleteModifier(id)
     await refreshModifiers()
   }
 

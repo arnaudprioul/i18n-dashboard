@@ -1,5 +1,6 @@
 import type { Ref } from 'vue'
 import type { IWidgetDataSource } from '../interfaces/dashboard.interface'
+import { statsService } from '../services/stats.service'
 
 export function useWidgetData(widgetId: string, dataSource: Ref<IWidgetDataSource | undefined>) {
   const { currentProject, projects } = useProject()
@@ -24,9 +25,9 @@ export function useWidgetData(widgetId: string, dataSource: Ref<IWidgetDataSourc
       const src = effectiveSource.value
       if (src.type === 'project') {
         if (!src.projectId) return null
-        return await $fetch<any>('/api/stats', { query: { project_id: src.projectId } })
+        return await statsService.getStats(src.projectId)
       }
-      return await $fetch<any>('/api/stats/global')
+      return await statsService.getGlobalStats()
     },
     { server: false, watch: [fetchKey] },
   )

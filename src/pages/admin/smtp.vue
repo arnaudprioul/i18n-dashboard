@@ -259,7 +259,7 @@
 <script lang="ts" setup>
   const { currentUser } = useAuth()
   const { t } = useT()
-  const toast = useToast()
+  const { loadSmtp, saveSmtp, testSmtp, smtpPending: pending, smtpSaving: saving, smtpTesting: testing, smtpTestError: testError } = useAdmin()
 
   watch(() => currentUser.value?.is_super_admin, (ok) => {
     if (import.meta.client && ok === false) navigateTo('/')
@@ -302,11 +302,7 @@
     dashboardUrl: '',
   })
   const hasPassword = ref(false)
-  const pending = ref(true)
-  const saving = ref(false)
-  const testing = ref(false)
   const testEmail = ref(currentUser.value?.email || '')
-  const testError = ref('')
 
   const configFileExample = `// i18n-dashboard.config.json
 {
@@ -328,63 +324,39 @@
 }`
 
   async function load () {
-    pending.value = true
-    try {
-      const data = await $fetch<any>('/api/admin/smtp')
-      form.value.host = data.host || ''
-      form.value.port = data.port || '587'
-      form.value.secure = data.secure === 'true' || data.secure === true
-      form.value.user = data.user || ''
-      form.value.from = data.from || ''
-      form.value.dashboardUrl = data.dashboardUrl || ''
-      hasPassword.value = data.hasPassword || false
-      // Detect provider from host
-      if (data.host) {
-        const match = providers.find(p => p.host === data.host)
-        selectedProvider.value = match?.id || 'custom'
-      }
-    } catch {
-    } finally {
-      pending.value = false
+    const data = await loadSmtp()
+    if (!data) return
+    form.value.host = data.host || ''
+    form.value.port = data.port || '587'
+    form.value.secure = data.secure === 'true' || data.secure === true
+    form.value.user = data.user || ''
+    form.value.from = data.from || ''
+    form.value.dashboardUrl = data.dashboardUrl || ''
+    hasPassword.value = data.hasPassword || false
+    if (data.host) {
+      const match = providers.find(p => p.host === data.host)
+      selectedProvider.value = match?.id || 'custom'
     }
   }
 
   async function save () {
-    saving.value = true
-    try {
-      await $fetch('/api/admin/smtp', {
-        method: 'POST',
-        body: {
-          host: form.value.host,
-          port: form.value.port,
-          secure: form.value.secure,
-          user: form.value.user,
-          pass: form.value.pass,
-          from: form.value.from,
-          dashboardUrl: form.value.dashboardUrl,
-        },
-      })
-      toast.add({ title: t('smtp.saved', 'SMTP configuration saved'), color: 'success' })
+    const ok = await saveSmtp({
+      host: form.value.host,
+      port: form.value.port,
+      secure: form.value.secure,
+      user: form.value.user,
+      pass: form.value.pass,
+      from: form.value.from,
+      dashboardUrl: form.value.dashboardUrl,
+    })
+    if (ok) {
       form.value.pass = ''
       await load()
-    } catch (e: any) {
-      toast.add({ title: t('common.error', 'Error'), description: e?.data?.message || e?.message, color: 'error' })
-    } finally {
-      saving.value = false
     }
   }
 
   async function sendTest () {
-    testing.value = true
-    testError.value = ''
-    try {
-      await $fetch('/api/admin/smtp-test', { method: 'POST', body: { to: testEmail.value } })
-      toast.add({ title: t('smtp.test_sent', 'Test email sent'), description: testEmail.value, color: 'success' })
-    } catch (e: any) {
-      testError.value = e?.data?.message || e?.message || 'Unknown error'
-    } finally {
-      testing.value = false
-    }
+    await testSmtp(testEmail.value)
   }
 
   onMounted(load)

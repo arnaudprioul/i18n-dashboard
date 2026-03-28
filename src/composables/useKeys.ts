@@ -213,6 +213,37 @@ export function useKeys(options: {
     }
   }
 
+  // ── Row-level operations (for TranslationRow component) ───────────────────
+  // These accept explicit IDs instead of relying on the current keyData ref.
+
+  async function saveTranslationById(keyId: number, langCode: string, value: string): Promise<void> {
+    await translationService.save({ key_id: keyId, language_code: langCode, value })
+  }
+
+  async function setTranslationStatusById(keyId: number, langCode: string, status: string): Promise<void> {
+    await translationService.setStatus({ key_id: keyId, language_code: langCode, status })
+  }
+
+  async function autoTranslateById(keyId: number, langCode: string, text: string, sourceLang: string): Promise<void> {
+    const result = await translationService.translateText(text, sourceLang, langCode)
+    await translationService.save({ key_id: keyId, language_code: langCode, value: result.text })
+  }
+
+  async function updateDescriptionById(keyId: number, description: string | null): Promise<void> {
+    await keyService.updateKey(keyId, { description })
+  }
+
+  async function deleteKeyById(keyId: number): Promise<void> {
+    await keyService.deleteKey(keyId)
+  }
+
+  // ── Search (for pickers) ──────────────────────────────────────────────────
+
+  async function searchKeys(projectId: number, search?: string, limit = 50) {
+    const res = await keyService.getKeys({ project_id: projectId, search: search || undefined, limit, page: 1 })
+    return res.data
+  }
+
   // ── Shared ────────────────────────────────────────────────────────────────
 
   const pending = computed(() => listPending.value || detailPending.value)
@@ -240,6 +271,14 @@ export function useKeys(options: {
     updateDescription,
     deleting,
     deleteKey,
+    // Row-level
+    saveTranslationById,
+    setTranslationStatusById,
+    autoTranslateById,
+    updateDescriptionById,
+    deleteKeyById,
+    // Search
+    searchKeys,
     // Shared
     pending,
     refresh: options.id ? detailRefresh : refresh,

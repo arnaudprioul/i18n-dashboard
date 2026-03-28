@@ -149,6 +149,7 @@
 
 <script setup lang="ts">
 const { t } = useT()
+const { loading, browseError, data, browse } = useFs()
 
 const props = defineProps<{
   modelValue: string
@@ -160,34 +161,10 @@ const emit = defineEmits<{
 }>()
 
 const open = ref(false)
-const loading = ref(false)
-const browseError = ref('')
-const data = ref<{
-  current: string
-  parent: string | null
-  home: string
-  breadcrumbs: { name: string; path: string }[]
-  entries: { name: string; path: string }[]
-} | null>(null)
 
 async function openBrowser() {
   open.value = true
-  // Start from modelValue if set, otherwise let the server default to home
-  await browse(props.modelValue || '')
-}
-
-async function browse(path: string) {
-  loading.value = true
-  browseError.value = ''
-  try {
-    data.value = await $fetch('/api/fs/browse', {
-      query: path ? { path } : {},
-    })
-  } catch (e: any) {
-    browseError.value = e?.data?.message ?? 'Cannot browse this path'
-  } finally {
-    loading.value = false
-  }
+  await browse(props.modelValue || undefined)
 }
 
 function select() {

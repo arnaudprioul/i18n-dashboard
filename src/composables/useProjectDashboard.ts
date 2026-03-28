@@ -1,11 +1,12 @@
 import type { IWidgetConfig, IWidgetDataSource } from '../interfaces/dashboard.interface'
 import type { TWidgetSize } from '../types/dashboard.type'
 import { DEFAULT_PROJECT_LAYOUT } from '../consts/dashboard.const'
+import { dashboardService } from '../services/dashboard.service'
 
 export function useProjectDashboard(projectId: number) {
   const { data, refresh } = useAsyncData(
     `project-dashboard-layout-${projectId}`,
-    () => $fetch(`/api/dashboard/project-layout?project_id=${projectId}`),
+    () => dashboardService.getProjectLayout(projectId),
     { server: false },
   )
 
@@ -65,10 +66,7 @@ export function useProjectDashboard(projectId: number) {
   async function saveLayout() {
     saving.value = true
     try {
-      await $fetch('/api/dashboard/project-layout', {
-        method: 'POST',
-        body: { project_id: projectId, widgets: localLayout.value },
-      })
+      await dashboardService.saveProjectLayout(projectId, localLayout.value)
       await refresh()
       editing.value = false
     } finally {

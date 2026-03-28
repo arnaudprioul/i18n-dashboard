@@ -102,6 +102,10 @@ export function useUsers(scope: 'project' | 'global' = 'project') {
     }
   }
 
+  async function getAvailableUsers(excludeProjectId: number) {
+    return userService.getAvailableUsers(excludeProjectId)
+  }
+
   return {
     users,
     pending,
@@ -113,5 +117,6 @@ export function useUsers(scope: 'project' | 'global' = 'project') {
     toggleActive,
     deleting,
     deleteUser,
+    getAvailableUsers,
   }
 }

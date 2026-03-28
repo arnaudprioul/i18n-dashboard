@@ -67,8 +67,20 @@ jobs:
           NEW_VERSION=$(node -p "require('./package.json').version")
           NEW_TAG="v${NEW_VERSION}"
           echo "NEW_TAG=${NEW_TAG}" >> "$GITHUB_ENV"
-          # Update version badge in docs — keeps the existing tagline, only bumps the number
-          sed -i "s/v[0-9]\+\.[0-9]\+\.[0-9]\+ —/v${NEW_VERSION} —/" docs/index.html
+          # Extract tagline from the triggering commit message
+          BEFORE="${{ github.event.before }}"
+          AFTER="${{ github.event.after }}"
+          if [[ "$BEFORE" == "0000000000000000000000000000000000000000" ]]; then
+            COMMIT_MSG=$(git log --format="%s" "$AFTER" | head -1)
+          else
+            COMMIT_MSG=$(git log --format="%s" "$BEFORE..$AFTER" | head -1)
+          fi
+          # Strip [major]/[minor]/[patch] tag and conventional commit prefix (e.g. "feat: ")
+          TAGLINE=$(echo "$COMMIT_MSG" | sed 's/ \[major\]//g; s/ \[minor\]//g; s/ \[patch\]//g' | sed 's/^[a-z!]*([^)]*): //; s/^[a-z!]*: //')
+          # Escape & for sed replacement
+          TAGLINE_ESCAPED=$(echo "$TAGLINE" | sed 's/[&]/\\\&/g')
+          # Update version badge in docs — bumps version number AND tagline
+          sed -i "s/v[0-9]\+\.[0-9]\+\.[0-9]\+ — .*/v${NEW_VERSION} — ${TAGLINE_ESCAPED}/" docs/index.html
           git add package.json package-lock.json docs/index.html
           git commit -m "chore: bump version to ${NEW_TAG} [skip ci]"
           if git rev-parse "${NEW_TAG}" >/dev/null 2>&1; then

@@ -172,6 +172,7 @@
 import type { IGitRepo } from '../interfaces/project.interface'
 
 const { t } = useT()
+const { updateProject, scanWithOptions } = useProject()
 
 const props = defineProps<{
   projectId: number
@@ -212,26 +213,20 @@ async function runScan() {
   result.value = null
   try {
     if (mode.value === 'git' && saveRepo.value && gitRepo.value?.url) {
-      await $fetch(`/api/projects/${props.projectId}`, {
-        method: 'PUT',
-        body: { git_repo: gitRepo.value },
-      })
+      await updateProject(props.projectId, { git_repo: gitRepo.value })
     }
 
-    result.value = await $fetch('/api/scan', {
-      method: 'POST',
-      body: {
-        project_id: props.projectId,
-        mode: mode.value,
-        root_path: mode.value === 'local' ? localPath.value : undefined,
-        git_url: mode.value === 'git' ? gitRepo.value?.url : undefined,
-        git_branch: mode.value === 'git' ? gitRepo.value?.branch : undefined,
-        git_token: mode.value === 'git' ? gitRepo.value?.token : undefined,
-      },
+    result.value = await scanWithOptions({
+      project_id: props.projectId,
+      mode: mode.value,
+      root_path: mode.value === 'local' ? localPath.value : undefined,
+      git_url: mode.value === 'git' ? gitRepo.value?.url : undefined,
+      git_branch: mode.value === 'git' ? gitRepo.value?.branch : undefined,
+      git_token: mode.value === 'git' ? gitRepo.value?.token : undefined,
     })
     emit('done')
   } catch (e: any) {
-    error.value = e?.data?.message ?? t('common.error', 'Error')
+    error.value = e?.message ?? t('common.error', 'Error')
   } finally {
     loading.value = false
   }

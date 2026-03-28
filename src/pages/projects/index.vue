@@ -686,7 +686,12 @@ const {
   syncProject,
   fetchProjects,
   visibleProjects: userProjects,
+  checkProjectName,
+  detectProject,
+  scanWithOptions,
 } = useProject()
+
+const { createLanguageForProject } = useLanguages()
 
 const showScanModal = ref(false)
 const scanningProject = ref<any>(null)
@@ -701,9 +706,7 @@ watch(() => form.value.name, (name) => {
   if (_nameCheckTimer) clearTimeout(_nameCheckTimer)
   if (!name.trim()) { nameError.value = ''; return }
   _nameCheckTimer = setTimeout(async () => {
-    const result = await $fetch<{ available: boolean }>('/api/projects/check-name', {
-      query: { name, exclude_id: editingProject.value?.id ?? undefined },
-    })
+    const result = await checkProjectName(name, editingProject.value?.id ?? undefined)
     nameError.value = result.available ? '' : t('projects.name_taken', 'This name is already taken')
   }, 400)
 })
@@ -757,10 +760,7 @@ async function detectAndNext() {
       if (form.value.git_repo.token) body.git_token = form.value.git_repo.token
     }
 
-    const data = await $fetch<{ name?: string; localesPath?: string; languages: Array<{ code: string; name: string }> }>('/api/projects/detect', {
-      method: 'POST',
-      body,
-    })
+    const data = await detectProject(body)
 
     if (data.name) form.value.name = data.name
     if (data.localesPath !== undefined) form.value.locales_path = data.localesPath || 'src/locales'
@@ -794,10 +794,7 @@ async function saveProject() {
         if (form.value.languages.length) {
           creationStep.value = t('projects.creating_languages', 'Adding languages...')
           for (const lang of form.value.languages) {
-            await $fetch('/api/languages', {
-              method: 'POST',
-              body: { project_id: newProject.id, code: lang.code, name: lang.name, is_default: lang.is_default },
-            })
+            await createLanguageForProject(newProject.id, { code: lang.code, name: lang.name, is_default: lang.is_default })
           }
         }
 
@@ -816,14 +813,13 @@ async function saveProject() {
         if (scanBody.mode) {
           creationStep.value = t('projects.scanning_files', 'Scanning source files...')
           try {
-            await $fetch('/api/scan', { method: 'POST', body: scanBody })
+            await scanWithOptions(scanBody)
           } catch {}
 
-          // Sync translations from local JSON files (local mode only)
           if (scanBody.mode === 'local') {
             creationStep.value = t('projects.syncing_translations', 'Syncing translations...')
             try {
-              await $fetch('/api/sync', { method: 'POST', body: { project_id: newProject.id } })
+              await syncProject({ id: newProject.id, name: newProject.name })
             } catch {}
           }
         }

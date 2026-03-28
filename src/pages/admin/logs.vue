@@ -65,7 +65,7 @@
         <div class="flex justify-end">
           <u-button
             :loading="savingSettings"
-            @click="saveSettings"
+            @click="onSaveSettings"
           >
             {{ t('common.save', 'Save') }}
           </u-button>
@@ -190,7 +190,8 @@
 <script setup lang="ts">
 const { currentUser } = useAuth()
 const { t } = useT()
-const toast = useToast()
+const { getLogs, purgeLogs, logsPending: pending, logsPurging: purging } = useAdmin()
+const { settings, pending: settingsPending, refresh: loadSettings, saving: savingSettings, saveSettings } = useSettings()
 
 watch(() => currentUser.value?.is_super_admin, (ok) => {
   if (import.meta.client && ok === false) navigateTo('/')
@@ -209,18 +210,12 @@ const levelOptions = computed(() => [
 ])
 
 const data = ref<{ data: any[]; total: number } | null>(null)
-const pending = ref(false)
 
 async function refresh() {
-  pending.value = true
-  try {
-    const params: Record<string, any> = { page: page.value, limit }
-    if (filterLevel.value !== 'all') params.level = filterLevel.value
-    if (filterContext.value) params.context = filterContext.value
-    data.value = await $fetch('/api/admin/logs', { query: params })
-  }
-  catch {}
-  finally { pending.value = false }
+  const params: Record<string, any> = { page: page.value, limit }
+  if (filterLevel.value !== 'all') params.level = filterLevel.value
+  if (filterContext.value) params.context = filterContext.value
+  data.value = await getLogs(params)
 }
 
 let _debounceTimer: ReturnType<typeof setTimeout>
@@ -231,52 +226,26 @@ function debouncedRefresh() {
 
 onMounted(refresh)
 
-const purging = ref(false)
 async function purgeAll() {
-  purging.value = true
-  try {
-    const result = await $fetch<{ deleted: number }>('/api/admin/logs', { method: 'DELETE' })
-    toast.add({ title: t('logs.purged_toast', 'Logs purged'), description: `${result.deleted} ${t('logs.entries_deleted', 'entries deleted')}`, color: 'success' })
-    await refresh()
-  }
-  catch {}
-  finally { purging.value = false }
+  await purgeLogs()
+  await refresh()
 }
 
 // Settings
 const retentionDays = ref('7')
 const purgeIntervalHours = ref('24')
-const settingsPending = ref(true)
-const savingSettings = ref(false)
 
-async function loadSettings() {
-  settingsPending.value = true
-  try {
-    const settings = await $fetch<Record<string, string>>('/api/settings')
-    retentionDays.value = settings.log_retention_days || '7'
-    purgeIntervalHours.value = settings.log_purge_interval_hours || '24'
-  }
-  catch {}
-  finally { settingsPending.value = false }
+watch(settings, (s) => {
+  if (s.log_retention_days) retentionDays.value = s.log_retention_days
+  if (s.log_purge_interval_hours) purgeIntervalHours.value = s.log_purge_interval_hours
+}, { immediate: true })
+
+async function onSaveSettings() {
+  await saveSettings({
+    log_retention_days: retentionDays.value,
+    log_purge_interval_hours: purgeIntervalHours.value,
+  })
 }
-
-async function saveSettings() {
-  savingSettings.value = true
-  try {
-    await $fetch('/api/settings', {
-      method: 'POST',
-      body: {
-        log_retention_days: retentionDays.value,
-        log_purge_interval_hours: purgeIntervalHours.value,
-      },
-    })
-    toast.add({ title: t('settings.saved', 'Settings saved'), color: 'success' })
-  }
-  catch {}
-  finally { savingSettings.value = false }
-}
-
-onMounted(loadSettings)
 
 function levelClass(level: string) {
   switch (level) {

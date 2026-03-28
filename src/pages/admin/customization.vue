@@ -393,7 +393,7 @@
   import type { ICustomWidgetDef } from '../../interfaces/project-config.interface'
 
   const { t } = useT()
-  const toast = useToast()
+  const { loadCustomization, saveCustomization: adminSaveCustomization, customizationSaving: saving } = useAdmin()
   const { refresh: refreshModuleConfig } = useModuleConfig()
 
   const PRIMARY_COLORS = [
@@ -440,7 +440,6 @@
   // ── State ──────────────────────────────────────────────────────────────────
 
   const pending = ref(true)
-  const saving = ref(false)
   const hasConfigFile = ref(false)
 
   const branding = reactive({ name: '', subtitle: '', logoUrl: '' })
@@ -473,7 +472,7 @@
 
   // ── Load ───────────────────────────────────────────────────────────────────
 
-  const { data, refresh } = await useFetch('/api/admin/customization', { key: 'admin-customization' })
+  const { data, refresh } = await useAsyncData('admin-customization', () => loadCustomization())
 
   watchEffect(() => {
     if (!data.value) return
@@ -487,23 +486,12 @@
   // ── Save ───────────────────────────────────────────────────────────────────
 
   async function save () {
-    saving.value = true
-    try {
-      await $fetch('/api/admin/customization', {
-        method: 'POST',
-        body: {
-          branding: { ...branding },
-          theme: { ...theme },
-          customWidgets: customWidgets.value,
-        },
-      })
-      await refreshModuleConfig()
-      toast.add({ title: t('customization.saved', 'Customization saved'), color: 'success' })
-    } catch {
-      toast.add({ title: t('common.error', 'An error occurred'), color: 'error' })
-    } finally {
-      saving.value = false
-    }
+    const ok = await adminSaveCustomization({
+      branding: { ...branding },
+      theme: { ...theme },
+      customWidgets: customWidgets.value,
+    })
+    if (ok) await refreshModuleConfig()
   }
 
   // ── Widget editor ──────────────────────────────────────────────────────────

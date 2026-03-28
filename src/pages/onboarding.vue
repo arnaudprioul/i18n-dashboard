@@ -603,7 +603,7 @@
                   data-cy="onboarding-next"
                   icon="i-heroicons-arrow-right"
                   trailing
-                  @click="saveLanguages"
+                  @click="onSaveLanguages"
               >
                 {{ t('onboarding.next', 'Suivant') }}
               </u-button>
@@ -644,10 +644,15 @@
   const router = useRouter()
   const { t } = useT()
   const { currentUser, fetchMe } = useAuth()
+  const { getDbConfig, saveDbConfig, setup, saveLanguages, getAuthStatus, getConfig } = useOnboarding()
+  const { createProject } = useProject()
   await fetchMe()
 
-  const { data: authStatus } = await useFetch('/api/auth/status', { key: 'auth-status' })
+  const { data: authStatus } = await useAsyncData('auth-status', () => getAuthStatus(), { server: false })
   const hasUsers = computed(() => !!(authStatus.value as any)?.hasUsers)
+
+  const { data: dbConfig, refresh: refreshDbConfig } = await useAsyncData('onboarding-db-config', () => getDbConfig(), { server: false })
+  const { data: configData } = await useAsyncData('onboarding-config', () => getConfig(), { server: false })
 
   const currentStep = ref(0)
   const saving = ref(false)
@@ -661,7 +666,6 @@
   ]
 
   // ─── Step 0 : Database config ──────────────────────────────────────────────────
-  const { data: dbConfig, refresh: refreshDbConfig } = await useFetch<any>('/api/db-config')
 
   const dbTypeOptions = computed(() => [
     { label: t('onboarding.db_type_sqlite', 'SQLite (local file)'), value: 'sqlite' },
@@ -686,21 +690,18 @@
   const creatingFile = ref(false)
   const dbError = ref('')
 
-  // Track if form changed from initial config
   const dbFormOriginal = JSON.stringify(dbForm.value)
   const dbFormChanged = computed(() => JSON.stringify(dbForm.value) !== dbFormOriginal)
 
-  // Update sqliteFileExists when SQLite path changes
   let _checkPathTimer: ReturnType<typeof setTimeout> | null = null
   watch(() => dbForm.value.connection, (path) => {
     if (dbForm.value.type !== 'sqlite') return
     if (_checkPathTimer) clearTimeout(_checkPathTimer)
     _checkPathTimer = setTimeout(async () => {
       try {
-        const result = await $fetch<any>(`/api/db-config?checkPath=${encodeURIComponent(path)}`)
+        const result = await getDbConfig(path)
         sqliteFileExists.value = result.fileExists ?? false
-      } catch { /* ignore */
-      }
+      } catch { /* ignore */ }
     }, 400)
   })
 
@@ -708,13 +709,10 @@
     creatingFile.value = true
     dbError.value = ''
     try {
-      await $fetch('/api/db-config', {
-        method: 'POST',
-        body: { type: 'sqlite', connection: dbForm.value.connection, createFile: true },
-      })
+      await saveDbConfig({ type: 'sqlite', connection: dbForm.value.connection, createFile: true })
       sqliteFileExists.value = true
     } catch (e: any) {
-      dbError.value = e.data?.message || t('onboarding.db_create_file_error', 'Error creating the file.')
+      dbError.value = e.message || t('onboarding.db_create_file_error', 'Error creating the file.')
     } finally {
       creatingFile.value = false
     }
@@ -737,10 +735,10 @@
     dbConnected.value = false
     dbError.value = ''
     try {
-      await $fetch('/api/db-config', { method: 'POST', body: { ...dbBody(), testOnly: true } })
+      await saveDbConfig({ ...dbBody(), testOnly: true })
       dbConnected.value = true
     } catch (e: any) {
-      dbError.value = e.data?.message || 'Connection failed.'
+      dbError.value = e.message || 'Connection failed.'
     } finally {
       testingDb.value = false
     }
@@ -750,20 +748,20 @@
     applyingDb.value = true
     dbError.value = ''
     try {
-      await $fetch('/api/db-config', { method: 'POST', body: dbBody() })
+      await saveDbConfig(dbBody())
       dbConnected.value = true
       await refreshDbConfig()
       sqliteFileExists.value = dbConfig.value?.fileExists ?? true
     } catch (e: any) {
-      dbError.value = e.data?.message || 'Failed to apply configuration.'
+      dbError.value = e.message || 'Failed to apply configuration.'
       dbConnected.value = false
     } finally {
       applyingDb.value = false
     }
   }
 
-
   // ─── Step 1 : Admin account ────────────────────────────────────────────────────
+
   const adminForm = ref({ name: '', email: '', password: '', confirm: '' })
   const adminError = ref('')
 
@@ -783,23 +781,20 @@
     }
     saving.value = true
     try {
-      await $fetch('/api/setup', {
-        method: 'POST',
-        body: { name: adminForm.value.name, email: adminForm.value.email, password: adminForm.value.password },
-      })
+      await setup({ name: adminForm.value.name, email: adminForm.value.email, password: adminForm.value.password })
       await fetchMe()
       currentStep.value = 2
     } catch (e: any) {
-      adminError.value = e.data?.message || t('onboarding.admin_creation_error', 'Error creating the account.')
+      adminError.value = e.message || t('onboarding.admin_creation_error', 'Error creating the account.')
     } finally {
       saving.value = false
     }
   }
 
   // ─── Step 2 : UI Languages ─────────────────────────────────────────────────────
+
   const { languages: allWorldLangs, filteredLanguages, searchQuery: uiLangSearch } = useLanguages()
 
-  const { data: configData } = await useFetch<{ uiLanguages?: string[]; defaultUiLanguage?: string }>('/api/config')
   const selectedUiLangs = ref<string[]>(configData.value?.uiLanguages || ['en'])
   const defaultUiLang = ref(configData.value?.defaultUiLanguage || 'en')
 
@@ -807,10 +802,10 @@
   const nonEnLangs = computed(() => selectedUiLangs.value.filter(c => c !== 'en'))
 
   const selectedUiLangsOptions = computed(() =>
-      selectedUiLangs.value.map((code) => {
-        const lang = allWorldLangs.find((l) => l.code === code)
-        return { label: lang ? `${lang.nativeName} (${code})` : code, value: code }
-      }),
+    selectedUiLangs.value.map((code) => {
+      const lang = allWorldLangs.find((l) => l.code === code)
+      return { label: lang ? `${lang.nativeName} (${code})` : code, value: code }
+    }),
   )
 
   function toggleUiLang (lang: { code: string; name: string; nativeName: string }) {
@@ -825,17 +820,14 @@
     }
   }
 
-  async function saveLanguages () {
+  async function onSaveLanguages () {
     saving.value = true
     try {
       const langs = selectedUiLangs.value.map((code) => {
         const lang = allWorldLangs.find((l) => l.code === code)
         return { code, name: lang?.name || code }
       })
-      await $fetch('/api/onboarding', {
-        method: 'POST',
-        body: { languages: langs, defaultLanguage: defaultUiLang.value },
-      })
+      await saveLanguages(langs, defaultUiLang.value)
       currentStep.value = 3
     } catch {
       // silent — onboarding marked complete regardless
@@ -845,6 +837,7 @@
   }
 
   // ─── Step 3 : First project ────────────────────────────────────────────────────
+
   const projectSourceType = ref<'local' | 'git'>('local')
   const projectForm = ref({
     name: configData.value?.project?.name || '',
@@ -885,10 +878,10 @@
           token: projectForm.value.git_token.trim() || undefined,
         }
       }
-      await $fetch('/api/projects', { method: 'POST', body })
+      await createProject(body)
       currentStep.value = 4
     } catch (e: any) {
-      projectError.value = e.data?.message || t('onboarding.project_creation_error', 'Error creating the project.')
+      projectError.value = e.message || t('onboarding.project_creation_error', 'Error creating the project.')
     } finally {
       saving.value = false
     }
@@ -899,12 +892,14 @@
   }
 
   // ─── Hydration sentinel (used by Cypress tests) ────────────────────────────────
+
   const isMounted = ref(false)
   onMounted(() => {
     isMounted.value = true
   })
 
   // ─── Step 4 : Done ─────────────────────────────────────────────────────────────
+
   async function goToDashboard () {
     await clearNuxtData('auth-status')
     await router.push('/')

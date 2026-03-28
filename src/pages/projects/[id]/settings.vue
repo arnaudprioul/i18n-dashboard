@@ -534,7 +534,7 @@
 <script lang="ts" setup>
   const toast = useToast()
   const { t } = useT()
-  const { currentProject, fetchProjects } = useProject()
+  const { currentProject, fetchProjects, updateProject, importSnapshot } = useProject()
   const { settings, pending, saving, saveSettings } = useSettings()
   const savingProject = ref(false)
   const { projectLanguages } = useLanguages()
@@ -632,23 +632,19 @@ const i18n = createI18n({
         google_translate_api_key: form.value.google_translate_api_key
       })
       if (currentProject.value) {
-        await $fetch(`/api/projects/${currentProject.value.id}`, {
-          method: 'PUT',
-          body: {
-            name: form.value.name,
-            root_path: form.value.root_path,
-            source_url: form.value.source_url,
-            locales_path: form.value.locales_path,
-            key_separator: form.value.key_separator,
-            color: form.value.color,
-            description: form.value.description,
-            enable_number_formats: form.value.enable_number_formats,
-            enable_datetime_formats: form.value.enable_datetime_formats,
-            enable_modifiers: form.value.enable_modifiers,
-            git_repo: form.value.git_repo,
-          },
+        await updateProject(currentProject.value.id, {
+          name: form.value.name,
+          root_path: form.value.root_path,
+          source_url: form.value.source_url,
+          locales_path: form.value.locales_path,
+          key_separator: form.value.key_separator,
+          color: form.value.color,
+          description: form.value.description,
+          enable_number_formats: form.value.enable_number_formats,
+          enable_datetime_formats: form.value.enable_datetime_formats,
+          enable_modifiers: form.value.enable_modifiers,
+          git_repo: form.value.git_repo,
         })
-        await fetchProjects()
       }
     } finally {
       savingProject.value = false
@@ -710,10 +706,7 @@ const i18n = createI18n({
 
     importing.value = true
     try {
-      const result = await $fetch('/api/project-snapshot', {
-        method: 'POST',
-        body: { snapshot, project_id: currentProject.value.id, mode: importMode.value },
-      }) as any
+      const result = await importSnapshot({ snapshot, project_id: currentProject.value.id, mode: importMode.value }) as any
 
       await fetchProjects()
       toast.add({

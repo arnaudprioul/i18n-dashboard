@@ -472,7 +472,6 @@
 </template>
 
 <script lang="ts" setup>
-  import { userService } from '../../../services/user.service'
   import type { IUserItem } from '../../../interfaces/user.interface'
 
   const toast = useToast()
@@ -521,7 +520,7 @@
     if (!currentProject.value) return
     loadingAvailable.value = true
     try {
-      availableUsers.value = await userService.getAvailableUsers(currentProject.value.id)
+      availableUsers.value = await getAvailableUsers(currentProject.value.id)
     } catch {
       availableUsers.value = []
     } finally {
@@ -558,7 +557,8 @@
     updateRoles,
     toggleActive,
     deleting,
-    deleteUser: doDeleteUser
+    deleteUser: doDeleteUser,
+    getAvailableUsers,
   } = useUsers('project')
 
   function roleLabel (role: string) {

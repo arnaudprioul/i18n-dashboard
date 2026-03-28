@@ -2,6 +2,7 @@
 // Uses the "Dashboard UI" system project translations for the interface language.
 
 import { languageService } from '../services/language.service'
+import { localeService } from '../services/locale.service'
 
 const _uiTranslations = ref<Record<string, string>>({})
 const _uiLang = ref('en')
@@ -12,7 +13,7 @@ export function useT() {
 
   const loadTranslations = async (language: string)=>  {
     try {
-      const data = await $fetch<Record<string, string>>(`/api/ui-locale?lang=${language}`)
+      const data = await localeService.getUiLocale(language)
       translations.value = data
       lang.value = language
     } catch {

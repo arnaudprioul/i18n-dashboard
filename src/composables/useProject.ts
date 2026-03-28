@@ -149,6 +149,28 @@ export function useProject() {
     }
   }
 
+  // ── Project helpers ──────────────────────────────────────────────────────────
+
+  async function checkProjectName(name: string, excludeId?: number): Promise<{ available: boolean }> {
+    return projectService.checkName(name, excludeId)
+  }
+
+  async function detectProject(body: any) {
+    return projectService.detect(body)
+  }
+
+  // ── Scan with custom options (for ScanModal) ─────────────────────────────────
+
+  async function scanWithOptions(body: Parameters<typeof scanService.scanWithOptions>[0]) {
+    return scanService.scanWithOptions(body)
+  }
+
+  // ── Snapshot import ──────────────────────────────────────────────────────────
+
+  async function importSnapshot(data: { snapshot: any; project_id: number; mode: string }) {
+    return projectService.importSnapshot(data)
+  }
+
   return {
     currentProject,
     projects,
@@ -165,5 +187,9 @@ export function useProject() {
     scanProject,
     syncing,
     syncProject,
+    checkProjectName,
+    detectProject,
+    scanWithOptions,
+    importSnapshot,
   }
 }

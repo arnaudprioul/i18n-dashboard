@@ -98,11 +98,12 @@ export function useLanguages() {
   }
 
   async function setFallback(lang: ILanguageItem, fallbackCode: string | null): Promise<void> {
-    await $fetch(`/api/languages/${lang.id}`, {
-      method: 'PUT',
-      body: { fallback_code: fallbackCode },
-    })
+    await languageService.update(lang.id, { fallback_code: fallbackCode })
     await refresh()
+  }
+
+  async function createLanguageForProject(projectId: number, payload: Omit<ICreateLanguagePayload, 'project_id'>): Promise<void> {
+    await languageService.create({ ...payload, project_id: projectId })
   }
 
   async function startTranslateAll(languageCode: string, languageName: string): Promise<string | null> {
@@ -222,6 +223,7 @@ export function useLanguages() {
     deleteLanguage,
     setDefault,
     setFallback,
+    createLanguageForProject,
     startTranslateAll,
     // Translation job
     showProgress,

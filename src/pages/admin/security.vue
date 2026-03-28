@@ -154,10 +154,9 @@
 
 <script lang="ts" setup>
   const { t } = useT()
-  const toast = useToast()
+  const { getPasswordPolicy, saveSettings, saving } = useSettings()
 
   const pending = ref(true)
-  const saving = ref(false)
 
   const form = ref({
     password_min_length: 8,
@@ -168,12 +167,7 @@
 
   onMounted(async () => {
     try {
-      const policy = await $fetch<{
-        minLength: number
-        requireUppercase: boolean
-        requireNumber: boolean
-        requireSpecial: boolean
-      }>('/api/settings/password-policy')
+      const policy = await getPasswordPolicy()
       form.value = {
         password_min_length: policy.minLength,
         password_require_uppercase: policy.requireUppercase,
@@ -186,22 +180,11 @@
   })
 
   async function save () {
-    saving.value = true
-    try {
-      await $fetch('/api/settings', {
-        method: 'POST',
-        body: {
-          password_min_length: String(form.value.password_min_length),
-          password_require_uppercase: String(form.value.password_require_uppercase),
-          password_require_number: String(form.value.password_require_number),
-          password_require_special: String(form.value.password_require_special),
-        },
-      })
-      toast.add({ title: t('security.saved', 'Settings saved'), color: 'success' })
-    } catch (e: any) {
-      toast.add({ title: 'Erreur', description: e.data?.message || e.message, color: 'error' })
-    } finally {
-      saving.value = false
-    }
+    await saveSettings({
+      password_min_length: String(form.value.password_min_length),
+      password_require_uppercase: String(form.value.password_require_uppercase),
+      password_require_number: String(form.value.password_require_number),
+      password_require_special: String(form.value.password_require_special),
+    })
   }
 </script>

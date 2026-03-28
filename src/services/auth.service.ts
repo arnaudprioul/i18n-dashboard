@@ -26,6 +26,18 @@ class SAuth extends SBase {
   async updateMe(data: { name?: string; email?: string }): Promise<IAuthUser> {
     return this.put<IAuthUser>('/api/auth/me', { body: data })
   }
+
+  async forgotPassword(email: string): Promise<void> {
+    return this.post('/api/auth/forgot-password', { body: { email }, skipDedup: true, skipErrorToast: true })
+  }
+
+  async resetPassword(token: string, password: string, confirmPassword: string): Promise<void> {
+    return this.post('/api/auth/reset-password', {
+      body: { token, password, confirm_password: confirmPassword },
+      skipDedup: true,
+      skipErrorToast: true,
+    })
+  }
 }
 
 export const authService = new SAuth()

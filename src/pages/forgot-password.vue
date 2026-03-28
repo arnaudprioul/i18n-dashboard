@@ -100,6 +100,7 @@
 definePageMeta({ layout: 'auth' })
 
 const { t } = useT()
+const { forgotPassword } = useAuth()
 
 const email = ref('')
 const loading = ref(false)
@@ -114,13 +115,10 @@ async function handleSubmit() {
   loading.value = true
   error.value = ''
   try {
-    await $fetch('/api/auth/forgot-password', {
-      method: 'POST',
-      body: { email: email.value },
-    })
+    await forgotPassword(email.value)
     sent.value = true
   } catch (e: any) {
-    error.value = e.data?.message || t('forgot_password.error_fallback', 'An error occurred')
+    error.value = e.message || t('forgot_password.error_fallback', 'An error occurred')
   } finally {
     loading.value = false
   }

@@ -3,27 +3,31 @@ import { translationService } from '../services/translation.service'
 import { TRANSLATION_STATUS } from '../enums/translation.enum'
 import type { IReviewItem } from '../interfaces/review.interface'
 
-export function useReview() {
+export function useReview(options: { projectId?: Ref<number | undefined> } = {}) {
   const toast = useToast()
   const { t } = useT()
   const { currentProject } = useProject()
+
+  const resolvedProjectId = computed(() =>
+    options.projectId?.value ?? currentProject.value?.id,
+  )
 
   const data = ref<any>(null)
   const reviewedData = ref<any>(null)
   const pending = ref(false)
 
   async function refresh() {
-    if (!currentProject.value?.id) return
+    if (!resolvedProjectId.value) return
     pending.value = true
     try {
       const [draftResult, reviewedResult] = await Promise.all([
         keyService.getKeys({
-          project_id: currentProject.value.id,
+          project_id: resolvedProjectId.value,
           status: TRANSLATION_STATUS.DRAFT,
           limit: 200,
         }),
         keyService.getKeys({
-          project_id: currentProject.value.id,
+          project_id: resolvedProjectId.value,
           status: TRANSLATION_STATUS.REVIEWED,
           limit: 200,
         }),
@@ -35,7 +39,7 @@ export function useReview() {
     }
   }
 
-  watch(() => currentProject.value?.id, () => {
+  watch(resolvedProjectId, () => {
     refresh()
   }, { immediate: true })
 

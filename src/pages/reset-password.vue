@@ -122,6 +122,7 @@
   definePageMeta({ layout: 'auth' })
 
   const { t } = useT()
+  const { resetPassword } = useAuth()
   const route = useRoute()
   const token = computed(() => route.query.token as string | undefined)
 
@@ -148,17 +149,10 @@
     loading.value = true
     error.value = ''
     try {
-      await $fetch('/api/auth/reset-password', {
-        method: 'POST',
-        body: {
-          token: token.value,
-          password: form.value.password,
-          confirm_password: form.value.confirm,
-        },
-      })
+      await resetPassword(token.value!, form.value.password, form.value.confirm)
       success.value = true
     } catch (e: any) {
-      error.value = e.data?.message || t('reset_password.error_fallback', 'An error occurred')
+      error.value = e.message || t('reset_password.error_fallback', 'An error occurred')
     } finally {
       loading.value = false
     }
