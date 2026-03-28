@@ -74,7 +74,7 @@ describe('useT (real composable, not global stub)', () => {
       const { loadTranslations } = useT()
       await loadTranslations('fr')
 
-      expect(globalThis.$fetch).toHaveBeenCalledWith('/api/ui-locale?lang=fr')
+      expect(globalThis.$fetch).toHaveBeenCalledWith('/api/ui-locale', expect.objectContaining({ query: { lang: 'fr' } }))
     })
 
     it('updates translations and lang on success', async () => {
@@ -147,7 +147,7 @@ describe('useT (real composable, not global stub)', () => {
       const { setLang, lang } = useT()
       await setLang('fr')
 
-      expect(globalThis.$fetch).toHaveBeenCalledWith('/api/ui-locale?lang=fr')
+      expect(globalThis.$fetch).toHaveBeenCalledWith('/api/ui-locale', expect.objectContaining({ query: { lang: 'fr' } }))
       expect(lang.value).toBe('fr')
       expect(cookieRef.value).toBe('fr')
     })
