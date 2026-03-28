@@ -1,5 +1,6 @@
 import { WIDGET_REGISTRY } from '../consts/dashboard.const'
 import type { TWidgetSize } from '../types/dashboard.type'
+import { WIDGET_SIZE } from '../enums/dashboard.enum'
 
 export interface IWidgetRegistryEntry {
   label: string
@@ -21,8 +22,8 @@ export function useWidgetRegistry() {
         label: w.label,
         description: w.description ?? '',
         icon: w.icon ?? 'i-heroicons-puzzle-piece',
-        sizes: (w.sizes as TWidgetSize[]) ?? ['md', 'lg'],
-        defaultSize: (w.defaultSize as TWidgetSize) ?? 'md',
+        sizes: (w.sizes as TWidgetSize[]) ?? [WIDGET_SIZE.MD, WIDGET_SIZE.LG],
+        defaultSize: (w.defaultSize as TWidgetSize) ?? WIDGET_SIZE.MD,
         hasDataSource: false,
         isCustom: true,
       }

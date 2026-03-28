@@ -99,33 +99,11 @@
 </template>
 
 <script lang="ts" setup>
-  import type { PropType } from 'vue'
-  import type { TWidgetSize } from '../../../types/dashboard.type'
-  import type { IWidgetDataSource } from '../../../interfaces/dashboard.interface'
+  import type { IWidgetBaseProps } from '../../../interfaces/dashboard.interface'
   import { TRANSLATION_STATUS } from '../../../enums/translation.enum'
+  import { DATA_SOURCE_TYPE, WIDGET_SIZE } from '../../../enums/dashboard.enum'
 
-  const props = defineProps({
-    id: {
-      type: String,
-      required: true,
-    },
-    size: {
-      type: String as PropType<TWidgetSize>,
-      required: true,
-    },
-    editing: {
-      type: Boolean,
-      required: true,
-    },
-    dataSource: {
-      type: Object as PropType<IWidgetDataSource | undefined>,
-      default: undefined,
-    },
-    title: {
-      type: String as PropType<string | undefined>,
-      default: undefined,
-    },
-  })
+  const props = defineProps<IWidgetBaseProps>()
 
   const { t } = useT()
 
@@ -136,7 +114,7 @@
 
   const effectiveProjectId = computed(() => {
     const src = effectiveSource.value
-    if (src.type === 'project') return src.projectId
+    if (src.type === DATA_SOURCE_TYPE.PROJECT) return src.projectId
     return undefined // global = unsupported for review queue
   })
 
@@ -145,7 +123,7 @@
   })
 
   const maxItems = computed(() => {
-    if (props.size === 'lg') return 8
+    if (props.size === WIDGET_SIZE.LG) return 8
     return 4
   })
 

@@ -69,19 +69,13 @@
 
 <script lang="ts" setup>
   import type { TWidgetSize } from '../../types/dashboard.type'
-  import type { IWidgetConfig } from '../../interfaces/dashboard.interface'
+  import type { IWidgetConfig, IWidgetPickerProps, IWidgetPickerEmits } from '../../interfaces/dashboard.interface'
 
   const { t } = useT()
 
-  const props = defineProps<{
-    modelValue: boolean
-    excludeTypes?: string[]
-  }>()
+  const props = defineProps<IWidgetPickerProps>()
 
-  const emit = defineEmits<{
-    'update:modelValue': [value: boolean]
-    'add': [widget: IWidgetConfig]
-  }>()
+  const emit = defineEmits<IWidgetPickerEmits>()
 
   const open = computed({
     get: () => props.modelValue,

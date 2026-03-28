@@ -1,108 +1,109 @@
 import type { TWidgetSize, TWidgetType } from '../types/dashboard.type'
 import type { IWidgetConfig } from '../interfaces/dashboard.interface'
+import { WIDGET_SIZE, WIDGET_TYPE, DATA_SOURCE_TYPE } from '../enums/dashboard.enum'
 
 export const WIDGET_SIZES: Record<TWidgetSize, { cols: number; rows: number; label: string }> = {
-  sm: { cols: 1, rows: 1, label: 'Petit' },
-  md: { cols: 2, rows: 1, label: 'Moyen' },
-  lg: { cols: 2, rows: 2, label: 'Grand' },
-  wide: { cols: 4, rows: 1, label: 'Large' },
-  xl: { cols: 4, rows: 2, label: 'Très grand' },
+  [WIDGET_SIZE.SM]:   { cols: 1, rows: 1, label: 'Petit' },
+  [WIDGET_SIZE.MD]:   { cols: 2, rows: 1, label: 'Moyen' },
+  [WIDGET_SIZE.LG]:   { cols: 2, rows: 2, label: 'Grand' },
+  [WIDGET_SIZE.WIDE]: { cols: 4, rows: 1, label: 'Large' },
+  [WIDGET_SIZE.XL]:   { cols: 4, rows: 2, label: 'Très grand' },
 }
 
 export const WIDGET_SIZE_CLASSES: Record<TWidgetSize, string> = {
-  sm: 'col-span-1 row-span-1',
-  md: 'col-span-2 row-span-1',
-  lg: 'col-span-2 row-span-2',
-  wide: 'col-span-4 row-span-1',
-  xl: 'col-span-4 row-span-2',
+  [WIDGET_SIZE.SM]:   'col-span-1 row-span-1',
+  [WIDGET_SIZE.MD]:   'col-span-2 row-span-1',
+  [WIDGET_SIZE.LG]:   'col-span-2 row-span-2',
+  [WIDGET_SIZE.WIDE]: 'col-span-4 row-span-1',
+  [WIDGET_SIZE.XL]:   'col-span-4 row-span-2',
 }
 
 export const WIDGET_REGISTRY: Record<TWidgetType, { label: string; description: string; icon: string; sizes: TWidgetSize[]; defaultSize: TWidgetSize; hasDataSource: boolean }> = {
-  'stat-keys': {
+  [WIDGET_TYPE.STAT_KEYS]: {
     label: 'Clés totales',
     description: 'Nombre total de clés de traduction',
     icon: 'i-heroicons-key',
-    sizes: ['sm', 'md'],
-    defaultSize: 'sm',
+    sizes: [WIDGET_SIZE.SM, WIDGET_SIZE.MD],
+    defaultSize: WIDGET_SIZE.SM,
     hasDataSource: true,
   },
-  'stat-coverage': {
+  [WIDGET_TYPE.STAT_COVERAGE]: {
     label: 'Couverture',
     description: 'Taux de couverture global des traductions',
     icon: 'i-heroicons-chart-bar',
-    sizes: ['sm', 'md'],
-    defaultSize: 'sm',
+    sizes: [WIDGET_SIZE.SM, WIDGET_SIZE.MD],
+    defaultSize: WIDGET_SIZE.SM,
     hasDataSource: true,
   },
-  'stat-languages': {
+  [WIDGET_TYPE.STAT_LANGUAGES]: {
     label: 'Langues',
     description: 'Nombre de langues configurées',
     icon: 'i-heroicons-language',
-    sizes: ['sm', 'md'],
-    defaultSize: 'sm',
+    sizes: [WIDGET_SIZE.SM, WIDGET_SIZE.MD],
+    defaultSize: WIDGET_SIZE.SM,
     hasDataSource: true,
   },
-  'stat-unused': {
+  [WIDGET_TYPE.STAT_UNUSED]: {
     label: 'Clés inutilisées',
     description: 'Clés non trouvées dans le code source',
     icon: 'i-heroicons-exclamation-triangle',
-    sizes: ['sm', 'md'],
-    defaultSize: 'sm',
+    sizes: [WIDGET_SIZE.SM, WIDGET_SIZE.MD],
+    defaultSize: WIDGET_SIZE.SM,
     hasDataSource: true,
   },
-  'projects': {
+  [WIDGET_TYPE.PROJECTS]: {
     label: 'Projets',
     description: 'Liste de vos projets de traduction',
     icon: 'i-heroicons-rectangle-stack',
-    sizes: ['md', 'lg', 'wide'],
-    defaultSize: 'wide',
+    sizes: [WIDGET_SIZE.MD, WIDGET_SIZE.LG, WIDGET_SIZE.WIDE],
+    defaultSize: WIDGET_SIZE.WIDE,
     hasDataSource: false,
   },
-  'languages-coverage': {
+  [WIDGET_TYPE.LANGUAGES_COVERAGE]: {
     label: 'Couverture par langue',
     description: 'Progression de chaque langue',
     icon: 'i-heroicons-globe-alt',
-    sizes: ['md', 'lg', 'wide'],
-    defaultSize: 'md',
+    sizes: [WIDGET_SIZE.MD, WIDGET_SIZE.LG, WIDGET_SIZE.WIDE],
+    defaultSize: WIDGET_SIZE.MD,
     hasDataSource: true,
   },
-  'last-activity': {
+  [WIDGET_TYPE.LAST_ACTIVITY]: {
     label: 'Activité récente',
     description: 'Dernières modifications de traductions',
     icon: 'i-heroicons-clock',
-    sizes: ['md', 'lg', 'wide'],
-    defaultSize: 'md',
+    sizes: [WIDGET_SIZE.MD, WIDGET_SIZE.LG, WIDGET_SIZE.WIDE],
+    defaultSize: WIDGET_SIZE.MD,
     hasDataSource: true,
   },
-  'review-queue': {
+  [WIDGET_TYPE.REVIEW_QUEUE]: {
     label: 'File de révision',
     description: 'Traductions en attente de validation',
     icon: 'i-heroicons-clipboard-document-check',
-    sizes: ['md', 'lg', 'wide'],
-    defaultSize: 'md',
+    sizes: [WIDGET_SIZE.MD, WIDGET_SIZE.LG, WIDGET_SIZE.WIDE],
+    defaultSize: WIDGET_SIZE.MD,
     hasDataSource: true,
   },
 }
 
 export function DEFAULT_PROJECT_LAYOUT(projectId: number): IWidgetConfig[] {
-  const ds = { type: 'project' as const, projectId }
+  const ds = { type: DATA_SOURCE_TYPE.PROJECT, projectId }
   return [
-    { id: 'proj-default-1', type: 'stat-keys', size: 'sm', dataSource: ds },
-    { id: 'proj-default-2', type: 'stat-coverage', size: 'sm', dataSource: ds },
-    { id: 'proj-default-3', type: 'stat-languages', size: 'sm', dataSource: ds },
-    { id: 'proj-default-4', type: 'stat-unused', size: 'sm', dataSource: ds },
-    { id: 'proj-default-5', type: 'languages-coverage', size: 'wide', dataSource: ds },
-    { id: 'proj-default-6', type: 'last-activity', size: 'md', dataSource: ds },
-    { id: 'proj-default-7', type: 'review-queue', size: 'md', dataSource: ds },
+    { id: 'proj-default-1', type: WIDGET_TYPE.STAT_KEYS,           size: WIDGET_SIZE.SM,   dataSource: ds },
+    { id: 'proj-default-2', type: WIDGET_TYPE.STAT_COVERAGE,       size: WIDGET_SIZE.SM,   dataSource: ds },
+    { id: 'proj-default-3', type: WIDGET_TYPE.STAT_LANGUAGES,      size: WIDGET_SIZE.SM,   dataSource: ds },
+    { id: 'proj-default-4', type: WIDGET_TYPE.STAT_UNUSED,         size: WIDGET_SIZE.SM,   dataSource: ds },
+    { id: 'proj-default-5', type: WIDGET_TYPE.LANGUAGES_COVERAGE,  size: WIDGET_SIZE.WIDE, dataSource: ds },
+    { id: 'proj-default-6', type: WIDGET_TYPE.LAST_ACTIVITY,       size: WIDGET_SIZE.MD,   dataSource: ds },
+    { id: 'proj-default-7', type: WIDGET_TYPE.REVIEW_QUEUE,        size: WIDGET_SIZE.MD,   dataSource: ds },
   ]
 }
 
 export const DEFAULT_LAYOUT: IWidgetConfig[] = [
-  { id: 'default-1', type: 'stat-keys', size: 'sm' },
-  { id: 'default-2', type: 'stat-coverage', size: 'sm' },
-  { id: 'default-3', type: 'stat-languages', size: 'sm' },
-  { id: 'default-4', type: 'stat-unused', size: 'sm' },
-  { id: 'default-5', type: 'projects', size: 'wide' },
-  { id: 'default-6', type: 'languages-coverage', size: 'md' },
-  { id: 'default-7', type: 'last-activity', size: 'md' },
+  { id: 'default-1', type: WIDGET_TYPE.STAT_KEYS,          size: WIDGET_SIZE.SM },
+  { id: 'default-2', type: WIDGET_TYPE.STAT_COVERAGE,      size: WIDGET_SIZE.SM },
+  { id: 'default-3', type: WIDGET_TYPE.STAT_LANGUAGES,     size: WIDGET_SIZE.SM },
+  { id: 'default-4', type: WIDGET_TYPE.STAT_UNUSED,        size: WIDGET_SIZE.SM },
+  { id: 'default-5', type: WIDGET_TYPE.PROJECTS,           size: WIDGET_SIZE.WIDE },
+  { id: 'default-6', type: WIDGET_TYPE.LANGUAGES_COVERAGE, size: WIDGET_SIZE.MD },
+  { id: 'default-7', type: WIDGET_TYPE.LAST_ACTIVITY,      size: WIDGET_SIZE.MD },
 ]

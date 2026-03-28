@@ -113,17 +113,13 @@
 </template>
 
 <script setup lang="ts">
-import { LANGUAGES } from '../consts/languages.const'
+import { LANGUAGES } from '../../consts/languages.const'
+import type { ILanguagePickerProps, ILanguagePickerEmits } from '../../interfaces/languages.interface'
 
 const { t } = useT()
 
-const props = defineProps<{
-  modelValue: Array<{ code: string; name: string; is_default: boolean }>
-}>()
-
-const emit = defineEmits<{
-  'update:modelValue': [value: Array<{ code: string; name: string; is_default: boolean }>]
-}>()
+const props = defineProps<ILanguagePickerProps>()
+const emit = defineEmits<ILanguagePickerEmits>()
 
 const search = ref('')
 

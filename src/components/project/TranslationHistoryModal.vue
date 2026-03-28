@@ -86,11 +86,11 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
-  translationId: number | null
-}>()
+import type { ITranslationHistoryModalProps, ITranslationHistoryModalEmits } from '../../interfaces/translation.interface'
 
-defineEmits<{ close: [] }>()
+const props = defineProps<ITranslationHistoryModalProps>()
+
+defineEmits<ITranslationHistoryModalEmits>()
 
 const { t } = useT()
 

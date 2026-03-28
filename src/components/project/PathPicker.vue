@@ -148,17 +148,14 @@
 </template>
 
 <script setup lang="ts">
+import type { IPathPickerProps, IPathPickerEmits } from '../../interfaces/project.interface'
+
 const { t } = useT()
 const { loading, browseError, data, browse } = useFs()
 
-const props = defineProps<{
-  modelValue: string
-  placeholder?: string
-}>()
+const props = defineProps<IPathPickerProps>()
 
-const emit = defineEmits<{
-  'update:modelValue': [value: string]
-}>()
+const emit = defineEmits<IPathPickerEmits>()
 
 const open = ref(false)
 

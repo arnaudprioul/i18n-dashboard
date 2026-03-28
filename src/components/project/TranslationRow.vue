@@ -283,7 +283,8 @@
 </template>
 
 <script setup lang="ts">
-import { TRANSLATION_STATUS } from '../enums/translation.enum'
+import { TRANSLATION_STATUS } from '../../enums/translation.enum'
+import type { ITranslationRowProps, ITranslationRowEmits } from '../../interfaces/key.interface'
 
 const { t } = useT()
 const {
@@ -294,21 +295,9 @@ const {
   deleteKeyById,
 } = useKeys()
 
-const props = defineProps<{
-  translationKey: {
-    id: number
-    key: string
-    description?: string
-    is_unused?: boolean
-    translations: Record<string, { id: number; value: string; language_code: string; status?: string } | undefined>
-    usages?: Array<{ file_path: string; line_number: number; detected_function: string }>
-  }
-  languages: Array<{ code: string; name: string }>
-  gridStyle: Record<string, string>
-  projectId?: number
-}>()
+const props = defineProps<ITranslationRowProps>()
 
-const emit = defineEmits<{ updated: [] }>()
+const emit = defineEmits<ITranslationRowEmits>()
 
 const toast = useToast()
 const { canApprove, canManageProject } = useAuth()

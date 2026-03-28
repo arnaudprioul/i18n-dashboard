@@ -28,3 +28,20 @@ export interface IProject {
   is_system?: boolean
   git_repo?: { name?: string; url: string; branch?: string; token?: string } | null
 }
+
+export interface IGitRepoManagerProps {
+  modelValue: IGitRepo | null | undefined
+}
+
+export interface IGitRepoManagerEmits {
+  'update:modelValue': [value: IGitRepo | null]
+}
+
+export interface IPathPickerProps {
+  modelValue: string
+  placeholder?: string
+}
+
+export interface IPathPickerEmits {
+  'update:modelValue': [value: string]
+}

@@ -2,6 +2,7 @@ import type { IWidgetConfig, IWidgetDataSource } from '../interfaces/dashboard.i
 import type { TWidgetSize } from '../types/dashboard.type'
 import { DEFAULT_PROJECT_LAYOUT } from '../consts/dashboard.const'
 import { dashboardService } from '../services/dashboard.service'
+import { DATA_SOURCE_TYPE } from '../enums/dashboard.enum'
 
 export function useProjectDashboard(projectId: number) {
   const { data, refresh } = useAsyncData(
@@ -48,7 +49,7 @@ export function useProjectDashboard(projectId: number) {
     // Force data source to this project when not explicitly set
     const withSource: IWidgetConfig = widget.dataSource
       ? widget
-      : { ...widget, dataSource: { type: 'project', projectId } }
+      : { ...widget, dataSource: { type: DATA_SOURCE_TYPE.PROJECT, projectId } }
     localLayout.value.push(withSource)
   }
 

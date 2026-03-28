@@ -391,6 +391,7 @@
 
 <script lang="ts" setup>
   import type { ICustomWidgetDef } from '../../interfaces/project-config.interface'
+  import { WIDGET_SIZE } from '../../enums/dashboard.enum'
 
   const { t } = useT()
   const { loadCustomization, saveCustomization: adminSaveCustomization, customizationSaving: saving } = useAdmin()
@@ -464,11 +465,11 @@
     label: '',
     description: '',
     icon: 'i-heroicons-puzzle-piece',
-    sizes: ['md', 'lg', 'wide'],
-    defaultSize: 'md',
+    sizes: [WIDGET_SIZE.MD, WIDGET_SIZE.LG, WIDGET_SIZE.WIDE],
+    defaultSize: WIDGET_SIZE.MD,
     config: { kind: 'iframe', url: '' },
   })
-  const WIDGET_SIZES = ['sm', 'md', 'lg', 'wide', 'xl']
+  const WIDGET_SIZES = Object.values(WIDGET_SIZE)
 
   // ── Load ───────────────────────────────────────────────────────────────────
 
@@ -502,8 +503,8 @@
       label: '',
       description: '',
       icon: 'i-heroicons-puzzle-piece',
-      sizes: ['md', 'lg', 'wide'],
-      defaultSize: 'md',
+      sizes: [WIDGET_SIZE.MD, WIDGET_SIZE.LG, WIDGET_SIZE.WIDE],
+      defaultSize: WIDGET_SIZE.MD,
       config: { kind: 'iframe', url: '' },
     })
     editingIndex.value = -1

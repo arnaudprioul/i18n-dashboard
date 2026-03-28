@@ -82,15 +82,13 @@
 </template>
 
 <script setup lang="ts">
+import type { ILinkedKeyPickerProps, ILinkedKeyPickerEmits } from '../../interfaces/key.interface'
+
 const { t } = useT()
 
-const props = defineProps<{
-  projectId?: number
-}>()
+const props = defineProps<ILinkedKeyPickerProps>()
 
-const emit = defineEmits<{
-  select: [value: string]
-}>()
+const emit = defineEmits<ILinkedKeyPickerEmits>()
 
 const { searchKeys } = useKeys({})
 

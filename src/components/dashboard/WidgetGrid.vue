@@ -148,6 +148,7 @@
 
 <script lang="ts" setup>
   import { WIDGET_SIZE_CLASSES } from '../../consts/dashboard.const'
+  import { WIDGET_TYPE } from '../../enums/dashboard.enum'
 
   const { t } = useT()
   const { currentUser } = useAuth()
@@ -180,18 +181,18 @@
 
   function widgetComponent (type: string) {
     switch (type) {
-      case 'stat-keys':
-      case 'stat-coverage':
-      case 'stat-languages':
-      case 'stat-unused':
+      case WIDGET_TYPE.STAT_KEYS:
+      case WIDGET_TYPE.STAT_COVERAGE:
+      case WIDGET_TYPE.STAT_LANGUAGES:
+      case WIDGET_TYPE.STAT_UNUSED:
         return resolveComponent('CommonWidgetsStatWidget')
-      case 'projects':
+      case WIDGET_TYPE.PROJECTS:
         return resolveComponent('CommonWidgetsProjectsWidget')
-      case 'languages-coverage':
+      case WIDGET_TYPE.LANGUAGES_COVERAGE:
         return resolveComponent('CommonWidgetsLanguagesCoverageWidget')
-      case 'last-activity':
+      case WIDGET_TYPE.LAST_ACTIVITY:
         return resolveComponent('CommonWidgetsActivityWidget')
-      case 'review-queue':
+      case WIDGET_TYPE.REVIEW_QUEUE:
         return resolveComponent('CommonWidgetsReviewWidget')
       default:
         if (getEntry(type)?.isCustom) {

@@ -53,7 +53,7 @@
 
     <div
         v-else
-        :class="size === 'wide' ? 'grid grid-cols-2 gap-3 space-y-0' : ''"
+        :class="size === WIDGET_SIZE.WIDE ? 'grid grid-cols-2 gap-3 space-y-0' : ''"
         class="overflow-y-auto space-y-3"
     >
       <div
@@ -81,7 +81,7 @@
           />
         </div>
         <p
-            v-if="size !== 'sm'"
+            v-if="size !== WIDGET_SIZE.SM"
             class="text-xs text-gray-400"
         >
           {{ lang.translated }} / {{ lang.total }} · {{ lang.missing }} {{ t('dashboard.missing', 'missing') }}
@@ -92,32 +92,10 @@
 </template>
 
 <script lang="ts" setup>
-  import type { PropType } from 'vue'
-  import type { TWidgetSize } from '../../../types/dashboard.type'
-  import type { IWidgetDataSource } from '../../../interfaces/dashboard.interface'
+  import type { IWidgetBaseProps } from '../../../interfaces/dashboard.interface'
+  import { WIDGET_SIZE } from '../../../enums/dashboard.enum'
 
-  const props = defineProps({
-    id: {
-      type: String,
-      required: true,
-    },
-    size: {
-      type: String as PropType<TWidgetSize>,
-      required: true,
-    },
-    editing: {
-      type: Boolean,
-      required: true,
-    },
-    dataSource: {
-      type: Object as PropType<IWidgetDataSource | undefined>,
-      default: undefined,
-    },
-    title: {
-      type: String as PropType<string | undefined>,
-      default: undefined,
-    },
-  })
+  const props = defineProps<IWidgetBaseProps>()
 
   const { t } = useT()
 
@@ -127,8 +105,8 @@
   )
 
   const maxItems = computed(() => {
-    if (props.size === 'lg') return 6
-    if (props.size === 'wide') return 8
+    if (props.size === WIDGET_SIZE.LG) return 6
+    if (props.size === WIDGET_SIZE.WIDE) return 8
     return 3
   })
 

@@ -39,22 +39,20 @@
 
 <script lang="ts" setup>
   import type { ICustomWidgetDef } from '../../../interfaces/project-config.interface'
+  import type { ICustomIframeWidgetProps } from '../../../interfaces/dashboard.interface'
 
-  const props = defineProps<{
-    id: string
-    type: string
-    size: string
-    editing?: boolean
-    title?: string
-  }>()
+  const props = defineProps<ICustomIframeWidgetProps>()
 
   const { t } = useT()
   const { customWidgets } = useModuleConfig()
-  const def = computed<ICustomWidgetDef | undefined>(() =>
-      customWidgets.value.find(w => w.type === props.type),
-  )
-  const url = computed(() =>
-      def.value?.config?.kind === 'iframe' ? def.value.config.url : null,
-  )
-  const label = computed(() => props.title || def.value?.label || props.type)
+
+  const def = computed<ICustomWidgetDef | undefined>(() => {
+    return customWidgets.value.find(w => w.type === props.type)
+  })
+  const url = computed(() => {
+    return def.value?.config?.kind === 'iframe' ? def.value.config.url : null
+  })
+  const label = computed(() => {
+    return props.title || def.value?.label || props.type
+  })
 </script>

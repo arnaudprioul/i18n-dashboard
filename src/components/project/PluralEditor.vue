@@ -159,15 +159,13 @@
 </template>
 
 <script setup lang="ts">
+import type { IPluralEditorProps, IPluralEditorEmits } from '../../interfaces/translation.interface'
+
 const { t } = useT()
 
-const props = defineProps<{
-  modelValue: string
-}>()
+const props = defineProps<IPluralEditorProps>()
 
-const emit = defineEmits<{
-  'update:modelValue': [value: string]
-}>()
+const emit = defineEmits<IPluralEditorEmits>()
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 

@@ -15,26 +15,26 @@
           </p>
           <div class="flex gap-2">
             <button
-                :class="draftSource === 'global'
+                :class="draftSource === DATA_SOURCE_TYPE.GLOBAL
                 ? 'bg-primary-500 text-white border-primary-500'
                 : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'"
                 class="flex-1 px-3 py-2 rounded-lg text-sm font-medium border transition-colors"
-                @click="draftSource = 'global'"
+                @click="draftSource = DATA_SOURCE_TYPE.GLOBAL"
             >
               {{ t('dashboard.global_project', 'Global') }}
             </button>
             <button
-                :class="draftSource === 'project'
+                :class="draftSource === DATA_SOURCE_TYPE.PROJECT
                 ? 'bg-primary-500 text-white border-primary-500'
                 : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'"
                 class="flex-1 px-3 py-2 rounded-lg text-sm font-medium border transition-colors"
-                @click="draftSource = 'project'"
+                @click="draftSource = DATA_SOURCE_TYPE.PROJECT"
             >
               {{ t('dashboard.specific_project', 'Specific project') }}
             </button>
           </div>
 
-          <div v-if="draftSource === 'project'">
+          <div v-if="draftSource === DATA_SOURCE_TYPE.PROJECT">
             <u-select
                 v-model="draftProjectId"
                 :items="projectItems"
@@ -73,35 +73,18 @@
 </template>
 
 <script lang="ts" setup>
-  import type { PropType } from 'vue'
   import type { TDataSourceType } from '../../types/dashboard.type'
-  import type { IWidgetConfig, IWidgetDataSource } from '../../interfaces/dashboard.interface'
+  import type { IWidgetDataSource, IWidgetConfigModalProps, IWidgetConfigModalEmits } from '../../interfaces/dashboard.interface'
   import { WIDGET_REGISTRY } from '../../consts/dashboard.const'
+  import { DATA_SOURCE_TYPE } from '../../enums/dashboard.enum'
 
-  const props = defineProps({
-    open: {
-      type: Boolean,
-      required: true,
-    },
-    widget: {
-      type: Object as PropType<IWidgetConfig | null>,
-      default: null,
-    },
-    index: {
-      type: Number,
-      default: -1,
-    },
-  })
-
-  const emit = defineEmits<{
-    (e: 'update:open', value: boolean): void
-    (e: 'save', value: { dataSource: IWidgetDataSource | undefined; title: string | undefined }): void
-  }>()
+  const props = defineProps<IWidgetConfigModalProps>()
+  const emit = defineEmits<IWidgetConfigModalEmits>()
 
   const { t } = useT()
   const { visibleProjects } = useProject()
 
-  const draftSource = ref<TDataSourceType>('global')
+  const draftSource = ref<TDataSourceType>(DATA_SOURCE_TYPE.GLOBAL)
   const draftProjectId = ref<number | undefined>()
   const draftTitle = ref('')
 
@@ -109,7 +92,7 @@
       () => props.widget,
       (w) => {
         if (!w) return
-        draftSource.value = w.dataSource?.type ?? 'global'
+        draftSource.value = w.dataSource?.type ?? DATA_SOURCE_TYPE.GLOBAL
         draftProjectId.value = w.dataSource?.projectId
         draftTitle.value = w.title ?? ''
       },
@@ -128,9 +111,9 @@
   })
 
   function save () {
-    const dataSource: IWidgetDataSource = draftSource.value === 'project'
-        ? { type: 'project', projectId: draftProjectId.value }
-        : { type: 'global' }
+    const dataSource: IWidgetDataSource = draftSource.value === DATA_SOURCE_TYPE.PROJECT
+        ? { type: DATA_SOURCE_TYPE.PROJECT, projectId: draftProjectId.value }
+        : { type: DATA_SOURCE_TYPE.GLOBAL }
     emit('save', { dataSource, title: draftTitle.value || undefined })
     emit('update:open', false)
   }

@@ -130,7 +130,7 @@
     <!-- Widget picker (exclude 'projects' widget — not relevant in project context) -->
     <common-widget-picker
         v-model="showPicker"
-        :exclude-types="['projects']"
+        :exclude-types="[WIDGET_TYPE.PROJECTS]"
         @add="addWidget"
     />
 
@@ -147,10 +147,10 @@
 
 <script lang="ts" setup>
   import { WIDGET_SIZE_CLASSES } from '../../consts/dashboard.const'
+  import type { IWidgetGridProps } from '../../interfaces/dashboard.interface'
+  import { WIDGET_TYPE } from '../../enums/dashboard.enum'
 
-  const props = defineProps<{
-    projectId: number
-  }>()
+  const props = defineProps<IWidgetGridProps>()
 
   const { t } = useT()
   const {
@@ -182,18 +182,18 @@
 
   function widgetComponent (type: string) {
     switch (type) {
-      case 'stat-keys':
-      case 'stat-coverage':
-      case 'stat-languages':
-      case 'stat-unused':
+      case WIDGET_TYPE.STAT_KEYS:
+      case WIDGET_TYPE.STAT_COVERAGE:
+      case WIDGET_TYPE.STAT_LANGUAGES:
+      case WIDGET_TYPE.STAT_UNUSED:
         return resolveComponent('CommonWidgetsStatWidget')
-      case 'projects':
+      case WIDGET_TYPE.PROJECTS:
         return resolveComponent('CommonWidgetsProjectsWidget')
-      case 'languages-coverage':
+      case WIDGET_TYPE.LANGUAGES_COVERAGE:
         return resolveComponent('CommonWidgetsLanguagesCoverageWidget')
-      case 'last-activity':
+      case WIDGET_TYPE.LAST_ACTIVITY:
         return resolveComponent('CommonWidgetsActivityWidget')
-      case 'review-queue':
+      case WIDGET_TYPE.REVIEW_QUEUE:
         return resolveComponent('CommonWidgetsReviewWidget')
       default:
         if (getEntry(type)?.isCustom) {

@@ -37,17 +37,13 @@
 </template>
 
 <script setup lang="ts">
-import type { IGitRepo } from '../interfaces/project.interface'
+import type { IGitRepo, IGitRepoManagerProps, IGitRepoManagerEmits } from '../../interfaces/project.interface'
 
 const { t } = useT()
 
-const props = defineProps<{
-  modelValue: IGitRepo | null | undefined
-}>()
+const props = defineProps<IGitRepoManagerProps>()
 
-const emit = defineEmits<{
-  'update:modelValue': [value: IGitRepo | null]
-}>()
+const emit = defineEmits<IGitRepoManagerEmits>()
 
 const local = reactive<IGitRepo>({ url: '', branch: '', token: '' })
 

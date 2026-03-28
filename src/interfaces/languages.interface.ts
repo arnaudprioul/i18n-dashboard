@@ -21,3 +21,17 @@ export interface ICreateLanguagePayload {
 	name: string
 	is_default?: boolean
 }
+
+export interface ILanguagePickerItem {
+	code: string
+	name: string
+	is_default: boolean
+}
+
+export interface ILanguagePickerProps {
+	modelValue: ILanguagePickerItem[]
+}
+
+export interface ILanguagePickerEmits {
+	'update:modelValue': [value: ILanguagePickerItem[]]
+}

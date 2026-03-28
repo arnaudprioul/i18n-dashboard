@@ -44,7 +44,7 @@
 
     <div
         v-else
-        :class="size === 'wide' ? 'grid grid-cols-2 gap-2' : 'space-y-2'"
+        :class="size === WIDGET_SIZE.WIDE ? 'grid grid-cols-2 gap-2' : 'space-y-2'"
         class="overflow-y-auto"
     >
       <button
@@ -79,20 +79,18 @@
 </template>
 
 <script lang="ts" setup>
-  import type { TWidgetSize } from '../../../types/dashboard.type'
+  import type { IProjectsWidgetProps } from '../../../interfaces/dashboard.interface'
+  import { WIDGET_SIZE } from '../../../enums/dashboard.enum'
 
-  const props = defineProps<{
-    size: TWidgetSize
-    editing: boolean
-  }>()
+  const props = defineProps<IProjectsWidgetProps>()
 
   const { t } = useT()
   const { visibleProjects, pending } = useProject()
   const router = useRouter()
 
   const maxItems = computed(() => {
-    if (props.size === 'lg') return 6
-    if (props.size === 'wide') return 4
+    if (props.size === WIDGET_SIZE.LG) return 6
+    if (props.size === WIDGET_SIZE.WIDE) return 4
     return 3
   })
 

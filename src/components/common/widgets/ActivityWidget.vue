@@ -53,7 +53,7 @@
 
     <div
         v-else
-        :class="size === 'wide' ? 'grid grid-cols-2 gap-x-4 gap-y-2' : 'space-y-2'"
+        :class="size === WIDGET_SIZE.WIDE ? 'grid grid-cols-2 gap-x-4 gap-y-2' : 'space-y-2'"
         class="overflow-y-auto"
     >
       <div
@@ -87,32 +87,10 @@
 </template>
 
 <script lang="ts" setup>
-  import type { PropType } from 'vue'
-  import type { TWidgetSize } from '../../../types/dashboard.type'
-  import type { IWidgetDataSource } from '../../../interfaces/dashboard.interface'
+  import type { IWidgetBaseProps } from '../../../interfaces/dashboard.interface'
+  import { WIDGET_SIZE } from '../../../enums/dashboard.enum'
 
-  const props = defineProps({
-    id: {
-      type: String,
-      required: true,
-    },
-    size: {
-      type: String as PropType<TWidgetSize>,
-      required: true,
-    },
-    editing: {
-      type: Boolean,
-      required: true,
-    },
-    dataSource: {
-      type: Object as PropType<IWidgetDataSource | undefined>,
-      default: undefined,
-    },
-    title: {
-      type: String as PropType<string | undefined>,
-      default: undefined,
-    },
-  })
+  const props = defineProps<IWidgetBaseProps>()
 
   const { t } = useT()
 
@@ -122,14 +100,18 @@
   )
 
   const maxItems = computed(() => {
-    if (props.size === 'lg') return 10
-    if (props.size === 'wide') return 8
+    if (props.size === WIDGET_SIZE.LG) return 10
+    if (props.size === WIDGET_SIZE.WIDE) return 8
     return 5
   })
 
-  const displayedActivity = computed(() => (stats.value?.recentActivity ?? []).slice(0, maxItems.value))
+  const displayedActivity = computed(() => {
+    return (stats.value?.recentActivity ?? []).slice(0, maxItems.value)
+  })
 
-  const displayTitle = computed(() => props.title || t('dashboard.recent_activity', 'Recent activity'))
+  const displayTitle = computed(() => {
+    return props.title || t('dashboard.recent_activity', 'Recent activity')
+  })
 
   function formatRelative (date: string) {
     const diff = Date.now() - new Date(date).getTime()

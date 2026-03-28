@@ -23,7 +23,9 @@ export interface IDbConfigPayload {
 }
 
 export interface IAuthStatusResult {
+  isLoggedIn: boolean
   hasUsers: boolean
+  onboardingCompleted: boolean
 }
 
 class SOnboarding extends SBase {

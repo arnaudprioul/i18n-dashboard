@@ -169,17 +169,14 @@
 </template>
 
 <script setup lang="ts">
-import type { IGitRepo } from '../interfaces/project.interface'
+import type { IScanModalProps, IScanModalEmits } from '../../interfaces/scan.interface'
 
 const { t } = useT()
 const { updateProject, scanWithOptions } = useProject()
 
-const props = defineProps<{
-  projectId: number
-  project?: { languages?: { code: string; name: string }[]; root_path?: string; git_repo?: IGitRepo | null }
-}>()
+const props = defineProps<IScanModalProps>()
 
-const emit = defineEmits<{ done: [] }>()
+const emit = defineEmits<IScanModalEmits>()
 
 const open = defineModel<boolean>('open', { default: false })
 

@@ -48,7 +48,7 @@
         </div>
 
         <div
-            v-if="size === 'md' && type === 'stat-coverage' && stats && hasProject"
+            v-if="size === WIDGET_SIZE.MD && type === WIDGET_TYPE.STAT_COVERAGE && stats && hasProject"
             class="mt-3"
         >
           <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
@@ -64,36 +64,10 @@
 </template>
 
 <script lang="ts" setup>
-  import type { PropType } from 'vue'
-  import type { TWidgetSize, TWidgetType } from '../../../types/dashboard.type'
-  import type { IWidgetDataSource } from '../../../interfaces/dashboard.interface'
+  import type { IStatWidgetProps } from '../../../interfaces/dashboard.interface'
+  import { WIDGET_SIZE, WIDGET_TYPE } from '../../../enums/dashboard.enum'
 
-  const props = defineProps({
-    id: {
-      type: String,
-      required: true,
-    },
-    type: {
-      type: String as PropType<TWidgetType>,
-      required: true,
-    },
-    size: {
-      type: String as PropType<TWidgetSize>,
-      required: true,
-    },
-    editing: {
-      type: Boolean,
-      required: true,
-    },
-    dataSource: {
-      type: Object as PropType<IWidgetDataSource | undefined>,
-      default: undefined,
-    },
-    title: {
-      type: String as PropType<string | undefined>,
-      default: undefined,
-    },
-  })
+  const props = defineProps<IStatWidgetProps>()
 
   const { t } = useT()
 
@@ -104,28 +78,28 @@
 
   const config = computed(() => {
     switch (props.type) {
-      case 'stat-keys':
+      case WIDGET_TYPE.STAT_KEYS:
         return {
           label: t('dashboard.stat_total_keys', 'Total keys'),
           icon: 'i-heroicons-key',
           iconColor: 'text-blue-600',
           bgColor: 'bg-blue-50 dark:bg-blue-900/20',
         }
-      case 'stat-coverage':
+      case WIDGET_TYPE.STAT_COVERAGE:
         return {
           label: t('dashboard.stat_coverage', 'Coverage'),
           icon: 'i-heroicons-chart-bar',
           iconColor: 'text-green-600',
           bgColor: 'bg-green-50 dark:bg-green-900/20',
         }
-      case 'stat-languages':
+      case WIDGET_TYPE.STAT_LANGUAGES:
         return {
           label: t('dashboard.stat_languages', 'Languages'),
           icon: 'i-heroicons-language',
           iconColor: 'text-purple-600',
           bgColor: 'bg-purple-50 dark:bg-purple-900/20',
         }
-      case 'stat-unused':
+      case WIDGET_TYPE.STAT_UNUSED:
         return {
           label: t('dashboard.stat_unused', 'Unused'),
           icon: 'i-heroicons-exclamation-triangle',
@@ -149,13 +123,13 @@
   const displayValue = computed(() => {
     if (!stats.value) return '—'
     switch (props.type) {
-      case 'stat-keys':
+      case WIDGET_TYPE.STAT_KEYS:
         return stats.value.totalKeys ?? '—'
-      case 'stat-coverage':
+      case WIDGET_TYPE.STAT_COVERAGE:
         return `${coverage.value.toFixed(2)}%`
-      case 'stat-languages':
+      case WIDGET_TYPE.STAT_LANGUAGES:
         return stats.value.languages?.length ?? '—'
-      case 'stat-unused':
+      case WIDGET_TYPE.STAT_UNUSED:
         return stats.value.unusedKeys ?? '—'
       default:
         return '—'
