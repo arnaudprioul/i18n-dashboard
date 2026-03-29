@@ -28,6 +28,7 @@ Thumbs.db
 
 # Claude Code local settings
 .claude/
+CLAUDE.md
 
 # npm auth config (never commit tokens)
 .npmrc
