@@ -15,8 +15,8 @@
         <template #header>
           <div class="flex items-center gap-2">
             <u-icon
-                class="text-primary-500"
-                name="i-heroicons-lock-closed"
+              class="text-primary-500"
+              name="i-heroicons-lock-closed"
             />
             <h2 class="font-semibold text-gray-900 dark:text-white">
               {{ t('security.password_policy_title', 'Password policy') }}
@@ -25,30 +25,30 @@
         </template>
 
         <div
-            v-if="pending"
-            class="space-y-4"
+          v-if="pending"
+          class="space-y-4"
         >
           <u-skeleton
-              v-for="i in 4"
-              :key="i"
-              class="h-8 w-full rounded-lg"
+            v-for="i in 4"
+            :key="i"
+            class="h-8 w-full rounded-lg"
           />
         </div>
 
         <div
-            v-else
-            class="space-y-5"
+          v-else
+          class="space-y-5"
         >
           <u-form-field
-              :hint="t('security.min_length_hint', 'Minimum number of characters required')"
-              :label="t('security.min_length_label', 'Minimum length')"
+            :hint="t('security.min_length_hint', 'Minimum number of characters required')"
+            :label="t('security.min_length_label', 'Minimum length')"
           >
             <u-input
-                v-model.number="form.password_min_length"
-                :max="128"
-                :min="4"
-                class="w-32"
-                type="number"
+              v-model.number="form.password_min_length"
+              :max="128"
+              :min="4"
+              class="w-32"
+              type="number"
             />
           </u-form-field>
 
@@ -57,16 +57,16 @@
               {{ t('security.complexity_title', 'Required complexity') }}
             </p>
             <UCheckbox
-                v-model="form.password_require_uppercase"
-                :label="t('security.require_uppercase', 'At least one uppercase letter (A–Z)')"
+              v-model="form.password_require_uppercase"
+              :label="t('security.require_uppercase', 'At least one uppercase letter (A–Z)')"
             />
             <UCheckbox
-                v-model="form.password_require_number"
-                :label="t('security.require_number', 'At least one digit (0–9)')"
+              v-model="form.password_require_number"
+              :label="t('security.require_number', 'At least one digit (0–9)')"
             />
             <UCheckbox
-                v-model="form.password_require_special"
-                :label="t('security.require_special', 'At least one special character (!@#$...)')"
+              v-model="form.password_require_special"
+              :label="t('security.require_special', 'At least one special character (!@#$...)')"
             />
           </div>
 
@@ -75,9 +75,11 @@
             <p class="font-medium text-gray-700 dark:text-gray-300 mb-1">
               {{ t('security.current_rules', 'Current rules:') }}
             </p>
-            <p>• {{ t('security.rule_min_length_pre', 'Minimum') }} {{ form.password_min_length }} {{
+            <p>
+              • {{ t('security.rule_min_length_pre', 'Minimum') }} {{ form.password_min_length }} {{
                 form.password_min_length > 1 ? t('security.rule_characters', 'characters') : t('security.rule_character', 'character')
-              }}</p>
+              }}
+            </p>
             <p v-if="form.password_require_uppercase">
               • {{ t('security.rule_uppercase', 'At least one uppercase letter') }}
             </p>
@@ -93,9 +95,9 @@
         <template #footer>
           <div class="flex justify-end">
             <u-button
-                :loading="saving"
-                icon="i-heroicons-check"
-                @click="save"
+              :loading="saving"
+              icon="i-heroicons-check"
+              @click="save"
             >
               {{ t('security.save', 'Save') }}
             </u-button>
@@ -108,8 +110,8 @@
         <template #header>
           <div class="flex items-center gap-2">
             <u-icon
-                class="text-gray-400"
-                name="i-heroicons-server"
+              class="text-gray-400"
+              name="i-heroicons-server"
             />
             <h2 class="font-semibold text-gray-900 dark:text-white">
               {{ t('security.infra_title', 'Infrastructure settings') }}
@@ -130,20 +132,20 @@
           </div>
           <div class="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-800">
             <span class="text-gray-600 dark:text-gray-400">{{
-                t('security.session_duration', 'Session duration')
-              }}</span>
+              t('security.session_duration', 'Session duration')
+            }}</span>
             <code class="bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded text-xs">SESSION_TTL_MINUTES</code>
           </div>
           <div class="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-800">
             <span class="text-gray-600 dark:text-gray-400">{{
-                t('security.refresh_token_duration', 'Refresh token duration')
-              }}</span>
+              t('security.refresh_token_duration', 'Refresh token duration')
+            }}</span>
             <code class="bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded text-xs">REFRESH_TOKEN_TTL_DAYS</code>
           </div>
           <div class="flex justify-between items-center py-2">
             <span class="text-gray-600 dark:text-gray-400">{{
-                t('security.reset_link_expiry', 'Reset link expiry')
-              }}</span>
+              t('security.reset_link_expiry', 'Reset link expiry')
+            }}</span>
             <code class="bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded text-xs">RESET_TOKEN_TTL_HOURS</code>
           </div>
         </div>

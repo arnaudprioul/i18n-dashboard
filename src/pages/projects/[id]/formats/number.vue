@@ -7,13 +7,14 @@
         </h1>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
           {{ t('formats.number_subtitle', 'Configure') }} <code
-            class="font-mono text-xs bg-gray-100 dark:bg-gray-800 px-1 rounded">$n(value, 'currency')</code>
+            class="font-mono text-xs bg-gray-100 dark:bg-gray-800 px-1 rounded"
+          >$n(value, 'currency')</code>
           {{ t('formats.per_locale', 'by locale.') }}
         </p>
       </div>
       <u-button
-          icon="i-heroicons-plus"
-          @click="openCreate"
+        icon="i-heroicons-plus"
+        @click="openCreate"
       >
         {{ t('formats.add_number_format', 'Add a format') }}
       </u-button>
@@ -21,20 +22,22 @@
 
     <!-- Info box -->
     <div
-        class="bg-blue-50 dark:bg-blue-900/20 rounded-lg px-4 py-3 text-sm text-blue-700 dark:text-blue-300 flex gap-2">
+      class="bg-blue-50 dark:bg-blue-900/20 rounded-lg px-4 py-3 text-sm text-blue-700 dark:text-blue-300 flex gap-2"
+    >
       <u-icon
-          class="shrink-0 mt-0.5"
-          name="i-heroicons-information-circle"
+        class="shrink-0 mt-0.5"
+        name="i-heroicons-information-circle"
       />
       <div>
         {{ t('formats.number_info', 'Use') }} <code
-          class="font-mono text-xs bg-blue-100 dark:bg-blue-900/40 px-1 rounded">$n(1234.56, 'currency')</code>
+          class="font-mono text-xs bg-blue-100 dark:bg-blue-900/40 px-1 rounded"
+        >$n(1234.56, 'currency')</code>
         {{ t('formats.number_info2', 'in your templates. Options correspond to') }} <strong>Intl.NumberFormat</strong>
         {{ t('formats.parameters', 'parameters.') }}
         <nuxt-link
-            class="underline ml-1"
-            target="_blank"
-            to="https://vue-i18n.intlify.dev/guide/essentials/number.html"
+          class="underline ml-1"
+          target="_blank"
+          to="https://vue-i18n.intlify.dev/guide/essentials/number.html"
         >
           {{ t('formats.documentation', 'Documentation vue-i18n') }} ↗
         </nuxt-link>
@@ -43,12 +46,12 @@
 
     <!-- Empty -->
     <div
-        v-if="!numberFormats?.length"
-        class="text-center py-16 text-gray-400"
+      v-if="!numberFormats?.length"
+      class="text-center py-16 text-gray-400"
     >
       <u-icon
-          class="text-4xl mb-3"
-          name="i-heroicons-calculator"
+        class="text-4xl mb-3"
+        name="i-heroicons-calculator"
       />
       <p class="font-medium">
         {{ t('formats.no_format', 'No format configured') }}
@@ -58,9 +61,9 @@
         {{ t('formats.in_templates', 'in your templates.') }}
       </p>
       <u-button
-          class="mt-4"
-          icon="i-heroicons-plus"
-          @click="openCreate"
+        class="mt-4"
+        icon="i-heroicons-plus"
+        @click="openCreate"
       >
         {{ t('formats.add_number_format', 'Add a format') }}
       </u-button>
@@ -68,45 +71,46 @@
 
     <!-- Grouped by locale -->
     <div
-        v-else
-        class="space-y-6"
+      v-else
+      class="space-y-6"
     >
       <div
-          v-for="(formats, locale) in groupedByLocale"
-          :key="locale"
+        v-for="(formats, locale) in groupedByLocale"
+        :key="locale"
       >
         <div class="flex items-center gap-2 mb-3">
           <span
-              class="text-xs font-mono font-bold bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded text-gray-500 dark:text-gray-400 uppercase">{{
-              locale
-            }}</span>
+            class="text-xs font-mono font-bold bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded text-gray-500 dark:text-gray-400 uppercase"
+          >{{
+            locale
+          }}</span>
           <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{
-              findLanguage(locale)?.nativeName || locale
-            }}</span>
+            findLanguage(locale)?.nativeName || locale
+          }}</span>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <u-card
-              v-for="fmt in formats"
-              :key="fmt.id"
+            v-for="fmt in formats"
+            :key="fmt.id"
           >
             <div class="flex items-start justify-between gap-2">
               <div class="min-w-0 flex-1">
                 <div class="flex items-center gap-2 mb-1">
                   <code class="text-sm font-mono font-semibold text-primary-600 dark:text-primary-400">'{{
-                      fmt.name
-                    }}'</code>
+                    fmt.name
+                  }}'</code>
                   <u-badge
-                      color="neutral"
-                      size="xs"
-                      variant="soft"
+                    color="neutral"
+                    size="xs"
+                    variant="soft"
                   >
                     {{ fmt.options.style || 'decimal' }}
                   </u-badge>
                   <u-badge
-                      v-if="fmt.options.currency"
-                      color="info"
-                      size="xs"
-                      variant="soft"
+                    v-if="fmt.options.currency"
+                    color="info"
+                    size="xs"
+                    variant="soft"
                   >
                     {{ fmt.options.currency }}
                   </u-badge>
@@ -118,9 +122,9 @@
                 <!-- Options summary -->
                 <div class="mt-2 flex flex-wrap gap-1">
                   <span
-                      v-for="(v, k) in fmt.options"
-                      :key="k"
-                      class="text-xs bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded px-1.5 py-0.5 font-mono text-gray-500 dark:text-gray-400"
+                    v-for="(v, k) in fmt.options"
+                    :key="k"
+                    class="text-xs bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded px-1.5 py-0.5 font-mono text-gray-500 dark:text-gray-400"
                   >
                     {{ k }}: {{ v }}
                   </span>
@@ -128,18 +132,18 @@
               </div>
               <div class="flex gap-1 shrink-0">
                 <u-button
-                    color="neutral"
-                    icon="i-heroicons-pencil"
-                    size="xs"
-                    variant="ghost"
-                    @click="openEdit(fmt)"
+                  color="neutral"
+                  icon="i-heroicons-pencil"
+                  size="xs"
+                  variant="ghost"
+                  @click="openEdit(fmt)"
                 />
                 <u-button
-                    color="error"
-                    icon="i-heroicons-trash"
-                    size="xs"
-                    variant="ghost"
-                    @click="remove(fmt.id)"
+                  color="error"
+                  icon="i-heroicons-trash"
+                  size="xs"
+                  variant="ghost"
+                  @click="remove(fmt.id)"
                 />
               </div>
             </div>
@@ -150,31 +154,31 @@
 
     <!-- Create/Edit modal -->
     <u-modal
-        v-model:open="showModal"
-        :title="editing ? t('formats.edit_format', 'Edit format') : t('formats.new_number_format', 'New number format')"
+      v-model:open="showModal"
+      :title="editing ? t('formats.edit_format', 'Edit format') : t('formats.new_number_format', 'New number format')"
     >
       <template #body>
         <div class="space-y-4">
           <div class="grid grid-cols-2 gap-3">
             <u-form-field
-                :label="t('formats.locale', 'Locale')"
-                required
+              :label="t('formats.locale', 'Locale')"
+              required
             >
               <u-select
-                  v-model="form.locale"
-                  :items="localeOptions"
-                  class="w-full"
+                v-model="form.locale"
+                :items="localeOptions"
+                class="w-full"
               />
             </u-form-field>
             <u-form-field
-                :hint="t('formats.format_name_hint', 'E.g.: currency, decimal, percent')"
-                :label="t('formats.format_name', 'Format name')"
-                required
+              :hint="t('formats.format_name_hint', 'E.g.: currency, decimal, percent')"
+              :label="t('formats.format_name', 'Format name')"
+              required
             >
               <u-input
-                  v-model="form.name"
-                  class="w-full"
-                  placeholder="currency"
+                v-model="form.name"
+                class="w-full"
+                placeholder="currency"
               />
             </u-form-field>
           </div>
@@ -182,13 +186,13 @@
           <u-form-field :label="t('formats.style', 'Style')">
             <div class="grid grid-cols-4 gap-1.5">
               <button
-                  v-for="s in ['decimal', 'currency', 'percent', 'unit']"
-                  :key="s"
-                  :class="form.options.style === s
+                v-for="s in ['decimal', 'currency', 'percent', 'unit']"
+                :key="s"
+                :class="form.options.style === s
                   ? 'bg-primary-50 dark:bg-primary-900/30 border-primary-300 dark:border-primary-700 text-primary-700 dark:text-primary-300'
                   : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-gray-300'"
-                  class="px-2 py-1.5 rounded border text-xs font-mono transition-colors"
-                  @click="form.options.style = s"
+                class="px-2 py-1.5 rounded border text-xs font-mono transition-colors"
+                @click="form.options.style = s"
               >
                 {{ s }}
               </button>
@@ -197,45 +201,45 @@
 
           <!-- Currency options -->
           <div
-              v-if="form.options.style === 'currency'"
-              class="grid grid-cols-2 gap-3"
+            v-if="form.options.style === 'currency'"
+            class="grid grid-cols-2 gap-3"
           >
             <u-form-field :label="t('formats.currency', 'Currency (ISO 4217)')">
               <u-input
-                  v-model="form.options.currency"
-                  class="w-full"
-                  placeholder="EUR"
+                v-model="form.options.currency"
+                class="w-full"
+                placeholder="EUR"
               />
             </u-form-field>
             <u-form-field :label="t('formats.currency_display', 'Currency display')">
               <u-select
-                  v-model="form.options.currencyDisplay"
-                  :items="['symbol', 'narrowSymbol', 'code', 'name']"
-                  class="w-full"
+                v-model="form.options.currencyDisplay"
+                :items="['symbol', 'narrowSymbol', 'code', 'name']"
+                class="w-full"
               />
             </u-form-field>
           </div>
 
           <!-- Unit options -->
           <div
-              v-if="form.options.style === 'unit'"
-              class="grid grid-cols-2 gap-3"
+            v-if="form.options.style === 'unit'"
+            class="grid grid-cols-2 gap-3"
           >
             <u-form-field
-                :hint="t('formats.unit_hint', 'E.g.: kilometer, kilogram')"
-                :label="t('formats.unit', 'Unit')"
+              :hint="t('formats.unit_hint', 'E.g.: kilometer, kilogram')"
+              :label="t('formats.unit', 'Unit')"
             >
               <u-input
-                  v-model="form.options.unit"
-                  class="w-full"
-                  placeholder="kilometer"
+                v-model="form.options.unit"
+                class="w-full"
+                placeholder="kilometer"
               />
             </u-form-field>
             <u-form-field :label="t('formats.unit_display', 'Unit display')">
               <u-select
-                  v-model="form.options.unitDisplay"
-                  :items="['short', 'long', 'narrow']"
-                  class="w-full"
+                v-model="form.options.unitDisplay"
+                :items="['short', 'long', 'narrow']"
+                class="w-full"
               />
             </u-form-field>
           </div>
@@ -243,16 +247,16 @@
           <div class="grid grid-cols-2 gap-3">
             <u-form-field :label="t('formats.notation', 'Notation')">
               <u-select
-                  v-model="form.options.notation"
-                  :items="[{label: t('formats.standard_default', 'Standard (default)'), value: null}, 'standard', 'scientific', 'engineering', 'compact']"
-                  class="w-full"
+                v-model="form.options.notation"
+                :items="[{label: t('formats.standard_default', 'Standard (default)'), value: null}, 'standard', 'scientific', 'engineering', 'compact']"
+                class="w-full"
               />
             </u-form-field>
             <u-form-field :label="t('formats.grouping', 'Grouping')">
               <u-select
-                  v-model="form.options.useGrouping"
-                  :items="[{label: t('formats.auto_default', 'Auto (default)'), value: null}, {label: t('formats.enabled', 'Enabled'), value: true}, {label: t('formats.disabled', 'Disabled'), value: false}]"
-                  class="w-full"
+                v-model="form.options.useGrouping"
+                :items="[{label: t('formats.auto_default', 'Auto (default)'), value: null}, {label: t('formats.enabled', 'Enabled'), value: true}, {label: t('formats.disabled', 'Disabled'), value: false}]"
+                class="w-full"
               />
             </u-form-field>
           </div>
@@ -260,22 +264,22 @@
           <div class="grid grid-cols-2 gap-3">
             <u-form-field :label="t('formats.min_fraction_digits', 'Min digits after decimal')">
               <u-input
-                  v-model.number="form.options.minimumFractionDigits"
-                  class="w-full"
-                  max="20"
-                  min="0"
-                  placeholder="0"
-                  type="number"
+                v-model.number="form.options.minimumFractionDigits"
+                class="w-full"
+                max="20"
+                min="0"
+                placeholder="0"
+                type="number"
               />
             </u-form-field>
             <u-form-field :label="t('formats.max_fraction_digits', 'Max digits after decimal')">
               <u-input
-                  v-model.number="form.options.maximumFractionDigits"
-                  class="w-full"
-                  max="20"
-                  min="0"
-                  placeholder="3"
-                  type="number"
+                v-model.number="form.options.maximumFractionDigits"
+                class="w-full"
+                max="20"
+                min="0"
+                placeholder="3"
+                type="number"
               />
             </u-form-field>
           </div>
@@ -294,15 +298,15 @@
       <template #footer>
         <div class="flex justify-end gap-2">
           <u-button
-              color="neutral"
-              variant="ghost"
-              @click="showModal = false"
+            color="neutral"
+            variant="ghost"
+            @click="showModal = false"
           >
             {{ t('common.cancel', 'Cancel') }}
           </u-button>
           <u-button
-              :loading="saving"
-              @click="save"
+            :loading="saving"
+            @click="save"
           >
             {{ editing ? t('formats.update', 'Update') : t('common.create', 'Create') }}
           </u-button>

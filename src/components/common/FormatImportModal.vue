@@ -77,7 +77,11 @@
                   class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
                   @click="f.checked = !f.checked"
                 >
-                  <u-checkbox :model-value="f.checked" @click.stop @update:model-value="f.checked = Boolean($event)" />
+                  <u-checkbox
+                    :model-value="f.checked"
+                    @click.stop
+                    @update:model-value="f.checked = Boolean($event)"
+                  />
                   <span class="text-xs font-mono bg-gray-200 dark:bg-gray-700 px-1.5 py-0.5 rounded text-gray-600 dark:text-gray-300">{{ f.locale }}</span>
                   <span class="text-sm font-medium text-gray-800 dark:text-gray-200 flex-1">{{ f.name }}</span>
                   <code class="text-xs text-gray-400 truncate max-w-40">{{ formatOptionsPreview(f.options) }}</code>
@@ -97,7 +101,11 @@
                   class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
                   @click="f.checked = !f.checked"
                 >
-                  <u-checkbox :model-value="f.checked" @click.stop @update:model-value="f.checked = Boolean($event)" />
+                  <u-checkbox
+                    :model-value="f.checked"
+                    @click.stop
+                    @update:model-value="f.checked = Boolean($event)"
+                  />
                   <span class="text-xs font-mono bg-gray-200 dark:bg-gray-700 px-1.5 py-0.5 rounded text-gray-600 dark:text-gray-300">{{ f.locale }}</span>
                   <span class="text-sm font-medium text-gray-800 dark:text-gray-200 flex-1">{{ f.name }}</span>
                   <code class="text-xs text-gray-400 truncate max-w-40">{{ formatOptionsPreview(f.options) }}</code>
@@ -117,7 +125,11 @@
                   class="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-800 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
                   @click="m.checked = !m.checked"
                 >
-                  <u-checkbox :model-value="m.checked" @click.stop @update:model-value="m.checked = Boolean($event)" />
+                  <u-checkbox
+                    :model-value="m.checked"
+                    @click.stop
+                    @update:model-value="m.checked = Boolean($event)"
+                  />
                   <span class="text-sm font-medium text-gray-800 dark:text-gray-200 flex-1">{{ m.name }}</span>
                   <code class="text-xs text-gray-400 truncate max-w-48 font-mono">{{ m.body }}</code>
                 </div>

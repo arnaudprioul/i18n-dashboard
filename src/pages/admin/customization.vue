@@ -11,12 +11,12 @@
 
     <!-- Config file override notice -->
     <u-alert
-        v-if="hasConfigFile"
-        :description="t('customization.config_file_description', 'Values in i18n-dashboard.config.json override these settings.')"
-        :title="t('customization.config_file_active', 'Config file is active')"
-        class="mb-6"
-        color="info"
-        icon="i-heroicons-information-circle"
+      v-if="hasConfigFile"
+      :description="t('customization.config_file_description', 'Values in i18n-dashboard.config.json override these settings.')"
+      :title="t('customization.config_file_active', 'Config file is active')"
+      class="mb-6"
+      color="info"
+      icon="i-heroicons-information-circle"
     />
 
     <div class="max-w-3xl space-y-6">
@@ -25,8 +25,8 @@
         <template #header>
           <div class="flex items-center gap-2">
             <u-icon
-                class="text-primary-500"
-                name="i-heroicons-paint-brush"
+              class="text-primary-500"
+              name="i-heroicons-paint-brush"
             />
             <h2 class="font-semibold text-gray-900 dark:text-white">
               {{ t('customization.branding', 'Branding') }}
@@ -37,23 +37,23 @@
         <div class="space-y-4">
           <u-form-field :label="t('customization.app_name', 'App name')">
             <u-input
-                v-model="branding.name"
-                :placeholder="t('customization.app_name_placeholder', 'i18n Dashboard')"
-                class="w-full"
+              v-model="branding.name"
+              :placeholder="t('customization.app_name_placeholder', 'i18n Dashboard')"
+              class="w-full"
             />
           </u-form-field>
           <u-form-field :label="t('customization.subtitle', 'Subtitle')">
             <u-input
-                v-model="branding.subtitle"
-                :placeholder="t('customization.subtitle_placeholder', 'vue-i18n manager')"
-                class="w-full"
+              v-model="branding.subtitle"
+              :placeholder="t('customization.subtitle_placeholder', 'vue-i18n manager')"
+              class="w-full"
             />
           </u-form-field>
           <u-form-field :label="t('customization.logo_url', 'Logo URL')">
             <u-input
-                v-model="branding.logoUrl"
-                :placeholder="t('customization.logo_url_placeholder', 'https://example.com/logo.png')"
-                class="w-full"
+              v-model="branding.logoUrl"
+              :placeholder="t('customization.logo_url_placeholder', 'https://example.com/logo.png')"
+              class="w-full"
             />
             <template #help>
               {{ t('customization.logo_url_hint', 'URL or base64 data URI. Replaces the default language icon.') }}
@@ -62,14 +62,14 @@
 
           <!-- Logo preview -->
           <div
-              v-if="branding.logoUrl"
-              class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800"
+            v-if="branding.logoUrl"
+            class="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800"
           >
             <div class="w-8 h-8 rounded-lg bg-primary-500 flex items-center justify-center overflow-hidden shrink-0">
               <img
-                  :alt="branding.name || t('customization.logo_alt', 'logo')"
-                  :src="branding.logoUrl"
-                  class="w-full h-full object-cover"
+                :alt="branding.name || t('customization.logo_alt', 'logo')"
+                :src="branding.logoUrl"
+                class="w-full h-full object-cover"
               >
             </div>
             <div>
@@ -89,8 +89,8 @@
         <template #header>
           <div class="flex items-center gap-2">
             <u-icon
-                class="text-primary-500"
-                name="i-heroicons-swatch"
+              class="text-primary-500"
+              name="i-heroicons-swatch"
             />
             <h2 class="font-semibold text-gray-900 dark:text-white">
               {{ t('customization.theme', 'Theme') }}
@@ -103,31 +103,31 @@
           <u-form-field :label="t('customization.primary_color', 'Primary color')">
             <div class="flex flex-wrap gap-2 mt-1">
               <button
-                  v-for="color in PRIMARY_COLORS"
-                  :key="color"
-                  :class="theme.primary === color
+                v-for="color in PRIMARY_COLORS"
+                :key="color"
+                :class="theme.primary === color
                   ? 'border-gray-900 dark:border-white scale-110'
                   : 'border-black/10 hover:scale-105'"
-                  :style="{ backgroundColor: COLOR_HEX[color] }"
-                  :title="color"
-                  class="w-7 h-7 rounded-full border-2 transition-all"
-                  @click="theme.primary = theme.primary === color ? '' : color"
+                :style="{ backgroundColor: COLOR_HEX[color] }"
+                :title="color"
+                class="w-7 h-7 rounded-full border-2 transition-all"
+                @click="theme.primary = theme.primary === color ? '' : color"
               />
               <button
-                  :class="!theme.primary ? 'border-gray-900 dark:border-white' : ''"
-                  :title="t('customization.default', 'Default')"
-                  class="w-7 h-7 rounded-full border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center text-gray-400 hover:border-gray-400 transition-colors"
-                  @click="theme.primary = ''"
+                :class="!theme.primary ? 'border-gray-900 dark:border-white' : ''"
+                :title="t('customization.default', 'Default')"
+                class="w-7 h-7 rounded-full border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center text-gray-400 hover:border-gray-400 transition-colors"
+                @click="theme.primary = ''"
               >
                 <u-icon
-                    class="text-xs"
-                    name="i-heroicons-x-mark"
+                  class="text-xs"
+                  name="i-heroicons-x-mark"
                 />
               </button>
             </div>
             <p
-                v-if="theme.primary"
-                class="mt-1.5 text-xs text-gray-400"
+              v-if="theme.primary"
+              class="mt-1.5 text-xs text-gray-400"
             >
               {{ theme.primary }}
             </p>
@@ -137,31 +137,31 @@
           <u-form-field :label="t('customization.neutral_color', 'Neutral color')">
             <div class="flex flex-wrap gap-2 mt-1">
               <button
-                  v-for="color in NEUTRAL_COLORS"
-                  :key="color"
-                  :class="theme.neutral === color
+                v-for="color in NEUTRAL_COLORS"
+                :key="color"
+                :class="theme.neutral === color
                   ? 'border-gray-900 dark:border-white scale-110'
                   : 'border-black/10 hover:scale-105'"
-                  :style="{ backgroundColor: COLOR_HEX[color] }"
-                  :title="color"
-                  class="w-7 h-7 rounded-full border-2 transition-all"
-                  @click="theme.neutral = theme.neutral === color ? '' : color"
+                :style="{ backgroundColor: COLOR_HEX[color] }"
+                :title="color"
+                class="w-7 h-7 rounded-full border-2 transition-all"
+                @click="theme.neutral = theme.neutral === color ? '' : color"
               />
               <button
-                  :class="!theme.neutral ? 'border-gray-900 dark:border-white' : ''"
-                  :title="t('customization.default', 'Default')"
-                  class="w-7 h-7 rounded-full border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center text-gray-400 hover:border-gray-400 transition-colors"
-                  @click="theme.neutral = ''"
+                :class="!theme.neutral ? 'border-gray-900 dark:border-white' : ''"
+                :title="t('customization.default', 'Default')"
+                class="w-7 h-7 rounded-full border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center text-gray-400 hover:border-gray-400 transition-colors"
+                @click="theme.neutral = ''"
               >
                 <u-icon
-                    class="text-xs"
-                    name="i-heroicons-x-mark"
+                  class="text-xs"
+                  name="i-heroicons-x-mark"
                 />
               </button>
             </div>
             <p
-                v-if="theme.neutral"
-                class="mt-1.5 text-xs text-gray-400"
+              v-if="theme.neutral"
+              class="mt-1.5 text-xs text-gray-400"
             >
               {{ theme.neutral }}
             </p>
@@ -175,19 +175,19 @@
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
               <u-icon
-                  class="text-primary-500"
-                  name="i-heroicons-puzzle-piece"
+                class="text-primary-500"
+                name="i-heroicons-puzzle-piece"
               />
               <h2 class="font-semibold text-gray-900 dark:text-white">
                 {{ t('customization.custom_widgets', 'Custom widgets') }}
               </h2>
             </div>
             <u-button
-                color="neutral"
-                icon="i-heroicons-plus"
-                size="xs"
-                variant="outline"
-                @click="openAddWidget"
+              color="neutral"
+              icon="i-heroicons-plus"
+              size="xs"
+              variant="outline"
+              @click="openAddWidget"
             >
               {{ t('common.add', 'Add') }}
             </u-button>
@@ -195,12 +195,12 @@
         </template>
 
         <div
-            v-if="customWidgets.length === 0"
-            class="text-center py-8 text-gray-400"
+          v-if="customWidgets.length === 0"
+          class="text-center py-8 text-gray-400"
         >
           <u-icon
-              class="text-3xl mb-2"
-              name="i-heroicons-puzzle-piece"
+            class="text-3xl mb-2"
+            name="i-heroicons-puzzle-piece"
           />
           <p class="text-sm">
             {{ t('customization.no_custom_widgets', 'No custom widgets defined') }}
@@ -213,18 +213,18 @@
         </div>
 
         <div
-            v-else
-            class="space-y-2"
+          v-else
+          class="space-y-2"
         >
           <div
-              v-for="(widget, index) in customWidgets"
-              :key="widget.type"
-              class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700"
+            v-for="(widget, index) in customWidgets"
+            :key="widget.type"
+            class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700"
           >
             <div class="w-8 h-8 rounded-lg bg-primary-50 dark:bg-primary-950 flex items-center justify-center shrink-0">
               <u-icon
-                  :name="widget.icon || 'i-heroicons-puzzle-piece'"
-                  class="text-primary-500"
+                :name="widget.icon || 'i-heroicons-puzzle-piece'"
+                class="text-primary-500"
               />
             </div>
             <div class="flex-1 min-w-0">
@@ -237,18 +237,18 @@
             </div>
             <div class="flex items-center gap-1 shrink-0">
               <u-button
-                  color="neutral"
-                  icon="i-heroicons-pencil"
-                  size="xs"
-                  variant="ghost"
-                  @click="openEditWidget(widget, index)"
+                color="neutral"
+                icon="i-heroicons-pencil"
+                size="xs"
+                variant="ghost"
+                @click="openEditWidget(widget, index)"
               />
               <u-button
-                  color="error"
-                  icon="i-heroicons-trash"
-                  size="xs"
-                  variant="ghost"
-                  @click="removeWidget(index)"
+                color="error"
+                icon="i-heroicons-trash"
+                size="xs"
+                variant="ghost"
+                @click="removeWidget(index)"
               />
             </div>
           </div>
@@ -258,9 +258,9 @@
       <!-- Save button -->
       <div class="flex justify-end">
         <u-button
-            :loading="saving"
-            icon="i-heroicons-check"
-            @click="save"
+          :loading="saving"
+          icon="i-heroicons-check"
+          @click="save"
         >
           {{ t('common.save', 'Save') }}
         </u-button>
@@ -269,8 +269,8 @@
 
     <!-- ── Widget editor modal ─────────────────────────────────────────── -->
     <u-modal
-        v-model:open="showWidgetEditor"
-        :title="editingIndex === -1
+      v-model:open="showWidgetEditor"
+      :title="editingIndex === -1
         ? t('customization.add_widget', 'Add custom widget')
         : t('customization.edit_widget', 'Edit custom widget')"
     >
@@ -278,14 +278,14 @@
         <div class="space-y-4 p-1">
           <div class="grid grid-cols-2 gap-4">
             <u-form-field
-                :label="t('customization.widget_type', 'Type ID')"
-                required
+              :label="t('customization.widget_type', 'Type ID')"
+              required
             >
               <u-input
-                  v-model="widgetForm.type"
-                  :disabled="editingIndex !== -1"
-                  :placeholder="t('customization.widget_type_placeholder', 'my-metrics')"
-                  class="w-full"
+                v-model="widgetForm.type"
+                :disabled="editingIndex !== -1"
+                :placeholder="t('customization.widget_type_placeholder', 'my-metrics')"
+                class="w-full"
               />
               <template #help>
                 {{ t('customization.widget_type_hint', 'Unique identifier, no spaces') }}
@@ -293,41 +293,41 @@
             </u-form-field>
 
             <u-form-field
-                :label="t('customization.widget_label', 'Label')"
-                required
+              :label="t('customization.widget_label', 'Label')"
+              required
             >
               <u-input
-                  v-model="widgetForm.label"
-                  :placeholder="t('customization.widget_label_placeholder', 'My Metrics')"
-                  class="w-full"
+                v-model="widgetForm.label"
+                :placeholder="t('customization.widget_label_placeholder', 'My Metrics')"
+                class="w-full"
               />
             </u-form-field>
           </div>
 
           <u-form-field :label="t('customization.widget_description', 'Description')">
             <u-input
-                v-model="widgetForm.description"
-                :placeholder="t('customization.widget_description_placeholder', 'Short description shown in the widget picker')"
-                class="w-full"
+              v-model="widgetForm.description"
+              :placeholder="t('customization.widget_description_placeholder', 'Short description shown in the widget picker')"
+              class="w-full"
             />
           </u-form-field>
 
           <u-form-field
-              :label="t('customization.widget_url', 'iframe URL')"
-              required
+            :label="t('customization.widget_url', 'iframe URL')"
+            required
           >
             <u-input
-                v-model="widgetForm.config.url"
-                class="w-full"
-                placeholder="https://example.com/embed"
+              v-model="widgetForm.config.url"
+              class="w-full"
+              placeholder="https://example.com/embed"
             />
           </u-form-field>
 
           <u-form-field :label="t('customization.widget_icon', 'Icon')">
             <u-input
-                v-model="widgetForm.icon"
-                class="w-full"
-                placeholder="i-heroicons-chart-bar"
+              v-model="widgetForm.icon"
+              class="w-full"
+              placeholder="i-heroicons-chart-bar"
             />
             <template #help>
               {{ t('customization.widget_icon_hint', 'Heroicons name, e.g. i-heroicons-chart-bar') }}
@@ -337,13 +337,13 @@
           <u-form-field :label="t('customization.widget_sizes', 'Available sizes')">
             <div class="flex gap-2 mt-1">
               <button
-                  v-for="size in WIDGET_SIZES"
-                  :key="size"
-                  :class="widgetForm.sizes.includes(size)
+                v-for="size in WIDGET_SIZES"
+                :key="size"
+                :class="widgetForm.sizes.includes(size)
                   ? 'bg-primary-500 border-primary-500 text-white'
                   : 'border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-primary-400'"
-                  class="px-3 py-1.5 text-xs rounded-lg border transition-colors"
-                  @click="toggleWidgetSize(size)"
+                class="px-3 py-1.5 text-xs rounded-lg border transition-colors"
+                @click="toggleWidgetSize(size)"
               >
                 {{ size }}
               </button>
@@ -353,13 +353,13 @@
           <u-form-field :label="t('customization.widget_default_size', 'Default size')">
             <div class="flex gap-2 mt-1">
               <button
-                  v-for="size in widgetForm.sizes"
-                  :key="size"
-                  :class="widgetForm.defaultSize === size
+                v-for="size in widgetForm.sizes"
+                :key="size"
+                :class="widgetForm.defaultSize === size
                   ? 'bg-primary-500 border-primary-500 text-white'
                   : 'border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-primary-400'"
-                  class="px-3 py-1.5 text-xs rounded-lg border transition-colors"
-                  @click="widgetForm.defaultSize = size"
+                class="px-3 py-1.5 text-xs rounded-lg border transition-colors"
+                @click="widgetForm.defaultSize = size"
               >
                 {{ size }}
               </button>
@@ -371,15 +371,15 @@
       <template #footer>
         <div class="flex justify-end gap-2">
           <u-button
-              color="neutral"
-              variant="ghost"
-              @click="showWidgetEditor = false"
+            color="neutral"
+            variant="ghost"
+            @click="showWidgetEditor = false"
           >
             {{ t('common.cancel', 'Cancel') }}
           </u-button>
           <u-button
-              :disabled="!widgetForm.type || !widgetForm.label || !widgetForm.config.url"
-              @click="saveWidget"
+            :disabled="!widgetForm.type || !widgetForm.label || !widgetForm.config.url"
+            @click="saveWidget"
           >
             {{ editingIndex === -1 ? t('common.add', 'Add') : t('common.save', 'Save') }}
           </u-button>

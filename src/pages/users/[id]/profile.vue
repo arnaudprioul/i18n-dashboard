@@ -2,20 +2,20 @@
   <div class="p-4 lg:p-6 max-w-5xl mx-auto space-y-6">
     <!-- Loading: shown server-side, before mount, and while client fetch runs -->
     <div
-        v-if="!mounted || pending"
-        class="space-y-4"
+      v-if="!mounted || pending"
+      class="space-y-4"
     >
-      <u-skeleton class="h-24"/>
+      <u-skeleton class="h-24" />
       <div class="space-y-3">
         <div class="flex items-center justify-between">
-          <u-skeleton class="h-4 w-16"/>
-          <u-skeleton class="h-8 w-52"/>
+          <u-skeleton class="h-4 w-16" />
+          <u-skeleton class="h-8 w-52" />
         </div>
         <div class="grid grid-cols-2 gap-4">
           <u-skeleton
-              v-for="i in 2"
-              :key="i"
-              class="h-20"
+            v-for="i in 2"
+            :key="i"
+            class="h-20"
           />
         </div>
       </div>
@@ -25,7 +25,8 @@
       <!-- Header -->
       <div class="flex items-center gap-4">
         <div
-            class="w-16 h-16 rounded-2xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0">
+          class="w-16 h-16 rounded-2xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0"
+        >
           <span class="text-2xl font-bold text-primary-600 dark:text-primary-400">
             {{ profile.user.name?.charAt(0)?.toUpperCase() }}
           </span>
@@ -33,42 +34,42 @@
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
             <h1
-                class="text-2xl font-bold text-gray-900 dark:text-white"
-                data-cy="profile-username"
+              class="text-2xl font-bold text-gray-900 dark:text-white"
+              data-cy="profile-username"
             >
               {{ profile.user.name }}
             </h1>
             <u-badge
-                v-if="profile.user.is_super_admin"
-                color="warning"
-                variant="soft"
+              v-if="profile.user.is_super_admin"
+              color="warning"
+              variant="soft"
             >
               <u-icon
-                  class="mr-1"
-                  name="i-heroicons-star"
+                class="mr-1"
+                name="i-heroicons-star"
               />
               Super Admin
             </u-badge>
           </div>
           <p
-              class="text-sm text-gray-400 mt-0.5"
-              data-cy="profile-email"
+            class="text-sm text-gray-400 mt-0.5"
+            data-cy="profile-email"
           >
             {{ profile.user.email }}
           </p>
           <div class="flex items-center gap-3 mt-1 text-xs text-gray-400 flex-wrap">
             <span
-                class="flex items-center gap-1"
-                data-cy="profile-member-since"
+              class="flex items-center gap-1"
+              data-cy="profile-member-since"
             >
-              <u-icon name="i-heroicons-calendar"/>
+              <u-icon name="i-heroicons-calendar" />
               {{ t('profile.member_since', 'Member since') }} {{ formatDate(profile.user.created_at) }}
             </span>
             <span
-                v-if="profile.user.last_login_at"
-                class="flex items-center gap-1"
+              v-if="profile.user.last_login_at"
+              class="flex items-center gap-1"
             >
-              <u-icon name="i-heroicons-clock"/>
+              <u-icon name="i-heroicons-clock" />
               {{ t('profile.last_login', 'Last login') }} {{ formatDate(profile.user.last_login_at) }}
             </span>
           </div>
@@ -77,21 +78,21 @@
         <div class="flex items-center gap-2 shrink-0">
           <!-- Edit own account -->
           <u-button
-              v-if="isSelf"
-              color="neutral"
-              icon="i-heroicons-pencil"
-              variant="outline"
-              @click="openEdit"
+            v-if="isSelf"
+            color="neutral"
+            icon="i-heroicons-pencil"
+            variant="outline"
+            @click="openEdit"
           >
             {{ t('profile.edit_account', 'Edit my account') }}
           </u-button>
           <!-- Manage roles (authorized viewers only) -->
           <u-button
-              v-if="canManageRoles"
-              color="neutral"
-              icon="i-heroicons-shield-check"
-              variant="outline"
-              @click="openRoles"
+            v-if="canManageRoles"
+            color="neutral"
+            icon="i-heroicons-shield-check"
+            variant="outline"
+            @click="openRoles"
           >
             {{ t('users.manage_access', 'Manage access') }}
           </u-button>
@@ -105,28 +106,28 @@
             {{ t('profile.stats_title', 'Activity') }}
           </p>
           <u-select
-              v-model="period"
-              :items="periodOptions"
-              class="w-52"
-              data-cy="profile-period-select"
-              label-key="label"
-              value-key="value"
+            v-model="period"
+            :items="periodOptions"
+            class="w-52"
+            data-cy="profile-period-select"
+            label-key="label"
+            value-key="value"
           />
         </div>
         <div class="grid grid-cols-2 gap-4">
           <u-card
-              v-for="(stat, idx) in statCards"
-              :key="stat.label"
+            v-for="(stat, idx) in statCards"
+            :key="stat.label"
           >
             <div class="flex items-center gap-3">
               <div
-                  :class="stat.bg"
-                  class="p-2 rounded-lg"
+                :class="stat.bg"
+                class="p-2 rounded-lg"
               >
                 <u-icon
-                    :class="stat.color"
-                    :name="stat.icon"
-                    class="text-xl"
+                  :class="stat.color"
+                  :name="stat.icon"
+                  class="text-xl"
                 />
               </div>
               <div>
@@ -134,8 +135,8 @@
                   {{ stat.label }}
                 </p>
                 <p
-                    :data-cy="idx === 0 ? 'profile-stat-translations' : undefined"
-                    class="text-2xl font-bold text-gray-900 dark:text-white"
+                  :data-cy="idx === 0 ? 'profile-stat-translations' : undefined"
+                  class="text-2xl font-bold text-gray-900 dark:text-white"
                 >
                   {{ stat.value }}
                 </p>
@@ -153,52 +154,52 @@
             <template #header>
               <div class="flex items-center gap-2">
                 <u-icon
-                    class="text-gray-400"
-                    name="i-heroicons-briefcase"
+                  class="text-gray-400"
+                  name="i-heroicons-briefcase"
                 />
                 <p
-                    class="text-xs font-semibold text-gray-400 uppercase tracking-wide"
-                    data-cy="profile-projects-roles"
+                  class="text-xs font-semibold text-gray-400 uppercase tracking-wide"
+                  data-cy="profile-projects-roles"
                 >
                   {{ t('profile.projects_roles', 'Projects & Roles') }}
                 </p>
               </div>
             </template>
             <div
-                v-if="!profile.roles.length"
-                class="text-sm text-gray-400 italic"
+              v-if="!profile.roles.length"
+              class="text-sm text-gray-400 italic"
             >
               {{ t('profile.no_roles', 'No role assigned') }}
             </div>
             <div
-                v-else
-                class="space-y-2"
+              v-else
+              class="space-y-2"
             >
               <div
-                  v-for="role in profile.roles"
-                  :key="`${role.project_id}-${role.role}`"
-                  class="flex items-center justify-between gap-2"
+                v-for="role in profile.roles"
+                :key="`${role.project_id}-${role.role}`"
+                class="flex items-center justify-between gap-2"
               >
                 <div class="flex items-center gap-2 min-w-0">
                   <span
-                      v-if="role.project_id"
-                      :class="`bg-${role.project_color || 'primary'}-500`"
-                      class="w-2 h-2 rounded-full shrink-0"
+                    v-if="role.project_id"
+                    :class="`bg-${role.project_color || 'primary'}-500`"
+                    class="w-2 h-2 rounded-full shrink-0"
                   />
                   <u-icon
-                      v-else
-                      class="text-gray-400 text-xs shrink-0"
-                      name="i-heroicons-globe-alt"
+                    v-else
+                    class="text-gray-400 text-xs shrink-0"
+                    name="i-heroicons-globe-alt"
                   />
                   <span class="text-sm text-gray-700 dark:text-gray-300 truncate">
                     {{ role.project_name ?? t('users.all_projects', 'All projects') }}
                   </span>
                 </div>
                 <u-badge
-                    :color="roleColor(role.role)"
-                    class="shrink-0"
-                    size="xs"
-                    variant="soft"
+                  :color="roleColor(role.role)"
+                  class="shrink-0"
+                  size="xs"
+                  variant="soft"
                 >
                   {{ roleLabel(role.role) }}
                 </u-badge>
@@ -211,8 +212,8 @@
             <template #header>
               <div class="flex items-center gap-2">
                 <u-icon
-                    class="text-gray-400"
-                    name="i-heroicons-language"
+                  class="text-gray-400"
+                  name="i-heroicons-language"
                 />
                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide">
                   {{ t('nav.languages', 'Languages') }}
@@ -220,28 +221,28 @@
               </div>
             </template>
             <div
-                v-if="!profile.languages.length"
-                class="text-sm text-gray-400 italic"
+              v-if="!profile.languages.length"
+              class="text-sm text-gray-400 italic"
             >
               {{ t('profile.no_languages', 'No language available') }}
             </div>
             <div v-else>
               <div
-                  v-for="(langs, projectName) in languagesByProject"
-                  :key="projectName"
-                  class="mb-3 last:mb-0"
+                v-for="(langs, projectName) in languagesByProject"
+                :key="projectName"
+                class="mb-3 last:mb-0"
               >
                 <p class="text-xs text-gray-400 mb-1.5 font-medium">
                   {{ projectName }}
                 </p>
                 <div class="flex flex-wrap gap-1.5">
                   <u-badge
-                      v-for="lang in langs"
-                      :key="lang.code"
-                      class="font-mono"
-                      color="neutral"
-                      size="xs"
-                      variant="soft"
+                    v-for="lang in langs"
+                    :key="lang.code"
+                    class="font-mono"
+                    color="neutral"
+                    size="xs"
+                    variant="soft"
                   >
                     {{ nativeName(lang.code) || lang.name }}
                     <span class="ml-1 opacity-50">{{ lang.code }}</span>
@@ -258,12 +259,12 @@
             <template #header>
               <div class="flex items-center gap-2">
                 <u-icon
-                    class="text-gray-400"
-                    name="i-heroicons-clock"
+                  class="text-gray-400"
+                  name="i-heroicons-clock"
                 />
                 <p
-                    class="text-xs font-semibold text-gray-400 uppercase tracking-wide"
-                    data-cy="profile-recent-activity"
+                  class="text-xs font-semibold text-gray-400 uppercase tracking-wide"
+                  data-cy="profile-recent-activity"
                 >
                   {{ t('dashboard.recent_activity', 'Recent activity') }}
                 </p>
@@ -271,12 +272,12 @@
             </template>
 
             <div
-                v-if="!profile.recentTranslations.length"
-                class="text-center py-10"
+              v-if="!profile.recentTranslations.length"
+              class="text-center py-10"
             >
               <u-icon
-                  class="text-4xl text-gray-300 dark:text-gray-600 mb-2"
-                  name="i-heroicons-pencil-square"
+                class="text-4xl text-gray-300 dark:text-gray-600 mb-2"
+                name="i-heroicons-pencil-square"
               />
               <p class="text-sm text-gray-400">
                 {{ t('profile.no_translations', 'No translations yet') }}
@@ -284,41 +285,43 @@
             </div>
 
             <div
-                v-else
-                class="space-y-1"
+              v-else
+              class="space-y-1"
             >
               <nuxt-link
-                  v-for="tr in profile.recentTranslations"
-                  :key="tr.id"
-                  :to="tr.project_id ? `/projects/${tr.project_id}/translations/${tr.key_id}` : `/projects`"
-                  class="flex items-start gap-3 px-2 py-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors group"
-                  data-cy="profile-activity-item"
+                v-for="tr in profile.recentTranslations"
+                :key="tr.id"
+                :to="tr.project_id ? `/projects/${tr.project_id}/translations/${tr.key_id}` : `/projects`"
+                class="flex items-start gap-3 px-2 py-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors group"
+                data-cy="profile-activity-item"
               >
                 <span
-                    class="font-mono text-xs font-bold bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-gray-500 dark:text-gray-400 uppercase shrink-0 mt-0.5">
+                  class="font-mono text-xs font-bold bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-gray-500 dark:text-gray-400 uppercase shrink-0 mt-0.5"
+                >
                   {{ tr.language_code }}
                 </span>
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-2 flex-wrap">
                     <span
-                        class="text-sm font-mono font-medium text-gray-700 dark:text-gray-300 truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
+                      class="text-sm font-mono font-medium text-gray-700 dark:text-gray-300 truncate group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+                    >
                       {{ tr.key }}
                     </span>
                     <span
-                        :class="`bg-${tr.project_color || 'primary'}-500`"
-                        class="w-1.5 h-1.5 rounded-full shrink-0"
+                      :class="`bg-${tr.project_color || 'primary'}-500`"
+                      class="w-1.5 h-1.5 rounded-full shrink-0"
                     />
                     <span class="text-xs text-gray-400 shrink-0">{{ tr.project_name }}</span>
                   </div>
                   <div class="flex items-center gap-2 mt-0.5">
                     <span
-                        v-if="tr.old_value"
-                        class="text-xs text-red-400 line-through truncate max-w-[120px]"
+                      v-if="tr.old_value"
+                      class="text-xs text-red-400 line-through truncate max-w-[120px]"
                     >{{ tr.old_value }}</span>
                     <u-icon
-                        v-if="tr.old_value"
-                        class="text-gray-300 text-xs shrink-0"
-                        name="i-heroicons-arrow-right"
+                      v-if="tr.old_value"
+                      class="text-gray-300 text-xs shrink-0"
+                      name="i-heroicons-arrow-right"
                     />
                     <span class="text-xs text-gray-600 dark:text-gray-400 truncate max-w-xs">{{ tr.new_value }}</span>
                   </div>
@@ -333,21 +336,21 @@
 
     <!-- Error state -->
     <div
-        v-else
-        class="text-center py-20"
+      v-else
+      class="text-center py-20"
     >
       <u-icon
-          class="text-5xl text-gray-300 mb-3"
-          name="i-heroicons-exclamation-circle"
+        class="text-5xl text-gray-300 mb-3"
+        name="i-heroicons-exclamation-circle"
       />
       <p class="text-gray-400">
         {{ t('profile.not_found', 'Profile not found or access denied.') }}
       </p>
       <u-button
-          class="mt-4"
-          color="neutral"
-          to="/users"
-          variant="outline"
+        class="mt-4"
+        color="neutral"
+        to="/users"
+        variant="outline"
       >
         {{ t('profile.back', 'Back') }}
       </u-button>
@@ -355,35 +358,35 @@
 
     <!-- Edit account modal (self only) -->
     <u-modal
-        v-model:open="showEdit"
-        :title="t('profile.edit_modal_title', 'Edit my account')"
+      v-model:open="showEdit"
+      :title="t('profile.edit_modal_title', 'Edit my account')"
     >
       <template #body>
         <div class="space-y-4">
           <u-form-field
-              :label="t('profile.name_label', 'Name')"
-              required
+            :label="t('profile.name_label', 'Name')"
+            required
           >
             <u-input
-                v-model="editForm.name"
-                :placeholder="t('profile.name_placeholder', 'Your name')"
-                class="w-full"
+              v-model="editForm.name"
+              :placeholder="t('profile.name_placeholder', 'Your name')"
+              class="w-full"
             />
           </u-form-field>
           <u-form-field
-              :label="t('login.email', 'Email')"
-              required
+            :label="t('login.email', 'Email')"
+            required
           >
             <u-input
-                v-model="editForm.email"
-                class="w-full"
-                placeholder="you@example.com"
-                type="email"
+              v-model="editForm.email"
+              class="w-full"
+              placeholder="you@example.com"
+              type="email"
             />
           </u-form-field>
           <p
-              v-if="editError"
-              class="text-sm text-red-500"
+            v-if="editError"
+            class="text-sm text-red-500"
           >
             {{ editError }}
           </p>
@@ -392,15 +395,15 @@
       <template #footer>
         <div class="flex justify-end gap-3">
           <u-button
-              color="neutral"
-              variant="ghost"
-              @click="showEdit = false"
+            color="neutral"
+            variant="ghost"
+            @click="showEdit = false"
           >
             {{ t('common.cancel', 'Cancel') }}
           </u-button>
           <u-button
-              :loading="editSaving"
-              @click="saveEdit"
+            :loading="editSaving"
+            @click="saveEdit"
           >
             {{ t('common.save', 'Save') }}
           </u-button>
@@ -410,14 +413,15 @@
 
     <!-- Roles modal (authorized viewers) -->
     <u-modal
-        v-model:open="showRolesModal"
-        :title="t('users.manage_access_title', 'Manage access')"
+      v-model:open="showRolesModal"
+      :title="t('users.manage_access_title', 'Manage access')"
     >
       <template #body>
         <div class="space-y-4">
           <div class="flex items-center gap-3 pb-4 border-b border-gray-100 dark:border-gray-800">
             <div
-                class="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0">
+              class="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0"
+            >
               <span class="font-bold text-primary-600 dark:text-primary-400">
                 {{ profile?.user.name?.charAt(0)?.toUpperCase() }}
               </span>
@@ -434,27 +438,27 @@
 
           <div class="space-y-2">
             <div
-                v-for="item in rolesForm"
-                :key="item.project_id ?? 'global'"
-                class="flex items-center justify-between gap-3"
+              v-for="item in rolesForm"
+              :key="item.project_id ?? 'global'"
+              class="flex items-center justify-between gap-3"
             >
               <div class="flex items-center gap-2 min-w-0 flex-1">
                 <u-icon
-                    v-if="item.project_id === null"
-                    class="text-gray-400 shrink-0"
-                    name="i-heroicons-globe-alt"
+                  v-if="item.project_id === null"
+                  class="text-gray-400 shrink-0"
+                  name="i-heroicons-globe-alt"
                 />
                 <span
-                    v-else
-                    :class="`bg-${item.project_color || 'primary'}-500`"
-                    class="w-2 h-2 rounded-full shrink-0"
+                  v-else
+                  :class="`bg-${item.project_color || 'primary'}-500`"
+                  class="w-2 h-2 rounded-full shrink-0"
                 />
                 <span class="text-sm text-gray-700 dark:text-gray-300 truncate">{{ item.project_name }}</span>
               </div>
               <u-select
-                  v-model="item.role"
-                  :items="accessOptions(item.project_id)"
-                  class="w-44 shrink-0"
+                v-model="item.role"
+                :items="accessOptions(item.project_id)"
+                class="w-44 shrink-0"
               />
             </div>
           </div>
@@ -463,15 +467,15 @@
       <template #footer>
         <div class="flex justify-end gap-3">
           <u-button
-              color="neutral"
-              variant="ghost"
-              @click="showRolesModal = false"
+            color="neutral"
+            variant="ghost"
+            @click="showRolesModal = false"
           >
             {{ t('common.cancel', 'Cancel') }}
           </u-button>
           <u-button
-              :loading="rolesSaving"
-              @click="doSaveRoles"
+            :loading="rolesSaving"
+            @click="doSaveRoles"
           >
             {{ t('common.save', 'Save') }}
           </u-button>

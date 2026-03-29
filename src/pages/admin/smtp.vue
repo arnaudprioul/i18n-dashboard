@@ -12,10 +12,10 @@
     <div class="max-w-2xl space-y-6">
       <!-- Status banner when not configured -->
       <u-alert
-          v-if="!pending && !form.host"
-          :title="t('smtp.not_configured', 'SMTP not configured — emails will not be sent')"
-          color="warning"
-          icon="i-heroicons-exclamation-triangle"
+        v-if="!pending && !form.host"
+        :title="t('smtp.not_configured', 'SMTP not configured — emails will not be sent')"
+        color="warning"
+        icon="i-heroicons-exclamation-triangle"
       />
 
       <!-- SMTP form -->
@@ -23,8 +23,8 @@
         <template #header>
           <div class="flex items-center gap-2">
             <u-icon
-                class="text-primary-500"
-                name="i-heroicons-envelope"
+              class="text-primary-500"
+              name="i-heroicons-envelope"
             />
             <h2 class="font-semibold text-gray-900 dark:text-white">
               {{ t('smtp.title', 'SMTP configuration') }}
@@ -33,30 +33,30 @@
         </template>
 
         <div
-            v-if="pending"
-            class="space-y-4"
+          v-if="pending"
+          class="space-y-4"
         >
           <u-skeleton
-              v-for="i in 6"
-              :key="i"
-              class="h-10"
+            v-for="i in 6"
+            :key="i"
+            class="h-10"
           />
         </div>
 
         <div
-            v-else
-            class="space-y-4"
+          v-else
+          class="space-y-4"
         >
           <!-- Provider presets -->
           <u-form-field :label="t('smtp.provider_label', 'Quick setup')">
             <div class="flex flex-wrap gap-2">
               <u-button
-                  v-for="p in providers"
-                  :key="p.id"
-                  :color="selectedProvider === p.id ? 'primary' : 'neutral'"
-                  :variant="selectedProvider === p.id ? 'solid' : 'outline'"
-                  size="xs"
-                  @click="applyPreset(p)"
+                v-for="p in providers"
+                :key="p.id"
+                :color="selectedProvider === p.id ? 'primary' : 'neutral'"
+                :variant="selectedProvider === p.id ? 'solid' : 'outline'"
+                size="xs"
+                @click="applyPreset(p)"
               >
                 {{ p.label }}
               </u-button>
@@ -65,13 +65,13 @@
 
           <!-- Gmail-specific hint -->
           <div
-              v-if="selectedProvider === 'gmail'"
-              class="rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 p-4 text-sm"
+            v-if="selectedProvider === 'gmail'"
+            class="rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 p-4 text-sm"
           >
             <div class="flex gap-2 mb-2">
               <u-icon
-                  class="text-blue-500 shrink-0 mt-0.5"
-                  name="i-heroicons-information-circle"
+                class="text-blue-500 shrink-0 mt-0.5"
+                name="i-heroicons-information-circle"
               />
               <p class="font-semibold text-blue-800 dark:text-blue-200">
                 {{ t('smtp.gmail_hint_title', 'Gmail requires an App Password') }}
@@ -81,19 +81,21 @@
               <li>
                 {{ t('smtp.gmail_step1', 'Click this link:') }}
                 <a
-                    class="underline font-medium"
-                    href="https://myaccount.google.com/apppasswords"
-                    rel="noopener"
-                    target="_blank"
+                  class="underline font-medium"
+                  href="https://myaccount.google.com/apppasswords"
+                  rel="noopener"
+                  target="_blank"
                 >myaccount.google.com/apppasswords</a>
               </li>
-              <li>{{
+              <li>
+                {{
                   t('smtp.gmail_step2', 'If the page shows "The setting you are looking for is not available" → you must first enable 2-Step Verification on your Google account')
                 }}
               </li>
               <li>{{ t('smtp.gmail_step3', 'Type a name (e.g. "i18n-dashboard") and click Create') }}</li>
               <li>{{ t('smtp.gmail_step4', 'Copy the 16-character code shown (e.g. abcd efgh ijkl mnop)') }}</li>
-              <li>{{
+              <li>
+                {{
                   t('smtp.gmail_step5', 'Paste it in the Password field below — use your Gmail address as Username')
                 }}
               </li>
@@ -102,27 +104,27 @@
 
           <div class="grid grid-cols-2 gap-4">
             <u-form-field
-                :label="t('smtp.host_label', 'SMTP host')"
-                class="col-span-2 sm:col-span-1"
+              :label="t('smtp.host_label', 'SMTP host')"
+              class="col-span-2 sm:col-span-1"
             >
               <u-input
-                  v-model="form.host"
-                  class="w-full"
-                  placeholder="smtp.example.com"
+                v-model="form.host"
+                class="w-full"
+                placeholder="smtp.example.com"
               />
             </u-form-field>
             <u-form-field :label="t('smtp.port_label', 'Port')">
               <u-input
-                  v-model="form.port"
-                  class="w-full"
-                  placeholder="587"
-                  type="number"
+                v-model="form.port"
+                class="w-full"
+                placeholder="587"
+                type="number"
               />
             </u-form-field>
           </div>
 
           <u-form-field :label="t('smtp.secure_label', 'Secure connection (SSL/TLS on port 465)')">
-            <u-switch v-model="form.secure"/>
+            <u-switch v-model="form.secure" />
             <template #hint>
               <span class="text-xs text-gray-400">
                 {{ t('smtp.secure_hint', 'Keep off for port 587 (STARTTLS). Enable only for port 465.') }}
@@ -132,23 +134,23 @@
 
           <u-form-field :label="t('smtp.user_label', 'Username')">
             <u-input
-                v-model="form.user"
-                class="w-full"
-                placeholder="user@example.com"
+              v-model="form.user"
+              class="w-full"
+              placeholder="user@example.com"
             />
           </u-form-field>
 
           <u-form-field :label="t('smtp.pass_label', 'Password')">
             <u-input
-                v-model="form.pass"
-                :placeholder="hasPassword ? '••••••••' : ''"
-                class="w-full"
-                type="password"
+              v-model="form.pass"
+              :placeholder="hasPassword ? '••••••••' : ''"
+              class="w-full"
+              type="password"
             />
             <template #hint>
               <span
-                  v-if="hasPassword"
-                  class="text-xs text-gray-400"
+                v-if="hasPassword"
+                class="text-xs text-gray-400"
               >
                 {{ t('smtp.pass_set_hint', 'Password is set — leave blank to keep current') }}
               </span>
@@ -157,27 +159,27 @@
 
           <u-form-field :label="t('smtp.from_label', 'From address')">
             <u-input
-                v-model="form.from"
-                class="w-full"
-                placeholder="noreply@example.com"
+              v-model="form.from"
+              class="w-full"
+              placeholder="noreply@example.com"
             />
           </u-form-field>
 
           <u-form-field
-              :hint="t('smtp.dashboard_url_hint', 'Used for links in emails')"
-              :label="t('smtp.dashboard_url_label', 'Dashboard URL')"
+            :hint="t('smtp.dashboard_url_hint', 'Used for links in emails')"
+            :label="t('smtp.dashboard_url_label', 'Dashboard URL')"
           >
             <u-input
-                v-model="form.dashboardUrl"
-                class="w-full"
-                placeholder="http://localhost:3333"
+              v-model="form.dashboardUrl"
+              class="w-full"
+              placeholder="http://localhost:3333"
             />
           </u-form-field>
 
           <div class="flex justify-end gap-3 pt-2">
             <u-button
-                :loading="saving"
-                @click="save"
+              :loading="saving"
+              @click="save"
             >
               {{ t('common.save', 'Save') }}
             </u-button>
@@ -190,8 +192,8 @@
         <template #header>
           <div class="flex items-center gap-2">
             <u-icon
-                class="text-gray-400"
-                name="i-heroicons-paper-airplane"
+              class="text-gray-400"
+              name="i-heroicons-paper-airplane"
             />
             <h2 class="font-semibold text-gray-900 dark:text-white">
               {{ t('smtp.test', 'Test') }}
@@ -201,31 +203,31 @@
 
         <!-- Test error -->
         <u-alert
-            v-if="testError"
-            :description="testError"
-            :title="t('smtp.test_failed', 'Send failed')"
-            class="mb-4"
-            color="error"
-            icon="i-heroicons-x-circle"
+          v-if="testError"
+          :description="testError"
+          :title="t('smtp.test_failed', 'Send failed')"
+          class="mb-4"
+          color="error"
+          icon="i-heroicons-x-circle"
         />
 
         <div class="flex items-end gap-3">
           <u-form-field
-              :label="t('smtp.test_email_label', 'Send test email to')"
-              class="flex-1"
+            :label="t('smtp.test_email_label', 'Send test email to')"
+            class="flex-1"
           >
             <u-input
-                v-model="testEmail"
-                class="w-full"
-                placeholder="you@example.com"
-                type="email"
+              v-model="testEmail"
+              class="w-full"
+              placeholder="you@example.com"
+              type="email"
             />
           </u-form-field>
           <u-button
-              :disabled="!form.host || !testEmail"
-              :loading="testing"
-              icon="i-heroicons-paper-airplane"
-              @click="sendTest"
+            :disabled="!form.host || !testEmail"
+            :loading="testing"
+            icon="i-heroicons-paper-airplane"
+            @click="sendTest"
           >
             {{ t('smtp.test', 'Test') }}
           </u-button>
@@ -237,8 +239,8 @@
         <template #header>
           <div class="flex items-center gap-2">
             <u-icon
-                class="text-gray-400"
-                name="i-heroicons-document-text"
+              class="text-gray-400"
+              name="i-heroicons-document-text"
             />
             <h2 class="font-semibold text-gray-900 dark:text-white">
               {{ t('smtp.config_file_title', 'Local config file') }}

@@ -3,22 +3,22 @@
     <div class="flex items-center justify-between mb-6">
       <div>
         <h1
-            class="text-2xl font-bold text-gray-900 dark:text-white"
-            data-cy="project-users-title"
+          class="text-2xl font-bold text-gray-900 dark:text-white"
+          data-cy="project-users-title"
         >
           {{ t('users.title', 'Users') }}
         </h1>
         <p
-            class="text-gray-500 dark:text-gray-400 mt-0.5 text-sm"
-            data-cy="project-users-subtitle"
+          class="text-gray-500 dark:text-gray-400 mt-0.5 text-sm"
+          data-cy="project-users-subtitle"
         >
           {{ t('users.project_members', 'Members of project') }} <strong>{{ currentProject?.name }}</strong>
         </p>
       </div>
       <u-button
-          data-cy="users-add-btn"
-          icon="i-heroicons-plus"
-          @click="openAdd"
+        data-cy="users-add-btn"
+        icon="i-heroicons-plus"
+        @click="openAdd"
       >
         {{ t('users.add', 'Add a user') }}
       </u-button>
@@ -27,39 +27,40 @@
     <!-- Users table -->
     <u-card>
       <div
-          v-if="pending"
-          class="space-y-3"
+        v-if="pending"
+        class="space-y-3"
       >
         <u-skeleton
-            v-for="i in 4"
-            :key="i"
-            class="h-12"
+          v-for="i in 4"
+          :key="i"
+          class="h-12"
         />
       </div>
       <div
-          v-else-if="!users.length"
-          class="text-center py-12"
+        v-else-if="!users.length"
+        class="text-center py-12"
       >
         <u-icon
-            class="text-4xl text-gray-300 mb-2"
-            name="i-heroicons-users"
+          class="text-4xl text-gray-300 mb-2"
+          name="i-heroicons-users"
         />
         <p class="text-gray-400">
           {{ t('users.none_in_project', 'No users in this project') }}
         </p>
       </div>
       <div
-          v-else
-          class="divide-y divide-gray-100 dark:divide-gray-800"
+        v-else
+        class="divide-y divide-gray-100 dark:divide-gray-800"
       >
         <div
-            v-for="user in users"
-            :key="user.id"
-            class="flex items-center justify-between py-3 gap-4"
+          v-for="user in users"
+          :key="user.id"
+          class="flex items-center justify-between py-3 gap-4"
         >
           <div class="flex items-center gap-3 min-w-0">
             <div
-                class="w-9 h-9 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0">
+              class="w-9 h-9 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0"
+            >
               <span class="text-sm font-bold text-primary-600 dark:text-primary-400">
                 {{ user.name.charAt(0).toUpperCase() }}
               </span>
@@ -70,10 +71,10 @@
                   {{ user.name }}
                 </p>
                 <u-badge
-                    v-if="!user.is_active"
-                    color="neutral"
-                    size="xs"
-                    variant="outline"
+                  v-if="!user.is_active"
+                  color="neutral"
+                  size="xs"
+                  variant="outline"
                 >
                   {{ t('users.inactive', 'Inactive') }}
                 </u-badge>
@@ -87,16 +88,16 @@
           <!-- Role badge -->
           <div class="flex-1 flex justify-center">
             <u-badge
-                v-if="user.role"
-                :color="roleColor(user.role)"
-                size="xs"
-                variant="soft"
+              v-if="user.role"
+              :color="roleColor(user.role)"
+              size="xs"
+              variant="soft"
             >
               {{ roleLabel(user.role) }}
             </u-badge>
             <span
-                v-else
-                class="text-xs text-gray-400 italic"
+              v-else
+              class="text-xs text-gray-400 italic"
             >{{ t('users.no_role', 'No role') }}</span>
           </div>
 
@@ -108,10 +109,10 @@
             </span>
             <u-dropdown-menu :items="userActions(user)">
               <u-button
-                  color="neutral"
-                  icon="i-heroicons-ellipsis-vertical"
-                  size="xs"
-                  variant="ghost"
+                color="neutral"
+                icon="i-heroicons-ellipsis-vertical"
+                size="xs"
+                variant="ghost"
               />
             </u-dropdown-menu>
           </div>
@@ -121,65 +122,66 @@
 
     <!-- Add user modal -->
     <u-modal
-        v-model:open="showModal"
-        :title="addModalTitle"
-        data-cy="add-user-modal"
+      v-model:open="showModal"
+      :title="addModalTitle"
+      data-cy="add-user-modal"
     >
       <template #body>
         <!-- ── Mode: select existing ──────────────────────────────────────── -->
         <div
-            v-if="addMode === 'select'"
-            class="space-y-4"
+          v-if="addMode === 'select'"
+          class="space-y-4"
         >
           <!-- Search -->
           <u-input
-              v-model="search"
-              :placeholder="t('users.search_placeholder', 'Search by name or email…')"
-              class="w-full"
-              data-cy="user-search-input"
-              icon="i-heroicons-magnifying-glass"
+            v-model="search"
+            :placeholder="t('users.search_placeholder', 'Search by name or email…')"
+            class="w-full"
+            data-cy="user-search-input"
+            icon="i-heroicons-magnifying-glass"
           />
 
           <!-- User list -->
           <div class="max-h-64 overflow-y-auto rounded-lg border border-gray-200 dark:border-gray-700">
             <div
-                v-if="loadingAvailable"
-                class="flex items-center justify-center py-8"
+              v-if="loadingAvailable"
+              class="flex items-center justify-center py-8"
             >
               <u-icon
-                  class="animate-spin text-primary-500 text-xl"
-                  name="i-heroicons-arrow-path"
+                class="animate-spin text-primary-500 text-xl"
+                name="i-heroicons-arrow-path"
               />
             </div>
             <div
-                v-else-if="!filteredAvailable.length"
-                class="py-8 text-center text-sm text-gray-400"
+              v-else-if="!filteredAvailable.length"
+              class="py-8 text-center text-sm text-gray-400"
             >
               <u-icon
-                  class="text-2xl mb-1 block mx-auto text-gray-300"
-                  name="i-heroicons-users"
+                class="text-2xl mb-1 block mx-auto text-gray-300"
+                name="i-heroicons-users"
               />
               {{
                 search ? t('users.no_match', 'No user matches your search') : t('users.all_already_members', 'All users are already members of this project')
               }}
             </div>
             <div
-                v-else
-                class="divide-y divide-gray-100 dark:divide-gray-800"
+              v-else
+              class="divide-y divide-gray-100 dark:divide-gray-800"
             >
               <button
-                  v-for="u in filteredAvailable"
-                  :key="u.id"
-                  :class="selectedUser?.id === u.id ? 'bg-primary-50 dark:bg-primary-900/20' : ''"
-                  class="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors text-left"
-                  type="button"
-                  @click="selectUser(u)"
+                v-for="u in filteredAvailable"
+                :key="u.id"
+                :class="selectedUser?.id === u.id ? 'bg-primary-50 dark:bg-primary-900/20' : ''"
+                class="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors text-left"
+                type="button"
+                @click="selectUser(u)"
               >
                 <div
-                    class="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0">
+                  class="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0"
+                >
                   <span class="text-xs font-bold text-primary-600 dark:text-primary-400">{{
-                      u.name.charAt(0).toUpperCase()
-                    }}</span>
+                    u.name.charAt(0).toUpperCase()
+                  }}</span>
                 </div>
                 <div class="min-w-0 flex-1">
                   <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
@@ -190,9 +192,9 @@
                   </p>
                 </div>
                 <u-icon
-                    v-if="selectedUser?.id === u.id"
-                    class="text-primary-500 shrink-0"
-                    name="i-heroicons-check-circle"
+                  v-if="selectedUser?.id === u.id"
+                  class="text-primary-500 shrink-0"
+                  name="i-heroicons-check-circle"
                 />
               </button>
             </div>
@@ -201,15 +203,16 @@
           <!-- Role picker (shown when a user is selected) -->
           <Transition name="slide-down">
             <div
-                v-if="selectedUser"
-                class="rounded-lg border border-primary-200 dark:border-primary-800 bg-primary-50 dark:bg-primary-900/20 p-4 space-y-3"
+              v-if="selectedUser"
+              class="rounded-lg border border-primary-200 dark:border-primary-800 bg-primary-50 dark:bg-primary-900/20 p-4 space-y-3"
             >
               <div class="flex items-center gap-3">
                 <div
-                    class="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0">
+                  class="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0"
+                >
                   <span class="text-xs font-bold text-primary-600">{{
-                      selectedUser.name.charAt(0).toUpperCase()
-                    }}</span>
+                    selectedUser.name.charAt(0).toUpperCase()
+                  }}</span>
                 </div>
                 <div class="min-w-0">
                   <p class="text-sm font-medium text-gray-900 dark:text-white">
@@ -221,13 +224,13 @@
                 </div>
               </div>
               <u-form-field
-                  :label="t('users.role_label', 'Role')"
-                  required
+                :label="t('users.role_label', 'Role')"
+                required
               >
                 <u-select
-                    v-model="selectRole"
-                    :items="roleOptions"
-                    class="w-full"
+                  v-model="selectRole"
+                  :items="roleOptions"
+                  class="w-full"
                 />
               </u-form-field>
             </div>
@@ -235,18 +238,18 @@
 
           <!-- Divider + create new -->
           <div class="flex items-center gap-3">
-            <div class="flex-1 border-t border-gray-200 dark:border-gray-700"/>
+            <div class="flex-1 border-t border-gray-200 dark:border-gray-700" />
             <span class="text-xs text-gray-400">{{ t('common.or', 'or') }}</span>
-            <div class="flex-1 border-t border-gray-200 dark:border-gray-700"/>
+            <div class="flex-1 border-t border-gray-200 dark:border-gray-700" />
           </div>
 
           <u-button
-              block
-              color="neutral"
-              data-cy="create-new-user-btn"
-              icon="i-heroicons-user-plus"
-              variant="outline"
-              @click="switchToCreate"
+            block
+            color="neutral"
+            data-cy="create-new-user-btn"
+            icon="i-heroicons-user-plus"
+            variant="outline"
+            @click="switchToCreate"
           >
             {{ t('users.create_new_user', 'Create a new user') }}
           </u-button>
@@ -254,83 +257,83 @@
 
         <!-- ── Mode: create new ───────────────────────────────────────────── -->
         <div
-            v-else
-            class="space-y-4"
+          v-else
+          class="space-y-4"
         >
           <div class="grid grid-cols-2 gap-4">
             <u-form-field
-                :label="t('users.full_name', 'Full name')"
-                required
+              :label="t('users.full_name', 'Full name')"
+              required
             >
               <u-input
-                  v-model="form.name"
-                  class="w-full"
-                  data-cy="user-form-name"
-                  placeholder="Marie Dupont"
+                v-model="form.name"
+                class="w-full"
+                data-cy="user-form-name"
+                placeholder="Marie Dupont"
               />
             </u-form-field>
             <u-form-field
-                :label="t('login.email', 'Email')"
-                required
+              :label="t('login.email', 'Email')"
+              required
             >
               <u-input
-                  v-model="form.email"
-                  class="w-full"
-                  data-cy="user-form-email"
-                  placeholder="marie@example.com"
-                  type="email"
+                v-model="form.email"
+                class="w-full"
+                data-cy="user-form-email"
+                placeholder="marie@example.com"
+                type="email"
               />
             </u-form-field>
           </div>
 
           <u-form-field
-              :label="t('users.role_label', 'Role')"
-              required
+            :label="t('users.role_label', 'Role')"
+            required
           >
             <u-select
-                v-model="form.role"
-                :items="roleOptions"
-                class="w-full"
+              v-model="form.role"
+              :items="roleOptions"
+              class="w-full"
             />
           </u-form-field>
 
           <u-form-field :label="t('users.project_label', 'Project')">
             <u-input
-                :model-value="currentProject?.name"
-                class="w-full"
-                disabled
+              :model-value="currentProject?.name"
+              class="w-full"
+              disabled
             />
           </u-form-field>
 
           <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
             <p class="text-xs text-blue-600 dark:text-blue-400">
               <u-icon
-                  class="inline mr-1"
-                  name="i-heroicons-information-circle"
+                class="inline mr-1"
+                name="i-heroicons-information-circle"
               />
               {{ t('users.temp_password_info', 'A temporary password will be generated and shown below.') }}
             </p>
           </div>
 
           <div
-              v-if="createdTempPassword"
-              class="bg-green-50 dark:bg-green-900/20 rounded-lg p-3"
+            v-if="createdTempPassword"
+            class="bg-green-50 dark:bg-green-900/20 rounded-lg p-3"
           >
             <p class="text-xs text-green-700 dark:text-green-300 font-medium mb-1">
               <u-icon
-                  class="inline mr-1"
-                  name="i-heroicons-key"
+                class="inline mr-1"
+                name="i-heroicons-key"
               />
               {{ t('users.temp_password_label', 'Temporary password (copy it now):') }}
             </p>
             <div class="flex items-center gap-2">
               <code class="text-sm font-mono text-green-800 dark:text-green-200 flex-1">{{ createdTempPassword }}</code>
               <u-button
-                  color="neutral"
-                  icon="i-heroicons-clipboard"
-                  size="xs"
-                  variant="ghost"
-                  @click="copyTemp"
+                color="neutral"
+                icon="i-heroicons-clipboard"
+                size="xs"
+                variant="ghost"
+                @click="copyTemp"
               />
             </div>
           </div>
@@ -341,43 +344,43 @@
         <div class="flex items-center justify-between gap-3">
           <!-- Back button in create mode -->
           <u-button
-              v-if="addMode === 'create' && !createdTempPassword"
-              color="neutral"
-              data-cy="add-user-back-btn"
-              icon="i-heroicons-arrow-left"
-              variant="ghost"
-              @click="addMode = 'select'"
+            v-if="addMode === 'create' && !createdTempPassword"
+            color="neutral"
+            data-cy="add-user-back-btn"
+            icon="i-heroicons-arrow-left"
+            variant="ghost"
+            @click="addMode = 'select'"
           >
             {{ t('users.back_to_select', 'Back') }}
           </u-button>
           <div
-              v-else
-              class="flex-1"
+            v-else
+            class="flex-1"
           />
 
           <div class="flex gap-3">
             <u-button
-                color="neutral"
-                data-cy="add-user-cancel-btn"
-                variant="ghost"
-                @click="closeModal"
+              color="neutral"
+              data-cy="add-user-cancel-btn"
+              variant="ghost"
+              @click="closeModal"
             >
               {{ createdTempPassword ? t('common.close', 'Close') : t('common.cancel', 'Cancel') }}
             </u-button>
             <!-- Select mode: add existing user -->
             <u-button
-                v-if="addMode === 'select'"
-                :disabled="!selectedUser"
-                :loading="rolesSaving"
-                @click="addExistingUser"
+              v-if="addMode === 'select'"
+              :disabled="!selectedUser"
+              :loading="rolesSaving"
+              @click="addExistingUser"
             >
               {{ t('users.add_to_project', 'Add to project') }}
             </u-button>
             <!-- Create mode: create new user -->
             <u-button
-                v-else-if="!createdTempPassword"
-                :loading="saving"
-                @click="saveUser"
+              v-else-if="!createdTempPassword"
+              :loading="saving"
+              @click="saveUser"
             >
               {{ t('common.create', 'Create') }}
             </u-button>
@@ -388,14 +391,15 @@
 
     <!-- Role modal -->
     <u-modal
-        v-model:open="showRoleModal"
-        :title="t('users.edit_role_title', 'Edit role')"
+      v-model:open="showRoleModal"
+      :title="t('users.edit_role_title', 'Edit role')"
     >
       <template #body>
         <div class="space-y-4">
           <div class="flex items-center gap-3 pb-4 border-b border-gray-100 dark:border-gray-800">
             <div
-                class="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0">
+              class="w-10 h-10 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center shrink-0"
+            >
               <span class="font-bold text-primary-600 dark:text-primary-400">
                 {{ roleModalUser?.name.charAt(0).toUpperCase() }}
               </span>
@@ -411,9 +415,9 @@
           </div>
           <u-form-field :label="`${t('users.role_in_project', 'Role in')} ${currentProject?.name}`">
             <u-select
-                v-model="roleModalValue"
-                :items="roleOptions"
-                class="w-full"
+              v-model="roleModalValue"
+              :items="roleOptions"
+              class="w-full"
             />
           </u-form-field>
         </div>
@@ -421,15 +425,15 @@
       <template #footer>
         <div class="flex justify-end gap-3">
           <u-button
-              color="neutral"
-              variant="ghost"
-              @click="showRoleModal = false"
+            color="neutral"
+            variant="ghost"
+            @click="showRoleModal = false"
           >
             {{ t('common.cancel', 'Cancel') }}
           </u-button>
           <u-button
-              :loading="rolesSaving"
-              @click="saveRole"
+            :loading="rolesSaving"
+            @click="saveRole"
           >
             {{ t('common.save', 'Save') }}
           </u-button>
@@ -439,8 +443,8 @@
 
     <!-- Delete confirm -->
     <u-modal
-        v-model:open="showDeleteConfirm"
-        :title="t('users.remove_user_title', 'Remove user')"
+      v-model:open="showDeleteConfirm"
+      :title="t('users.remove_user_title', 'Remove user')"
     >
       <template #body>
         <p class="text-gray-600 dark:text-gray-400">
@@ -452,16 +456,16 @@
       <template #footer>
         <div class="flex justify-end gap-3">
           <u-button
-              color="neutral"
-              variant="ghost"
-              @click="showDeleteConfirm = false"
+            color="neutral"
+            variant="ghost"
+            @click="showDeleteConfirm = false"
           >
             {{ t('common.cancel', 'Cancel') }}
           </u-button>
           <u-button
-              :loading="deleting"
-              color="error"
-              @click="deleteUser"
+            :loading="deleting"
+            color="error"
+            @click="deleteUser"
           >
             {{ t('users.remove_btn', 'Remove') }}
           </u-button>

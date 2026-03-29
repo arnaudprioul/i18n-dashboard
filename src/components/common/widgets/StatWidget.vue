@@ -2,26 +2,26 @@
   <u-card class="h-full overflow-hidden">
     <div class="flex flex-col h-full justify-between">
       <div
-          v-if="pending"
-          class="space-y-2"
+        v-if="pending"
+        class="space-y-2"
       >
-        <u-skeleton class="h-8 w-16"/>
-        <u-skeleton class="h-4 w-24"/>
+        <u-skeleton class="h-8 w-16" />
+        <u-skeleton class="h-4 w-24" />
       </div>
 
       <div
-          v-else
-          class="flex flex-col h-full"
+        v-else
+        class="flex flex-col h-full"
       >
         <div class="flex items-start justify-between">
           <div
-              :class="config.bgColor"
-              class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+            :class="config.bgColor"
+            class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
           >
             <u-icon
-                :class="config.iconColor"
-                :name="config.icon"
-                class="text-xl"
+              :class="config.iconColor"
+              :name="config.icon"
+              class="text-xl"
             />
           </div>
         </div>
@@ -34,27 +34,27 @@
             {{ displayLabel }}
           </p>
           <p
-              v-if="!hasProject"
-              class="text-xs text-gray-400 dark:text-gray-600 mt-1"
+            v-if="!hasProject"
+            class="text-xs text-gray-400 dark:text-gray-600 mt-1"
           >
             {{ t('dashboard.select_project', 'Select a project') }}
           </p>
           <p
-              v-else-if="sourceLabel"
-              class="text-xs text-gray-400 dark:text-gray-500 mt-1"
+            v-else-if="sourceLabel"
+            class="text-xs text-gray-400 dark:text-gray-500 mt-1"
           >
             {{ sourceLabel }}
           </p>
         </div>
 
         <div
-            v-if="size === WIDGET_SIZE.MD && type === WIDGET_TYPE.STAT_COVERAGE && stats && hasProject"
-            class="mt-3"
+          v-if="size === WIDGET_SIZE.MD && type === WIDGET_TYPE.STAT_COVERAGE && stats && hasProject"
+          class="mt-3"
         >
           <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
             <div
-                :style="{ width: `${coverage}%` }"
-                class="bg-green-500 h-1.5 rounded-full transition-all"
+              :style="{ width: `${coverage}%` }"
+              class="bg-green-500 h-1.5 rounded-full transition-all"
             />
           </div>
         </div>

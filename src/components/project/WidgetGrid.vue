@@ -4,34 +4,34 @@
     <div class="flex items-center justify-end mb-6 gap-2">
       <template v-if="!editing">
         <u-button
-            color="neutral"
-            icon="i-heroicons-pencil-square"
-            variant="ghost"
-            @click="startEditing"
+          color="neutral"
+          icon="i-heroicons-pencil-square"
+          variant="ghost"
+          @click="startEditing"
         >
           {{ t('dashboard.edit', 'Edit') }}
         </u-button>
       </template>
       <template v-else>
         <u-button
-            color="neutral"
-            variant="ghost"
-            @click="cancelEditing"
+          color="neutral"
+          variant="ghost"
+          @click="cancelEditing"
         >
           {{ t('common.cancel', 'Cancel') }}
         </u-button>
         <u-button
-            color="neutral"
-            icon="i-heroicons-plus"
-            variant="outline"
-            @click="showPicker = true"
+          color="neutral"
+          icon="i-heroicons-plus"
+          variant="outline"
+          @click="showPicker = true"
         >
           {{ t('common.add', 'Add') }}
         </u-button>
         <u-button
-            :loading="saving"
-            icon="i-heroicons-check"
-            @click="saveLayout"
+          :loading="saving"
+          icon="i-heroicons-check"
+          @click="saveLayout"
         >
           {{ t('dashboard.done', 'Done') }}
         </u-button>
@@ -40,21 +40,21 @@
 
     <!-- Empty state -->
     <div
-        v-if="activeLayout.length === 0"
-        class="border border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-16 text-center"
+      v-if="activeLayout.length === 0"
+      class="border border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-16 text-center"
     >
       <u-icon
-          class="text-5xl text-gray-300 dark:text-gray-600 mb-3"
-          name="i-heroicons-squares-2x2"
+        class="text-5xl text-gray-300 dark:text-gray-600 mb-3"
+        name="i-heroicons-squares-2x2"
       />
       <p class="text-gray-400 font-medium">
         {{ t('dashboard.no_widgets', 'No widgets') }}
       </p>
       <u-button
-          v-if="editing"
-          class="mt-4"
-          icon="i-heroicons-plus"
-          @click="showPicker = true"
+        v-if="editing"
+        class="mt-4"
+        icon="i-heroicons-plus"
+        @click="showPicker = true"
       >
         {{ t('dashboard.add_widget', 'Add a widget') }}
       </u-button>
@@ -62,40 +62,40 @@
 
     <!-- Widget grid -->
     <div
-        v-else
-        class="grid grid-cols-4 gap-4 auto-rows-[minmax(140px,auto)]"
+      v-else
+      class="grid grid-cols-4 gap-4 auto-rows-[minmax(140px,auto)]"
     >
       <div
-          v-for="(widget, index) in activeLayout"
-          :key="widget.id"
-          :class="[sizeClass(widget.size), 'relative', editing ? 'cursor-grab' : '']"
-          :draggable="editing"
-          @dragend="onDragEnd"
-          @dragover="onDragOver($event, index)"
-          @dragstart="onDragStart(index)"
+        v-for="(widget, index) in activeLayout"
+        :key="widget.id"
+        :class="[sizeClass(widget.size), 'relative', editing ? 'cursor-grab' : '']"
+        :draggable="editing"
+        @dragend="onDragEnd"
+        @dragover="onDragOver($event, index)"
+        @dragstart="onDragStart(index)"
       >
         <!-- Remove button -->
         <button
-            v-if="editing"
-            class="absolute -top-2 -left-2 z-10 w-5 h-5 bg-red-500 rounded-full text-white flex items-center justify-center text-xs shadow-sm hover:bg-red-600 transition-colors"
-            @click.stop="removeWidget(index)"
+          v-if="editing"
+          class="absolute -top-2 -left-2 z-10 w-5 h-5 bg-red-500 rounded-full text-white flex items-center justify-center text-xs shadow-sm hover:bg-red-600 transition-colors"
+          @click.stop="removeWidget(index)"
         >
           ×
         </button>
 
         <!-- Size buttons -->
         <div
-            v-if="editing"
-            class="absolute -top-2 right-0 z-10 flex gap-0.5"
+          v-if="editing"
+          class="absolute -top-2 right-0 z-10 flex gap-0.5"
         >
           <button
-              v-for="s in widgetRegistry[widget.type]?.sizes ?? []"
-              :key="s"
-              :class="widget.size === s
+            v-for="s in widgetRegistry[widget.type]?.sizes ?? []"
+            :key="s"
+            :class="widget.size === s
               ? 'bg-primary-500 text-white'
               : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'"
-              class="px-1 py-0.5 text-xs rounded shadow-sm transition-colors"
-              @click.stop="resizeWidget(index, s)"
+            class="px-1 py-0.5 text-xs rounded shadow-sm transition-colors"
+            @click.stop="resizeWidget(index, s)"
           >
             {{ s }}
           </button>
@@ -103,25 +103,25 @@
 
         <!-- Config button -->
         <button
-            v-if="editing && widgetRegistry[widget.type]?.hasDataSource"
-            class="absolute bottom-1 right-1 z-10 w-6 h-6 bg-gray-600/80 dark:bg-gray-400/80 rounded-full text-white flex items-center justify-center text-xs hover:bg-gray-700 transition-colors"
-            @click.stop="configIndex = index"
+          v-if="editing && widgetRegistry[widget.type]?.hasDataSource"
+          class="absolute bottom-1 right-1 z-10 w-6 h-6 bg-gray-600/80 dark:bg-gray-400/80 rounded-full text-white flex items-center justify-center text-xs hover:bg-gray-700 transition-colors"
+          @click.stop="configIndex = index"
         >
           <u-icon
-              class="text-xs"
-              name="i-heroicons-cog-6-tooth"
+            class="text-xs"
+            name="i-heroicons-cog-6-tooth"
           />
         </button>
 
         <div :class="editing ? 'animate-wiggle h-full' : 'h-full'">
           <component
-              :is="widgetComponent(widget.type)"
-              :id="widget.id"
-              :data-source="widget.dataSource"
-              :editing="editing"
-              :size="widget.size"
-              :title="widget.title"
-              :type="widget.type"
+            :is="widgetComponent(widget.type)"
+            :id="widget.id"
+            :data-source="widget.dataSource"
+            :editing="editing"
+            :size="widget.size"
+            :title="widget.title"
+            :type="widget.type"
           />
         </div>
       </div>
@@ -129,18 +129,18 @@
 
     <!-- Widget picker (exclude 'projects' widget — not relevant in project context) -->
     <common-widget-picker
-        v-model="showPicker"
-        :exclude-types="[WIDGET_TYPE.PROJECTS]"
-        @add="addWidget"
+      v-model="showPicker"
+      :exclude-types="[WIDGET_TYPE.PROJECTS]"
+      @add="addWidget"
     />
 
     <!-- Widget config modal -->
     <common-widget-config-modal
-        :index="configIndex"
-        :open="configIndex !== -1"
-        :widget="configIndex !== -1 ? activeLayout[configIndex] : null"
-        @save="onSaveConfig"
-        @update:open="val => { if (!val) configIndex = -1 }"
+      :index="configIndex"
+      :open="configIndex !== -1"
+      :widget="configIndex !== -1 ? activeLayout[configIndex] : null"
+      @save="onSaveConfig"
+      @update:open="val => { if (!val) configIndex = -1 }"
     />
   </div>
 </template>

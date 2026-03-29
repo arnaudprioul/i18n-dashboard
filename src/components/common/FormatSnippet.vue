@@ -4,20 +4,20 @@
       <div class="flex items-center justify-between gap-2">
         <div class="flex items-center gap-2">
           <u-icon
-              class="text-green-500"
-              name="i-heroicons-code-bracket"
+            class="text-green-500"
+            name="i-heroicons-code-bracket"
           />
           <h2 class="font-semibold text-gray-900 dark:text-white">
             {{ t('formats.snippet_title', 'Integration snippet') }}
           </h2>
         </div>
         <u-button
-            :label="copied ? t('common.copied', 'Copied!') : t('common.copy', 'Copy')"
-            :color="copied ? 'success' : 'neutral'"
-            :icon="copied ? 'i-heroicons-check' : 'i-heroicons-clipboard'"
-            size="xs"
-            variant="ghost"
-            @click="copy"
+          :label="copied ? t('common.copied', 'Copied!') : t('common.copy', 'Copy')"
+          :color="copied ? 'success' : 'neutral'"
+          :icon="copied ? 'i-heroicons-check' : 'i-heroicons-clipboard'"
+          size="xs"
+          variant="ghost"
+          @click="copy"
         />
       </div>
     </template>

@@ -7,33 +7,36 @@
         </h1>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
           {{ t('formats.datetime_subtitle', 'Configure') }} <code
-            class="font-mono text-xs bg-gray-100 dark:bg-gray-800 px-1 rounded">$d(date, 'short')</code>
+            class="font-mono text-xs bg-gray-100 dark:bg-gray-800 px-1 rounded"
+          >$d(date, 'short')</code>
           {{ t('formats.per_locale', 'by locale.') }}
         </p>
       </div>
       <u-button
-          icon="i-heroicons-plus"
-          @click="openCreate"
+        icon="i-heroicons-plus"
+        @click="openCreate"
       >
         {{ t('formats.add_datetime_format', 'Add a format') }}
       </u-button>
     </div>
 
     <div
-        class="bg-blue-50 dark:bg-blue-900/20 rounded-lg px-4 py-3 text-sm text-blue-700 dark:text-blue-300 flex gap-2">
+      class="bg-blue-50 dark:bg-blue-900/20 rounded-lg px-4 py-3 text-sm text-blue-700 dark:text-blue-300 flex gap-2"
+    >
       <u-icon
-          class="shrink-0 mt-0.5"
-          name="i-heroicons-information-circle"
+        class="shrink-0 mt-0.5"
+        name="i-heroicons-information-circle"
       />
       <div>
         {{ t('formats.datetime_info', 'Use') }} <code
-          class="font-mono text-xs bg-blue-100 dark:bg-blue-900/40 px-1 rounded">$d(new Date(), 'short')</code>
+          class="font-mono text-xs bg-blue-100 dark:bg-blue-900/40 px-1 rounded"
+        >$d(new Date(), 'short')</code>
         {{ t('formats.datetime_info2', 'in your templates. Options correspond to') }}
         <strong>Intl.DateTimeFormat</strong> {{ t('formats.parameters', 'parameters.') }}
         <nuxt-link
-            class="underline ml-1"
-            target="_blank"
-            to="https://vue-i18n.intlify.dev/guide/essentials/datetime.html"
+          class="underline ml-1"
+          target="_blank"
+          to="https://vue-i18n.intlify.dev/guide/essentials/datetime.html"
         >
           {{ t('formats.documentation', 'Documentation vue-i18n') }} ↗
         </nuxt-link>
@@ -41,12 +44,12 @@
     </div>
 
     <div
-        v-if="!datetimeFormats?.length"
-        class="text-center py-16 text-gray-400"
+      v-if="!datetimeFormats?.length"
+      class="text-center py-16 text-gray-400"
     >
       <u-icon
-          class="text-4xl mb-3"
-          name="i-heroicons-calendar"
+        class="text-4xl mb-3"
+        name="i-heroicons-calendar"
       />
       <p class="font-medium">
         {{ t('formats.no_format', 'No format configured') }}
@@ -56,51 +59,52 @@
         {{ t('formats.in_templates', 'in your templates.') }}
       </p>
       <u-button
-          class="mt-4"
-          icon="i-heroicons-plus"
-          @click="openCreate"
+        class="mt-4"
+        icon="i-heroicons-plus"
+        @click="openCreate"
       >
         {{ t('formats.add_datetime_format', 'Add a format') }}
       </u-button>
     </div>
 
     <div
-        v-else
-        class="space-y-6"
+      v-else
+      class="space-y-6"
     >
       <div
-          v-for="(formats, locale) in groupedByLocale"
-          :key="locale"
+        v-for="(formats, locale) in groupedByLocale"
+        :key="locale"
       >
         <div class="flex items-center gap-2 mb-3">
           <span
-              class="text-xs font-mono font-bold bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded text-gray-500 dark:text-gray-400 uppercase">{{
-              locale
-            }}</span>
+            class="text-xs font-mono font-bold bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded text-gray-500 dark:text-gray-400 uppercase"
+          >{{
+            locale
+          }}</span>
           <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{
-              findLanguage(locale)?.nativeName || locale
-            }}</span>
+            findLanguage(locale)?.nativeName || locale
+          }}</span>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <u-card
-              v-for="fmt in formats"
-              :key="fmt.id"
+            v-for="fmt in formats"
+            :key="fmt.id"
           >
             <div class="flex items-start justify-between gap-2">
               <div class="min-w-0 flex-1">
                 <div class="flex items-center gap-2 mb-1">
                   <code class="text-sm font-mono font-semibold text-primary-600 dark:text-primary-400">'{{
-                      fmt.name
-                    }}'</code>
+                    fmt.name
+                  }}'</code>
                 </div>
                 <p class="text-xs text-gray-400 font-mono">
                   {{ previewDate(fmt.options, fmt.locale) }}
                 </p>
                 <div class="mt-2 flex flex-wrap gap-1">
                   <span
-                      v-for="(v, k) in fmt.options"
-                      :key="k"
-                      class="text-xs bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded px-1.5 py-0.5 font-mono text-gray-500 dark:text-gray-400"
+                    v-for="(v, k) in fmt.options"
+                    :key="k"
+                    class="text-xs bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded px-1.5 py-0.5 font-mono text-gray-500 dark:text-gray-400"
                   >
                     {{ k }}: {{ v }}
                   </span>
@@ -108,18 +112,18 @@
               </div>
               <div class="flex gap-1 shrink-0">
                 <u-button
-                    color="neutral"
-                    icon="i-heroicons-pencil"
-                    size="xs"
-                    variant="ghost"
-                    @click="openEdit(fmt)"
+                  color="neutral"
+                  icon="i-heroicons-pencil"
+                  size="xs"
+                  variant="ghost"
+                  @click="openEdit(fmt)"
                 />
                 <u-button
-                    color="error"
-                    icon="i-heroicons-trash"
-                    size="xs"
-                    variant="ghost"
-                    @click="remove(fmt.id)"
+                  color="error"
+                  icon="i-heroicons-trash"
+                  size="xs"
+                  variant="ghost"
+                  @click="remove(fmt.id)"
                 />
               </div>
             </div>
@@ -129,31 +133,31 @@
     </div>
 
     <u-modal
-        v-model:open="showModal"
-        :title="editing ? t('formats.edit_format', 'Edit format') : t('formats.new_datetime_format', 'New date format')"
+      v-model:open="showModal"
+      :title="editing ? t('formats.edit_format', 'Edit format') : t('formats.new_datetime_format', 'New date format')"
     >
       <template #body>
         <div class="space-y-4">
           <div class="grid grid-cols-2 gap-3">
             <u-form-field
-                :label="t('formats.locale', 'Locale')"
-                required
+              :label="t('formats.locale', 'Locale')"
+              required
             >
               <u-select
-                  v-model="form.locale"
-                  :items="localeOptions"
-                  class="w-full"
+                v-model="form.locale"
+                :items="localeOptions"
+                class="w-full"
               />
             </u-form-field>
             <u-form-field
-                :hint="t('formats.datetime_format_name_hint', 'E.g.: short, long, medium')"
-                :label="t('formats.format_name', 'Format name')"
-                required
+              :hint="t('formats.datetime_format_name_hint', 'E.g.: short, long, medium')"
+              :label="t('formats.format_name', 'Format name')"
+              required
             >
               <u-input
-                  v-model="form.name"
-                  class="w-full"
-                  placeholder="short"
+                v-model="form.name"
+                class="w-full"
+                placeholder="short"
               />
             </u-form-field>
           </div>
@@ -162,16 +166,16 @@
           <div class="grid grid-cols-2 gap-3">
             <u-form-field :label="t('formats.date_style', 'Date style (shortcut)')">
               <u-select
-                  v-model="form.options.dateStyle"
-                  :items="[{label: t('formats.none_default', 'None (default)'), value: null}, 'full', 'long', 'medium', 'short']"
-                  class="w-full"
+                v-model="form.options.dateStyle"
+                :items="[{label: t('formats.none_default', 'None (default)'), value: null}, 'full', 'long', 'medium', 'short']"
+                class="w-full"
               />
             </u-form-field>
             <u-form-field :label="t('formats.time_style', 'Time style (shortcut)')">
               <u-select
-                  v-model="form.options.timeStyle"
-                  :items="[{label: t('formats.none_default', 'None (default)'), value: null}, 'full', 'long', 'medium', 'short']"
-                  class="w-full"
+                v-model="form.options.timeStyle"
+                :items="[{label: t('formats.none_default', 'None (default)'), value: null}, 'full', 'long', 'medium', 'short']"
+                class="w-full"
               />
             </u-form-field>
           </div>
@@ -181,69 +185,69 @@
             <div class="grid grid-cols-3 gap-3">
               <u-form-field :label="t('formats.year', 'Year')">
                 <u-select
-                    v-model="form.options.year"
-                    :items="[{label: '—', value: null}, 'numeric', '2-digit']"
-                    class="w-full"
+                  v-model="form.options.year"
+                  :items="[{label: '—', value: null}, 'numeric', '2-digit']"
+                  class="w-full"
                 />
               </u-form-field>
               <u-form-field :label="t('formats.month', 'Month')">
                 <u-select
-                    v-model="form.options.month"
-                    :items="[{label: '—', value: null}, 'numeric', '2-digit', 'long', 'short', 'narrow']"
-                    class="w-full"
+                  v-model="form.options.month"
+                  :items="[{label: '—', value: null}, 'numeric', '2-digit', 'long', 'short', 'narrow']"
+                  class="w-full"
                 />
               </u-form-field>
               <u-form-field :label="t('formats.day', 'Day')">
                 <u-select
-                    v-model="form.options.day"
-                    :items="[{label: '—', value: null}, 'numeric', '2-digit']"
-                    class="w-full"
+                  v-model="form.options.day"
+                  :items="[{label: '—', value: null}, 'numeric', '2-digit']"
+                  class="w-full"
                 />
               </u-form-field>
             </div>
             <div class="grid grid-cols-3 gap-3">
               <u-form-field :label="t('formats.weekday', 'Weekday')">
                 <u-select
-                    v-model="form.options.weekday"
-                    :items="[{label: '—', value: null}, 'long', 'short', 'narrow']"
-                    class="w-full"
+                  v-model="form.options.weekday"
+                  :items="[{label: '—', value: null}, 'long', 'short', 'narrow']"
+                  class="w-full"
                 />
               </u-form-field>
               <u-form-field :label="t('formats.hour', 'Hour')">
                 <u-select
-                    v-model="form.options.hour"
-                    :items="[{label: '—', value: null}, 'numeric', '2-digit']"
-                    class="w-full"
+                  v-model="form.options.hour"
+                  :items="[{label: '—', value: null}, 'numeric', '2-digit']"
+                  class="w-full"
                 />
               </u-form-field>
               <u-form-field :label="t('formats.minute', 'Minute')">
                 <u-select
-                    v-model="form.options.minute"
-                    :items="[{label: '—', value: null}, 'numeric', '2-digit']"
-                    class="w-full"
+                  v-model="form.options.minute"
+                  :items="[{label: '—', value: null}, 'numeric', '2-digit']"
+                  class="w-full"
                 />
               </u-form-field>
             </div>
             <div class="grid grid-cols-3 gap-3">
               <u-form-field :label="t('formats.second', 'Second')">
                 <u-select
-                    v-model="form.options.second"
-                    :items="[{label: '—', value: null}, 'numeric', '2-digit']"
-                    class="w-full"
+                  v-model="form.options.second"
+                  :items="[{label: '—', value: null}, 'numeric', '2-digit']"
+                  class="w-full"
                 />
               </u-form-field>
               <u-form-field :label="t('formats.hour12', '12h format')">
                 <u-select
-                    v-model="form.options.hour12"
-                    :items="[{label: t('formats.auto_default', 'Auto (default)'), value: null}, {label: t('formats.yes', 'Yes'), value: true}, {label: t('formats.no', 'No'), value: false}]"
-                    class="w-full"
+                  v-model="form.options.hour12"
+                  :items="[{label: t('formats.auto_default', 'Auto (default)'), value: null}, {label: t('formats.yes', 'Yes'), value: true}, {label: t('formats.no', 'No'), value: false}]"
+                  class="w-full"
                 />
               </u-form-field>
               <u-form-field :label="t('formats.timezone', 'Timezone')">
                 <u-input
-                    v-model="form.options.timeZone"
-                    class="w-full"
-                    placeholder="Europe/Paris"
+                  v-model="form.options.timeZone"
+                  class="w-full"
+                  placeholder="Europe/Paris"
                 />
               </u-form-field>
             </div>
@@ -262,15 +266,15 @@
       <template #footer>
         <div class="flex justify-end gap-2">
           <u-button
-              color="neutral"
-              variant="ghost"
-              @click="showModal = false"
+            color="neutral"
+            variant="ghost"
+            @click="showModal = false"
           >
             {{ t('common.cancel', 'Cancel') }}
           </u-button>
           <u-button
-              :loading="saving"
-              @click="save"
+            :loading="saving"
+            @click="save"
           >
             {{ editing ? t('formats.update', 'Update') : t('common.create', 'Create') }}
           </u-button>

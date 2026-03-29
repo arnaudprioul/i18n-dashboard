@@ -2,17 +2,17 @@
   <div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 p-4">
     <!-- Hydration sentinel: only rendered after onMounted() fires (Vue fully hydrated) -->
     <span
-        v-if="isMounted"
-        class="sr-only"
-        data-cy="onboarding-mounted"
+      v-if="isMounted"
+      class="sr-only"
+      data-cy="onboarding-mounted"
     />
     <div class="w-full max-w-2xl">
       <!-- Header -->
       <div class="text-center mb-8">
         <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-500 mb-4">
           <u-icon
-              class="text-white text-3xl"
-              name="i-heroicons-language"
+            class="text-white text-3xl"
+            name="i-heroicons-language"
           />
         </div>
         <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
@@ -25,37 +25,37 @@
 
       <!-- Steps indicator -->
       <div
-          class="flex items-center justify-center gap-2 mb-8"
-          data-cy="onboarding-step-indicator"
+        class="flex items-center justify-center gap-2 mb-8"
+        data-cy="onboarding-step-indicator"
       >
         <template
-            v-for="(step, i) in steps"
-            :key="i"
+          v-for="(step, i) in steps"
+          :key="i"
         >
           <div class="flex items-center gap-2">
             <div
-                :class="i < currentStep
+              :class="i < currentStep
                 ? 'bg-primary-500 text-white'
                 : i === currentStep
                   ? 'bg-primary-500 text-white ring-4 ring-primary-100 dark:ring-primary-900/30'
                   : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'"
-                class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors"
+              class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors"
             >
               <u-icon
-                  v-if="i < currentStep"
-                  class="text-sm"
-                  name="i-heroicons-check"
+                v-if="i < currentStep"
+                class="text-sm"
+                name="i-heroicons-check"
               />
               <span v-else>{{ i + 1 }}</span>
             </div>
             <span
-                :class="i === currentStep ? 'text-gray-900 dark:text-white font-medium' : 'text-gray-400'"
-                class="text-sm hidden sm:block"
+              :class="i === currentStep ? 'text-gray-900 dark:text-white font-medium' : 'text-gray-400'"
+              class="text-sm hidden sm:block"
             >{{ step.label }}</span>
           </div>
           <div
-              v-if="i < steps.length - 1"
-              class="flex-1 h-0.5 bg-gray-200 dark:bg-gray-700 max-w-12"
+            v-if="i < steps.length - 1"
+            class="flex-1 h-0.5 bg-gray-200 dark:bg-gray-700 max-w-12"
           />
         </template>
       </div>
@@ -63,8 +63,8 @@
       <u-card>
         <!-- ── Step 0 : Database ──────────────────────────────────────────── -->
         <div
-            v-if="currentStep === 0"
-            class="space-y-4"
+          v-if="currentStep === 0"
+          class="space-y-4"
         >
           <div>
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -82,9 +82,9 @@
           <u-form-field :label="t('onboarding.db_type_label', 'Database type')">
             <div data-cy="onboarding-db-type-select">
               <u-select
-                  v-model="dbForm.type"
-                  :items="dbTypeOptions"
-                  class="w-full"
+                v-model="dbForm.type"
+                :items="dbTypeOptions"
+                class="w-full"
               />
             </div>
           </u-form-field>
@@ -94,43 +94,43 @@
             <u-form-field :label="t('onboarding.db_file_label', 'Database file')">
               <div class="flex gap-2">
                 <u-input
-                    v-model="dbForm.connection"
-                    class="flex-1"
-                    data-cy="onboarding-sqlite-path"
-                    placeholder="./i18n-dashboard.db"
+                  v-model="dbForm.connection"
+                  class="flex-1"
+                  data-cy="onboarding-sqlite-path"
+                  placeholder="./i18n-dashboard.db"
                 />
                 <u-button
-                    v-if="!sqliteFileExists"
-                    :loading="creatingFile"
-                    color="neutral"
-                    data-cy="onboarding-sqlite-create"
-                    icon="i-heroicons-document-plus"
-                    variant="outline"
-                    @click="createSqliteFile"
+                  v-if="!sqliteFileExists"
+                  :loading="creatingFile"
+                  color="neutral"
+                  data-cy="onboarding-sqlite-create"
+                  icon="i-heroicons-document-plus"
+                  variant="outline"
+                  @click="createSqliteFile"
                 >
                   {{ t('onboarding.db_create_file', 'Create') }}
                 </u-button>
                 <u-badge
-                    v-else
-                    class="shrink-0 self-center"
-                    color="success"
-                    data-cy="onboarding-sqlite-file-found"
-                    variant="soft"
+                  v-else
+                  class="shrink-0 self-center"
+                  color="success"
+                  data-cy="onboarding-sqlite-file-found"
+                  variant="soft"
                 >
                   <u-icon
-                      class="mr-1"
-                      name="i-heroicons-check"
+                    class="mr-1"
+                    name="i-heroicons-check"
                   />
                   {{ t('onboarding.db_file_found', 'File found') }}
                 </u-badge>
               </div>
               <p
-                  v-if="!sqliteFileExists"
-                  class="text-xs text-amber-500 mt-1"
+                v-if="!sqliteFileExists"
+                class="text-xs text-amber-500 mt-1"
               >
                 <u-icon
-                    class="inline mr-1"
-                    name="i-heroicons-exclamation-triangle"
+                  class="inline mr-1"
+                  name="i-heroicons-exclamation-triangle"
                 />
                 {{ t('onboarding.db_file_missing', 'The file does not exist yet. Click "Create" to create it.') }}
               </p>
@@ -141,46 +141,46 @@
           <template v-else>
             <div class="grid grid-cols-2 gap-3">
               <u-form-field
-                  :label="t('onboarding.db_host', 'Host')"
-                  class="col-span-1"
+                :label="t('onboarding.db_host', 'Host')"
+                class="col-span-1"
               >
                 <u-input
-                    v-model="dbForm.host"
-                    class="w-full"
-                    placeholder="localhost"
+                  v-model="dbForm.host"
+                  class="w-full"
+                  placeholder="localhost"
                 />
               </u-form-field>
               <u-form-field
-                  :label="t('onboarding.db_port', 'Port')"
-                  class="col-span-1"
+                :label="t('onboarding.db_port', 'Port')"
+                class="col-span-1"
               >
                 <u-input
-                    v-model="dbForm.port"
-                    :placeholder="dbForm.type === 'mysql' ? '3306' : '5432'"
-                    class="w-full"
+                  v-model="dbForm.port"
+                  :placeholder="dbForm.type === 'mysql' ? '3306' : '5432'"
+                  class="w-full"
                 />
               </u-form-field>
             </div>
             <u-form-field :label="t('onboarding.db_user', 'User')">
               <u-input
-                  v-model="dbForm.user"
-                  class="w-full"
-                  placeholder="postgres"
+                v-model="dbForm.user"
+                class="w-full"
+                placeholder="postgres"
               />
             </u-form-field>
             <u-form-field :label="t('onboarding.db_password', 'Password')">
               <u-input
-                  v-model="dbForm.password"
-                  class="w-full"
-                  placeholder="••••••••"
-                  type="password"
+                v-model="dbForm.password"
+                class="w-full"
+                placeholder="••••••••"
+                type="password"
               />
             </u-form-field>
             <u-form-field :label="t('onboarding.db_name', 'Database name')">
               <u-input
-                  v-model="dbForm.database"
-                  class="w-full"
-                  placeholder="i18n_dashboard"
+                v-model="dbForm.database"
+                class="w-full"
+                placeholder="i18n_dashboard"
               />
             </u-form-field>
           </template>
@@ -188,45 +188,45 @@
           <!-- Actions -->
           <div class="flex items-center gap-3 flex-wrap">
             <u-button
-                :loading="testingDb"
-                color="neutral"
-                data-cy="onboarding-db-test"
-                icon="i-heroicons-signal"
-                variant="outline"
-                @click="testDbConnection"
+              :loading="testingDb"
+              color="neutral"
+              data-cy="onboarding-db-test"
+              icon="i-heroicons-signal"
+              variant="outline"
+              @click="testDbConnection"
             >
               {{ t('onboarding.db_test', 'Test connection') }}
             </u-button>
             <u-button
-                v-if="dbFormChanged"
-                :loading="applyingDb"
-                icon="i-heroicons-check"
-                @click="applyDbConfig"
+              v-if="dbFormChanged"
+              :loading="applyingDb"
+              icon="i-heroicons-check"
+              @click="applyDbConfig"
             >
               {{ t('onboarding.db_test_apply', 'Apply') }}
             </u-button>
             <u-badge
-                v-if="dbConnected"
-                color="success"
-                data-cy="onboarding-db-connected"
-                variant="soft"
+              v-if="dbConnected"
+              color="success"
+              data-cy="onboarding-db-connected"
+              variant="soft"
             >
               <u-icon
-                  class="mr-1"
-                  name="i-heroicons-check-circle"
+                class="mr-1"
+                name="i-heroicons-check-circle"
               />
               {{ t('onboarding.db_connected', 'Connection OK') }}
             </u-badge>
           </div>
 
           <p
-              v-if="dbError"
-              class="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2"
-              data-cy="onboarding-db-error"
+            v-if="dbError"
+            class="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2"
+            data-cy="onboarding-db-error"
           >
             <u-icon
-                class="inline mr-1"
-                name="i-heroicons-exclamation-circle"
+              class="inline mr-1"
+              name="i-heroicons-exclamation-circle"
             />
             {{ dbError }}
           </p>
@@ -234,16 +234,16 @@
 
         <!-- ── Step 1 : Admin account ─────────────────────────────────────── -->
         <div
-            v-if="currentStep === 1"
-            class="space-y-4"
+          v-if="currentStep === 1"
+          class="space-y-4"
         >
           <!-- Fresh install: creation form -->
           <template v-if="!hasUsers">
             <div class="bg-primary-50 dark:bg-primary-900/20 rounded-lg p-4">
               <p class="text-sm text-primary-700 dark:text-primary-300">
                 <u-icon
-                    class="inline mr-1"
-                    name="i-heroicons-information-circle"
+                  class="inline mr-1"
+                  name="i-heroicons-information-circle"
                 />
                 {{ t('onboarding.create_admin_hint', 'Create the') }}
                 <strong>{{ t('onboarding.super_admin_role', 'Super Administrator') }}</strong>
@@ -251,66 +251,66 @@
               </p>
             </div>
             <form
-                class="space-y-4"
-                @submit.prevent="createAdmin"
+              class="space-y-4"
+              @submit.prevent="createAdmin"
             >
               <u-form-field
-                  :label="t('users.full_name', 'Full name')"
-                  required
+                :label="t('users.full_name', 'Full name')"
+                required
               >
                 <u-input
-                    v-model="adminForm.name"
-                    autofocus
-                    class="w-full"
-                    data-cy="onboarding-admin-name"
-                    placeholder="Marie Dupont"
+                  v-model="adminForm.name"
+                  autofocus
+                  class="w-full"
+                  data-cy="onboarding-admin-name"
+                  placeholder="Marie Dupont"
                 />
               </u-form-field>
               <u-form-field
-                  :label="t('login.email', 'Email')"
-                  required
+                :label="t('login.email', 'Email')"
+                required
               >
                 <u-input
-                    v-model="adminForm.email"
-                    class="w-full"
-                    data-cy="onboarding-admin-email"
-                    placeholder="admin@example.com"
-                    type="email"
+                  v-model="adminForm.email"
+                  class="w-full"
+                  data-cy="onboarding-admin-email"
+                  placeholder="admin@example.com"
+                  type="email"
                 />
               </u-form-field>
               <u-form-field
-                  :hint="t('user.password_hint', 'Minimum 8 characters')"
-                  :label="t('login.password', 'Password')"
-                  required
+                :hint="t('user.password_hint', 'Minimum 8 characters')"
+                :label="t('login.password', 'Password')"
+                required
               >
                 <u-input
-                    v-model="adminForm.password"
-                    class="w-full"
-                    data-cy="onboarding-admin-password"
-                    placeholder="••••••••"
-                    type="password"
+                  v-model="adminForm.password"
+                  class="w-full"
+                  data-cy="onboarding-admin-password"
+                  placeholder="••••••••"
+                  type="password"
                 />
               </u-form-field>
               <u-form-field
-                  :label="t('onboarding.confirm_password', 'Confirm password')"
-                  required
+                :label="t('onboarding.confirm_password', 'Confirm password')"
+                required
               >
                 <u-input
-                    v-model="adminForm.confirm"
-                    class="w-full"
-                    data-cy="onboarding-admin-confirm"
-                    placeholder="••••••••"
-                    type="password"
+                  v-model="adminForm.confirm"
+                  class="w-full"
+                  data-cy="onboarding-admin-confirm"
+                  placeholder="••••••••"
+                  type="password"
                 />
               </u-form-field>
               <p
-                  v-if="adminError"
-                  class="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2"
-                  data-cy="onboarding-admin-error"
+                v-if="adminError"
+                class="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2"
+                data-cy="onboarding-admin-error"
               >
                 <u-icon
-                    class="inline mr-1"
-                    name="i-heroicons-exclamation-circle"
+                  class="inline mr-1"
+                  name="i-heroicons-exclamation-circle"
                 />
                 {{ adminError }}
               </p>
@@ -319,12 +319,12 @@
           <!-- Existing install: confirmation -->
           <template v-else>
             <div
-                class="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg"
-                data-cy="onboarding-admin-done"
+              class="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg"
+              data-cy="onboarding-admin-done"
             >
               <u-icon
-                  class="text-green-500 text-2xl shrink-0"
-                  name="i-heroicons-check-circle"
+                class="text-green-500 text-2xl shrink-0"
+                name="i-heroicons-check-circle"
               />
               <div>
                 <p class="font-medium text-green-700 dark:text-green-400">
@@ -340,8 +340,8 @@
 
         <!-- ── Step 2 : UI Languages ──────────────────────────────────────── -->
         <div
-            v-if="currentStep === 2"
-            class="space-y-4"
+          v-if="currentStep === 2"
+          class="space-y-4"
         >
           <div>
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -354,38 +354,38 @@
             </p>
           </div>
           <u-input
-              v-model="uiLangSearch"
-              :placeholder="t('onboarding.languages_search', 'Rechercher une langue...')"
-              class="w-full"
-              data-cy="onboarding-lang-search"
-              icon="i-heroicons-magnifying-glass"
+            v-model="uiLangSearch"
+            :placeholder="t('onboarding.languages_search', 'Rechercher une langue...')"
+            class="w-full"
+            data-cy="onboarding-lang-search"
+            icon="i-heroicons-magnifying-glass"
           />
           <div
-              class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden max-h-56 overflow-y-auto"
-              data-cy="onboarding-lang-list"
+            class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden max-h-56 overflow-y-auto"
+            data-cy="onboarding-lang-list"
           >
             <button
-                v-for="lang in filteredUiLangs"
-                :key="lang.code"
-                :class="selectedUiLangs.includes(lang.code) ? 'bg-primary-50 dark:bg-primary-900/20' : ''"
-                class="w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
-                @click="toggleUiLang(lang)"
+              v-for="lang in filteredUiLangs"
+              :key="lang.code"
+              :class="selectedUiLangs.includes(lang.code) ? 'bg-primary-50 dark:bg-primary-900/20' : ''"
+              class="w-full flex items-center gap-3 px-3 py-2 text-sm text-left transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
+              @click="toggleUiLang(lang)"
             >
               <span class="font-mono text-xs text-gray-400 w-10 shrink-0">{{ lang.code }}</span>
               <span class="flex-1 text-gray-700 dark:text-gray-300">{{ lang.nativeName }}</span>
               <span class="text-xs text-gray-400">{{ lang.name }}</span>
               <u-icon
-                  v-if="selectedUiLangs.includes(lang.code)"
-                  class="text-primary-500 shrink-0"
-                  name="i-heroicons-check"
+                v-if="selectedUiLangs.includes(lang.code)"
+                class="text-primary-500 shrink-0"
+                name="i-heroicons-check"
               />
             </button>
           </div>
           <p class="text-xs text-gray-400">
             {{ selectedUiLangs.length }} {{ t('onboarding.languages_selected', 'langue(s) sélectionnée(s)') }}
             <span
-                v-if="nonEnLangs.length"
-                class="ml-1 text-primary-500"
+              v-if="nonEnLangs.length"
+              class="ml-1 text-primary-500"
             >
               — {{
                 nonEnLangs.length
@@ -396,17 +396,17 @@
           </p>
           <u-form-field :label="t('onboarding.languages_default', 'Langue par défaut')">
             <u-select
-                v-model="defaultUiLang"
-                :items="selectedUiLangsOptions"
-                class="w-full"
+              v-model="defaultUiLang"
+              :items="selectedUiLangsOptions"
+              class="w-full"
             />
           </u-form-field>
         </div>
 
         <!-- ── Step 3 : First project ─────────────────────────────────────── -->
         <div
-            v-if="currentStep === 3"
-            class="space-y-4"
+          v-if="currentStep === 3"
+          class="space-y-4"
         >
           <div>
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -418,34 +418,34 @@
           </div>
 
           <u-form-field
-              :label="t('projects.name_label', 'Project name')"
-              required
+            :label="t('projects.name_label', 'Project name')"
+            required
           >
             <u-input
-                v-model="projectForm.name"
-                :placeholder="t('projects.name_placeholder', 'My App')"
-                class="w-full"
-                data-cy="onboarding-project-name"
+              v-model="projectForm.name"
+              :placeholder="t('projects.name_placeholder', 'My App')"
+              class="w-full"
+              data-cy="onboarding-project-name"
             />
           </u-form-field>
 
           <!-- Source type toggle -->
           <div class="flex gap-2">
             <u-button
-                :color="projectSourceType === 'local' ? 'primary' : 'neutral'"
-                :variant="projectSourceType === 'local' ? 'solid' : 'outline'"
-                icon="i-heroicons-folder"
-                size="sm"
-                @click="projectSourceType = 'local'"
+              :color="projectSourceType === 'local' ? 'primary' : 'neutral'"
+              :variant="projectSourceType === 'local' ? 'solid' : 'outline'"
+              icon="i-heroicons-folder"
+              size="sm"
+              @click="projectSourceType = 'local'"
             >
               {{ t('onboarding.source_local', 'Local path') }}
             </u-button>
             <u-button
-                :color="projectSourceType === 'git' ? 'primary' : 'neutral'"
-                :variant="projectSourceType === 'git' ? 'solid' : 'outline'"
-                icon="i-heroicons-code-bracket"
-                size="sm"
-                @click="projectSourceType = 'git'"
+              :color="projectSourceType === 'git' ? 'primary' : 'neutral'"
+              :variant="projectSourceType === 'git' ? 'solid' : 'outline'"
+              icon="i-heroicons-code-bracket"
+              size="sm"
+              @click="projectSourceType = 'git'"
             >
               {{ t('onboarding.source_git', 'Git repository') }}
             </u-button>
@@ -454,14 +454,14 @@
           <!-- Local path fields -->
           <template v-if="projectSourceType === 'local'">
             <u-form-field
-                :label="t('settings.root_path', 'Project path')"
-                required
+              :label="t('settings.root_path', 'Project path')"
+              required
             >
               <u-input
-                  v-model="projectForm.root_path"
-                  class="w-full"
-                  data-cy="onboarding-project-path"
-                  placeholder="/path/to/my-project"
+                v-model="projectForm.root_path"
+                class="w-full"
+                data-cy="onboarding-project-path"
+                placeholder="/path/to/my-project"
               />
             </u-form-field>
           </template>
@@ -469,46 +469,46 @@
           <!-- Git fields -->
           <template v-else>
             <u-form-field
-                :label="t('projects.git_repo_url_label', 'Repository URL')"
-                required
+              :label="t('projects.git_repo_url_label', 'Repository URL')"
+              required
             >
               <u-input
-                  v-model="projectForm.git_url"
-                  class="w-full"
-                  data-cy="onboarding-project-git-url"
-                  placeholder="https://github.com/org/repo"
+                v-model="projectForm.git_url"
+                class="w-full"
+                data-cy="onboarding-project-git-url"
+                placeholder="https://github.com/org/repo"
               />
             </u-form-field>
             <u-form-field :label="t('projects.git_repo_branch_label', 'Branch')">
               <u-input
-                  v-model="projectForm.git_branch"
-                  class="w-full"
-                  placeholder="main"
+                v-model="projectForm.git_branch"
+                class="w-full"
+                placeholder="main"
               />
             </u-form-field>
             <u-form-field :label="t('projects.git_token_label', 'Access token (optional)')">
               <u-input
-                  v-model="projectForm.git_token"
-                  :placeholder="t('projects.git_token_placeholder', 'ghp_...')"
-                  class="w-full"
-                  type="password"
+                v-model="projectForm.git_token"
+                :placeholder="t('projects.git_token_placeholder', 'ghp_...')"
+                class="w-full"
+                type="password"
               />
             </u-form-field>
           </template>
 
           <u-form-field :label="t('settings.locales_folder', 'Locales folder')">
             <u-input
-                v-model="projectForm.locales_path"
-                class="w-full"
-                data-cy="onboarding-project-locales"
-                placeholder="src/locales"
+              v-model="projectForm.locales_path"
+              class="w-full"
+              data-cy="onboarding-project-locales"
+              placeholder="src/locales"
             />
           </u-form-field>
 
           <p
-              v-if="projectError"
-              class="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2"
-              data-cy="onboarding-project-error"
+            v-if="projectError"
+            class="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2"
+            data-cy="onboarding-project-error"
           >
             {{ projectError }}
           </p>
@@ -516,19 +516,20 @@
 
         <!-- ── Step 4 : Done ──────────────────────────────────────────────── -->
         <div
-            v-if="currentStep === 4"
-            class="text-center space-y-4 py-4"
+          v-if="currentStep === 4"
+          class="text-center space-y-4 py-4"
         >
           <div
-              class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 mb-2">
+            class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 mb-2"
+          >
             <u-icon
-                class="text-green-500 text-3xl"
-                name="i-heroicons-check"
+              class="text-green-500 text-3xl"
+              name="i-heroicons-check"
             />
           </div>
           <h2
-              class="text-xl font-bold text-gray-900 dark:text-white"
-              data-cy="onboarding-done-title"
+            class="text-xl font-bold text-gray-900 dark:text-white"
+            data-cy="onboarding-done-title"
           >
             {{ t('onboarding.done_title', 'Tout est prêt !') }}
           </h2>
@@ -538,8 +539,8 @@
             }}
           </p>
           <p
-              v-if="nonEnLangs.length"
-              class="text-sm text-primary-500"
+            v-if="nonEnLangs.length"
+            class="text-sm text-primary-500"
           >
             {{ t('onboarding.translating_in_progress', 'Interface translation is in progress in the background for') }}
             {{ nonEnLangs.join(', ') }}.
@@ -550,83 +551,83 @@
         <template #footer>
           <div class="flex items-center justify-between">
             <u-button
-                v-if="currentStep > 0 && currentStep < 4"
-                color="neutral"
-                data-cy="onboarding-prev"
-                icon="i-heroicons-arrow-left"
-                variant="ghost"
-                @click="currentStep--"
+              v-if="currentStep > 0 && currentStep < 4"
+              color="neutral"
+              data-cy="onboarding-prev"
+              icon="i-heroicons-arrow-left"
+              variant="ghost"
+              @click="currentStep--"
             >
               {{ t('onboarding.previous', 'Précédent') }}
             </u-button>
-            <div v-else/>
+            <div v-else />
 
             <div class="flex items-center gap-3">
               <u-button
-                  v-if="currentStep === 3"
-                  color="neutral"
-                  data-cy="onboarding-skip-project"
-                  variant="ghost"
-                  @click="skipProject"
+                v-if="currentStep === 3"
+                color="neutral"
+                data-cy="onboarding-skip-project"
+                variant="ghost"
+                @click="skipProject"
               >
                 {{ t('onboarding.project_skip', 'Passer cette étape') }}
               </u-button>
 
               <!-- Step 0: DB -->
               <u-button
-                  v-if="currentStep === 0"
-                  data-cy="onboarding-next"
-                  icon="i-heroicons-arrow-right"
-                  trailing
-                  @click="currentStep++"
+                v-if="currentStep === 0"
+                data-cy="onboarding-next"
+                icon="i-heroicons-arrow-right"
+                trailing
+                @click="currentStep++"
               >
                 {{ t('onboarding.next', 'Suivant') }}
               </u-button>
 
               <!-- Step 1: Admin -->
               <u-button
-                  v-if="currentStep === 1"
-                  :loading="saving"
-                  data-cy="onboarding-next"
-                  icon="i-heroicons-arrow-right"
-                  trailing
-                  @click="hasUsers ? currentStep++ : createAdmin()"
+                v-if="currentStep === 1"
+                :loading="saving"
+                data-cy="onboarding-next"
+                icon="i-heroicons-arrow-right"
+                trailing
+                @click="hasUsers ? currentStep++ : createAdmin()"
               >
                 {{ t('onboarding.next', 'Suivant') }}
               </u-button>
 
               <!-- Step 2: Languages -->
               <u-button
-                  v-if="currentStep === 2"
-                  :disabled="selectedUiLangs.length === 0"
-                  :loading="saving"
-                  data-cy="onboarding-next"
-                  icon="i-heroicons-arrow-right"
-                  trailing
-                  @click="onSaveLanguages"
+                v-if="currentStep === 2"
+                :disabled="selectedUiLangs.length === 0"
+                :loading="saving"
+                data-cy="onboarding-next"
+                icon="i-heroicons-arrow-right"
+                trailing
+                @click="onSaveLanguages"
               >
                 {{ t('onboarding.next', 'Suivant') }}
               </u-button>
 
               <!-- Step 3: Project -->
               <u-button
-                  v-if="currentStep === 3"
-                  :loading="saving"
-                  data-cy="onboarding-finish"
-                  icon="i-heroicons-arrow-right"
-                  trailing
-                  @click="saveProject"
+                v-if="currentStep === 3"
+                :loading="saving"
+                data-cy="onboarding-finish"
+                icon="i-heroicons-arrow-right"
+                trailing
+                @click="saveProject"
               >
                 {{ t('onboarding.finish', 'Terminer') }}
               </u-button>
 
               <!-- Step 4: Done -->
               <u-button
-                  v-if="currentStep === 4"
-                  data-cy="onboarding-go-dashboard"
-                  icon="i-heroicons-home"
-                  trailing
-                  @click="goToDashboard"
+                v-if="currentStep === 4"
+                data-cy="onboarding-go-dashboard"
+                icon="i-heroicons-home"
+                trailing
+                @click="goToDashboard"
               >
                 {{ t('onboarding.go_to_dashboard', 'Aller au dashboard') }}
               </u-button>

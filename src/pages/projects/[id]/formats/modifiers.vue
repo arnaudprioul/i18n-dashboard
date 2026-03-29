@@ -7,35 +7,38 @@
         </h1>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
           {{ t('formats.modifiers_subtitle', 'Add custom') }} <code
-            class="font-mono text-xs bg-gray-100 dark:bg-gray-800 px-1 rounded">@.modifier:key</code>
+            class="font-mono text-xs bg-gray-100 dark:bg-gray-800 px-1 rounded"
+          >@.modifier:key</code>
           {{ t('formats.modifiers_subtitle2', 'modifiers.') }}
         </p>
       </div>
       <u-button
-          icon="i-heroicons-plus"
-          @click="openCreate"
+        icon="i-heroicons-plus"
+        @click="openCreate"
       >
         {{ t('formats.add_modifier', 'Add a modifier') }}
       </u-button>
     </div>
 
     <div
-        class="bg-blue-50 dark:bg-blue-900/20 rounded-lg px-4 py-3 text-sm text-blue-700 dark:text-blue-300 flex gap-2">
+      class="bg-blue-50 dark:bg-blue-900/20 rounded-lg px-4 py-3 text-sm text-blue-700 dark:text-blue-300 flex gap-2"
+    >
       <u-icon
-          class="shrink-0 mt-0.5"
-          name="i-heroicons-information-circle"
+        class="shrink-0 mt-0.5"
+        name="i-heroicons-information-circle"
       />
       <div>
         {{
           t('formats.modifiers_info', 'Define JS functions that receive a string and return a modified string. Example:')
         }} <code class="font-mono text-xs bg-blue-100 dark:bg-blue-900/40 px-1 rounded">snakeCase</code> →
         {{ t('formats.modifiers_info2', 'use') }} <code
-          class="font-mono text-xs bg-blue-100 dark:bg-blue-900/40 px-1 rounded">@.snakeCase:common.title</code>
+          class="font-mono text-xs bg-blue-100 dark:bg-blue-900/40 px-1 rounded"
+        >@.snakeCase:common.title</code>
         {{ t('formats.modifiers_info3', 'in your translations.') }}
         <nuxt-link
-            class="underline ml-1"
-            target="_blank"
-            to="https://vue-i18n.intlify.dev/guide/essentials/syntax.html#custom-modifiers"
+          class="underline ml-1"
+          target="_blank"
+          to="https://vue-i18n.intlify.dev/guide/essentials/syntax.html#custom-modifiers"
         >
           {{ t('formats.documentation', 'Documentation') }} ↗
         </nuxt-link>
@@ -51,9 +54,9 @@
       </template>
       <div class="grid grid-cols-3 gap-2">
         <div
-            v-for="mod in BUILTIN_MODIFIERS"
-            :key="mod.name"
-            class="bg-gray-50 dark:bg-gray-800 rounded p-2"
+          v-for="mod in BUILTIN_MODIFIERS"
+          :key="mod.name"
+          class="bg-gray-50 dark:bg-gray-800 rounded p-2"
         >
           <code class="text-xs font-mono text-violet-600 dark:text-violet-400 font-semibold">@.{{ mod.name }}:</code>
           <p class="text-xs text-gray-400 mt-0.5">
@@ -68,12 +71,12 @@
 
     <!-- Empty -->
     <div
-        v-if="!modifiers?.length"
-        class="text-center py-12 text-gray-400"
+      v-if="!modifiers?.length"
+      class="text-center py-12 text-gray-400"
     >
       <u-icon
-          class="text-4xl mb-3"
-          name="i-heroicons-code-bracket"
+        class="text-4xl mb-3"
+        name="i-heroicons-code-bracket"
       />
       <p class="font-medium">
         {{ t('formats.no_modifier', 'No custom modifier') }}
@@ -82,9 +85,9 @@
         {{ t('formats.add_custom_modifiers', 'Add your own text transformations.') }}
       </p>
       <u-button
-          class="mt-4"
-          icon="i-heroicons-plus"
-          @click="openCreate"
+        class="mt-4"
+        icon="i-heroicons-plus"
+        @click="openCreate"
       >
         {{ t('formats.add_modifier', 'Add a modifier') }}
       </u-button>
@@ -92,38 +95,39 @@
 
     <!-- List -->
     <div
-        v-else
-        class="space-y-3"
+      v-else
+      class="space-y-3"
     >
       <u-card
-          v-for="mod in modifiers"
-          :key="mod.id"
+        v-for="mod in modifiers"
+        :key="mod.id"
       >
         <div class="flex items-start justify-between gap-3">
           <div class="min-w-0 flex-1">
             <div class="flex items-center gap-2 mb-2">
               <code class="text-sm font-mono font-semibold text-violet-600 dark:text-violet-400">@.{{
-                  mod.name
-                }}:</code>
+                mod.name
+              }}:</code>
               <u-badge
-                  color="violet"
-                  size="xs"
-                  variant="soft"
+                color="violet"
+                size="xs"
+                variant="soft"
               >
                 custom
               </u-badge>
             </div>
             <code
-                class="text-xs font-mono text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 px-2 py-1 rounded block">{{
-                mod.body
-              }}</code>
+              class="text-xs font-mono text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 px-2 py-1 rounded block"
+            >{{
+              mod.body
+            }}</code>
             <!-- Live test -->
             <div class="mt-2 flex items-center gap-2">
               <u-input
-                  v-model="testInputs[mod.id]"
-                  :placeholder="t('formats.test_placeholder', 'Test with a text...')"
-                  class="flex-1"
-                  size="xs"
+                v-model="testInputs[mod.id]"
+                :placeholder="t('formats.test_placeholder', 'Test with a text...')"
+                class="flex-1"
+                size="xs"
               />
               <code class="text-xs font-mono text-gray-500 dark:text-gray-400 shrink-0">→
                 {{ testModifier(mod, testInputs[mod.id] || '') }}</code>
@@ -131,18 +135,18 @@
           </div>
           <div class="flex gap-1 shrink-0">
             <u-button
-                color="neutral"
-                icon="i-heroicons-pencil"
-                size="xs"
-                variant="ghost"
-                @click="openEdit(mod)"
+              color="neutral"
+              icon="i-heroicons-pencil"
+              size="xs"
+              variant="ghost"
+              @click="openEdit(mod)"
             />
             <u-button
-                color="error"
-                icon="i-heroicons-trash"
-                size="xs"
-                variant="ghost"
-                @click="remove(mod.id)"
+              color="error"
+              icon="i-heroicons-trash"
+              size="xs"
+              variant="ghost"
+              @click="remove(mod.id)"
             />
           </div>
         </div>
@@ -151,33 +155,33 @@
 
     <!-- Create/Edit modal -->
     <u-modal
-        v-model:open="showModal"
-        :title="editing ? t('formats.edit_modifier', 'Edit modifier') : t('formats.new_modifier', 'New modifier')"
+      v-model:open="showModal"
+      :title="editing ? t('formats.edit_modifier', 'Edit modifier') : t('formats.new_modifier', 'New modifier')"
     >
       <template #body>
         <div class="space-y-4">
           <u-form-field
-              :hint="t('formats.modifier_name_hint', 'Used in @.name:key')"
-              :label="t('formats.modifier_name', 'Name')"
-              required
+            :hint="t('formats.modifier_name_hint', 'Used in @.name:key')"
+            :label="t('formats.modifier_name', 'Name')"
+            required
           >
             <u-input
-                v-model="form.name"
-                class="w-full"
-                placeholder="snakeCase"
+              v-model="form.name"
+              class="w-full"
+              placeholder="snakeCase"
             />
           </u-form-field>
 
           <u-form-field
-              :hint="t('formats.js_function_hint', 'Arrow function receiving str and returning string')"
-              :label="t('formats.js_function', 'JavaScript function')"
-              required
+            :hint="t('formats.js_function_hint', 'Arrow function receiving str and returning string')"
+            :label="t('formats.js_function', 'JavaScript function')"
+            required
           >
             <u-textarea
-                v-model="form.body"
-                :rows="4"
-                class="w-full font-mono text-sm"
-                placeholder="(str) => str.split(' ').join('_')"
+              v-model="form.body"
+              :rows="4"
+              class="w-full font-mono text-sm"
+              placeholder="(str) => str.split(' ').join('_')"
             />
           </u-form-field>
 
@@ -188,10 +192,10 @@
             </p>
             <div class="flex flex-wrap gap-1.5">
               <button
-                  v-for="tpl in QUICK_TEMPLATES"
-                  :key="tpl.name"
-                  class="px-2 py-1 rounded text-xs border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-violet-300 dark:hover:border-violet-600 text-gray-600 dark:text-gray-400 transition-colors"
-                  @click="applyTemplate(tpl)"
+                v-for="tpl in QUICK_TEMPLATES"
+                :key="tpl.name"
+                class="px-2 py-1 rounded text-xs border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-violet-300 dark:hover:border-violet-600 text-gray-600 dark:text-gray-400 transition-colors"
+                @click="applyTemplate(tpl)"
               >
                 {{ tpl.name }}
               </button>
@@ -205,14 +209,14 @@
             </p>
             <div class="flex items-center gap-2">
               <u-input
-                  v-model="liveTest"
-                  class="flex-1"
-                  placeholder="Hello World"
-                  size="xs"
+                v-model="liveTest"
+                class="flex-1"
+                placeholder="Hello World"
+                size="xs"
               />
               <u-icon
-                  class="text-gray-400 shrink-0"
-                  name="i-heroicons-arrow-right"
+                class="text-gray-400 shrink-0"
+                name="i-heroicons-arrow-right"
               />
               <code class="text-xs font-mono text-violet-600 dark:text-violet-400 shrink-0">{{ liveResult }}</code>
             </div>
@@ -222,15 +226,15 @@
       <template #footer>
         <div class="flex justify-end gap-2">
           <u-button
-              color="neutral"
-              variant="ghost"
-              @click="showModal = false"
+            color="neutral"
+            variant="ghost"
+            @click="showModal = false"
           >
             {{ t('common.cancel', 'Cancel') }}
           </u-button>
           <u-button
-              :loading="saving"
-              @click="save"
+            :loading="saving"
+            @click="save"
           >
             {{ editing ? t('formats.update', 'Update') : t('common.create', 'Create') }}
           </u-button>

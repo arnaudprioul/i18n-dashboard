@@ -2,8 +2,8 @@
   <div class="p-6">
     <div class="mb-6">
       <h1
-          class="text-2xl font-bold text-gray-900 dark:text-white"
-          data-cy="settings-title"
+        class="text-2xl font-bold text-gray-900 dark:text-white"
+        data-cy="settings-title"
       >
         {{ t('settings.title', 'Settings') }}
       </h1>
@@ -14,35 +14,35 @@
 
     <!-- Skeleton -->
     <div
-        v-if="pending"
-        class="max-w-2xl space-y-6"
+      v-if="pending"
+      class="max-w-2xl space-y-6"
     >
       <u-card
-          v-for="i in 3"
-          :key="i"
+        v-for="i in 3"
+        :key="i"
       >
         <template #header>
-          <u-skeleton class="h-5 w-1/3"/>
+          <u-skeleton class="h-5 w-1/3" />
         </template>
         <div class="space-y-3">
-          <u-skeleton class="h-4 w-full"/>
-          <u-skeleton class="h-9 w-full rounded-lg"/>
-          <u-skeleton class="h-4 w-2/3"/>
+          <u-skeleton class="h-4 w-full" />
+          <u-skeleton class="h-9 w-full rounded-lg" />
+          <u-skeleton class="h-4 w-2/3" />
         </div>
       </u-card>
     </div>
 
     <div
-        v-else
-        class="max-w-2xl space-y-6"
+      v-else
+      class="max-w-2xl space-y-6"
     >
       <!-- Current project settings (editable) -->
       <u-card v-if="currentProject">
         <template #header>
           <div class="flex items-center gap-2">
             <u-icon
-                class="text-primary-500"
-                name="i-heroicons-folder"
+              class="text-primary-500"
+              name="i-heroicons-folder"
             />
             <h2 class="font-semibold text-gray-900 dark:text-white">
               {{ t('settings.current_project', 'Current project') }}
@@ -52,71 +52,71 @@
         <div class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <u-form-field
-                :label="t('settings.project_name', 'Project name')"
-                class="col-span-2"
+              :label="t('settings.project_name', 'Project name')"
+              class="col-span-2"
             >
               <u-input
-                  v-model="form.name"
-                  :placeholder="t('settings.project_name_placeholder', 'My project')"
-                  class="w-full"
+                v-model="form.name"
+                :placeholder="t('settings.project_name_placeholder', 'My project')"
+                class="w-full"
               />
             </u-form-field>
             <u-form-field
-                :hint="t('settings.root_path_hint', 'Absolute path to the project root')"
-                :label="t('settings.root_path', 'Root path')"
+              :hint="t('settings.root_path_hint', 'Absolute path to the project root')"
+              :label="t('settings.root_path', 'Root path')"
             >
               <project-path-picker
-                  v-model="form.root_path"
-                  class="w-full"
+                v-model="form.root_path"
+                class="w-full"
               />
             </u-form-field>
             <u-form-field
-                :hint="t('settings.source_url_hint', 'One URL per line — all allowed for CORS, first used for scan/sync')"
-                :label="t('settings.source_url', 'App URLs')"
-                class="col-span-2"
+              :hint="t('settings.source_url_hint', 'One URL per line — all allowed for CORS, first used for scan/sync')"
+              :label="t('settings.source_url', 'App URLs')"
+              class="col-span-2"
             >
               <u-textarea
-                  v-model="form.source_url"
-                  :rows="3"
-                  class="w-full"
-                  placeholder="https://my-app.com&#10;https://staging.my-app.com"
+                v-model="form.source_url"
+                :rows="3"
+                class="w-full"
+                placeholder="https://my-app.com&#10;https://staging.my-app.com"
               />
             </u-form-field>
             <u-form-field
-                :hint="t('settings.locales_folder_hint', 'Relative to root')"
-                :label="t('settings.locales_folder', 'Locales folder')"
+              :hint="t('settings.locales_folder_hint', 'Relative to root')"
+              :label="t('settings.locales_folder', 'Locales folder')"
             >
               <u-input
-                  v-model="form.locales_path"
-                  class="w-full"
-                  placeholder="src/locales"
+                v-model="form.locales_path"
+                class="w-full"
+                placeholder="src/locales"
               />
             </u-form-field>
             <u-form-field :label="t('settings.key_separator', 'Key separator')">
               <u-input
-                  v-model="form.key_separator"
-                  class="w-full"
-                  placeholder="."
-                  style="font-family: monospace"
+                v-model="form.key_separator"
+                class="w-full"
+                placeholder="."
+                style="font-family: monospace"
               />
             </u-form-field>
             <u-form-field
-                :label="t('settings.description', 'Description')"
-                class="col-span-2"
+              :label="t('settings.description', 'Description')"
+              class="col-span-2"
             >
               <u-textarea
-                  v-model="form.description"
-                  :placeholder="t('settings.description_placeholder', 'Project description…')"
-                  :rows="2"
-                  class="w-full"
+                v-model="form.description"
+                :placeholder="t('settings.description_placeholder', 'Project description…')"
+                :rows="2"
+                class="w-full"
               />
             </u-form-field>
             <u-form-field :label="t('settings.color', 'Color')">
               <div class="flex items-center gap-2">
                 <input
-                    v-model="form.color"
-                    class="h-9 w-12 rounded border border-gray-200 dark:border-gray-700 cursor-pointer p-0.5"
-                    type="color"
+                  v-model="form.color"
+                  class="h-9 w-12 rounded border border-gray-200 dark:border-gray-700 cursor-pointer p-0.5"
+                  type="color"
                 >
                 <code class="text-xs font-mono text-gray-500">{{ form.color }}</code>
               </div>
@@ -126,7 +126,7 @@
             <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
               {{ t('projects.git_repo_title', 'Git repository') }}
             </p>
-            <project-git-repo-manager v-model="form.git_repo"/>
+            <project-git-repo-manager v-model="form.git_repo" />
           </div>
         </div>
       </u-card>
@@ -136,8 +136,8 @@
         <template #header>
           <div class="flex items-center gap-2">
             <u-icon
-                class="text-blue-500"
-                name="i-heroicons-magnifying-glass"
+              class="text-blue-500"
+              name="i-heroicons-magnifying-glass"
             />
             <h2 class="font-semibold text-gray-900 dark:text-white">
               {{ t('settings.scanner_title', 'vue-i18n Scanner') }}
@@ -149,8 +149,8 @@
           <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
             <p class="text-sm text-blue-700 dark:text-blue-300">
               <u-icon
-                  class="inline mr-1"
-                  name="i-heroicons-information-circle"
+                class="inline mr-1"
+                name="i-heroicons-information-circle"
               />
               {{ t('settings.scanner_info', 'The scanner automatically detects all keys used in your code via') }}
               <code class="font-mono text-xs">$t()</code>, <code class="font-mono text-xs">t()</code>,
@@ -161,14 +161,14 @@
           </div>
 
           <u-form-field
-              :hint="t('settings.scan_exclude_hint', 'Comma-separated')"
-              :label="t('settings.scan_exclude', 'Folders excluded from scan')"
+            :hint="t('settings.scan_exclude_hint', 'Comma-separated')"
+            :label="t('settings.scan_exclude', 'Folders excluded from scan')"
           >
             <u-input
-                v-model="form.scan_exclude"
-                class="w-full"
-                data-cy="settings-scan-exclude"
-                placeholder="node_modules,dist,.nuxt,.output"
+              v-model="form.scan_exclude"
+              class="w-full"
+              data-cy="settings-scan-exclude"
+              placeholder="node_modules,dist,.nuxt,.output"
             />
           </u-form-field>
 
@@ -178,9 +178,9 @@
             </p>
             <div class="flex flex-wrap gap-1.5">
               <code
-                  v-for="fn in detectedFunctions"
-                  :key="fn"
-                  class="text-xs bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded px-1.5 py-0.5 text-gray-700 dark:text-gray-300"
+                v-for="fn in detectedFunctions"
+                :key="fn"
+                class="text-xs bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded px-1.5 py-0.5 text-gray-700 dark:text-gray-300"
               >{{ fn }}</code>
             </div>
           </div>
@@ -192,8 +192,8 @@
         <template #header>
           <div class="flex items-center gap-2">
             <u-icon
-                class="text-purple-500"
-                name="i-heroicons-adjustments-horizontal"
+              class="text-purple-500"
+              name="i-heroicons-adjustments-horizontal"
             />
             <h2 class="font-semibold text-gray-900 dark:text-white">
               {{ t('settings.advanced_title', 'Advanced features') }}
@@ -214,10 +214,10 @@
                 </p>
                 <p class="text-xs text-gray-400">
                   {{ t('settings.number_formats_hint', 'Configure') }} <code class="font-mono">$n(value,
-                  'currency')</code> — Intl.NumberFormat
+                    'currency')</code> — Intl.NumberFormat
                 </p>
               </div>
-              <u-switch v-model="form.enable_number_formats"/>
+              <u-switch v-model="form.enable_number_formats" />
             </div>
             <div class="flex items-center justify-between py-1 border-t border-gray-100 dark:border-gray-800">
               <div>
@@ -226,10 +226,10 @@
                 </p>
                 <p class="text-xs text-gray-400">
                   {{ t('settings.datetime_formats_hint', 'Configure') }} <code class="font-mono">$d(date,
-                  'short')</code> — Intl.DateTimeFormat
+                    'short')</code> — Intl.DateTimeFormat
                 </p>
               </div>
-              <u-switch v-model="form.enable_datetime_formats"/>
+              <u-switch v-model="form.enable_datetime_formats" />
             </div>
             <div class="flex items-center justify-between py-1 border-t border-gray-100 dark:border-gray-800">
               <div>
@@ -241,7 +241,7 @@
                   {{ t('settings.custom_modifiers_hint2', 'modifiers') }}
                 </p>
               </div>
-              <u-switch v-model="form.enable_modifiers"/>
+              <u-switch v-model="form.enable_modifiers" />
             </div>
           </div>
         </div>
@@ -252,8 +252,8 @@
         <template #header>
           <div class="flex items-center gap-2">
             <u-icon
-                class="text-purple-500"
-                name="i-heroicons-arrow-down-tray"
+              class="text-purple-500"
+              name="i-heroicons-arrow-down-tray"
             />
             <h2 class="font-semibold text-gray-900 dark:text-white">
               {{ t('formats.import_from_config_title', 'Import formats from project') }}
@@ -265,17 +265,17 @@
             {{ t('formats.import_from_config_hint', 'Scan the project i18n config file (i18n.ts, nuxt.config.ts…) to detect existing numberFormats, datetimeFormats or modifiers and import them automatically.') }}
           </p>
           <u-button
-              :disabled="!form.root_path"
-              icon="i-heroicons-magnifying-glass"
-              size="sm"
-              variant="outline"
-              @click="showFormatImport = true"
+            :disabled="!form.root_path"
+            icon="i-heroicons-magnifying-glass"
+            size="sm"
+            variant="outline"
+            @click="showFormatImport = true"
           >
             {{ t('formats.import_detect_btn', 'Detect & import formats') }}
           </u-button>
           <p
-              v-if="!form.root_path"
-              class="text-xs text-amber-500"
+            v-if="!form.root_path"
+            class="text-xs text-amber-500"
           >
             {{ t('formats.import_no_path', 'Set a root path above to enable detection.') }}
           </p>
@@ -287,8 +287,8 @@
         <template #header>
           <div class="flex items-center gap-2">
             <u-icon
-                class="text-yellow-500"
-                name="i-heroicons-sparkles"
+              class="text-yellow-500"
+              name="i-heroicons-sparkles"
             />
             <h2 class="font-semibold text-gray-900 dark:text-white">
               Google Translate
@@ -300,8 +300,8 @@
           <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
             <p class="text-sm text-blue-700 dark:text-blue-300">
               <u-icon
-                  class="inline mr-1"
-                  name="i-heroicons-information-circle"
+                class="inline mr-1"
+                name="i-heroicons-information-circle"
               />
               {{
                 t('settings.google_translate_info', 'By default, the free Google Translate API is used (no key required). For production use, add an official key for better rate limits.')
@@ -310,14 +310,14 @@
           </div>
 
           <u-form-field
-              :hint="t('settings.google_api_key_hint', 'Optional. Leave blank to use the free tier.')"
-              :label="t('settings.google_api_key', 'Google Translate API Key')"
+            :hint="t('settings.google_api_key_hint', 'Optional. Leave blank to use the free tier.')"
+            :label="t('settings.google_api_key', 'Google Translate API Key')"
           >
             <u-input
-                v-model="form.google_translate_api_key"
-                class="w-full"
-                placeholder="AIza..."
-                type="password"
+              v-model="form.google_translate_api_key"
+              class="w-full"
+              placeholder="AIza..."
+              type="password"
             />
           </u-form-field>
         </div>
@@ -328,8 +328,8 @@
         <template #header>
           <div class="flex items-center gap-2">
             <u-icon
-                class="text-green-500"
-                name="i-heroicons-code-bracket"
+              class="text-green-500"
+              name="i-heroicons-code-bracket"
             />
             <h2 class="font-semibold text-gray-900 dark:text-white">
               {{ t('settings.api_endpoints', 'API Endpoints') }}
@@ -343,9 +343,9 @@
           </p>
 
           <div
-              v-for="example in apiExamples"
-              :key="example.label"
-              class="group"
+            v-for="example in apiExamples"
+            :key="example.label"
+            class="group"
           >
             <p class="text-xs text-gray-400 mb-1">
               {{ example.label }}
@@ -353,11 +353,11 @@
             <div class="flex items-center gap-2 bg-gray-50 dark:bg-gray-800 rounded-lg px-3 py-2">
               <code class="text-sm font-mono text-gray-700 dark:text-gray-300 flex-1">{{ example.url }}</code>
               <u-button
-                  color="neutral"
-                  icon="i-heroicons-clipboard"
-                  size="xs"
-                  variant="ghost"
-                  @click="copyToClipboard(example.url)"
+                color="neutral"
+                icon="i-heroicons-clipboard"
+                size="xs"
+                variant="ghost"
+                @click="copyToClipboard(example.url)"
               />
             </div>
           </div>
@@ -373,8 +373,8 @@
 
       <!-- Integration snippet -->
       <format-snippet
-          v-if="snippet"
-          :snippet="snippet"
+        v-if="snippet"
+        :snippet="snippet"
       />
 
       <!-- Export -->
@@ -382,8 +382,8 @@
         <template #header>
           <div class="flex items-center gap-2">
             <u-icon
-                class="text-purple-500"
-                name="i-heroicons-arrow-down-tray"
+              class="text-purple-500"
+              name="i-heroicons-arrow-down-tray"
             />
             <h2 class="font-semibold text-gray-900 dark:text-white">
               {{ t('settings.export_title', 'Export translations') }}
@@ -403,12 +403,12 @@
               </p>
             </div>
             <u-button
-                color="neutral"
-                data-cy="settings-export-all-btn"
-                icon="i-heroicons-arrow-down-tray"
-                size="sm"
-                variant="outline"
-                @click="downloadAll"
+              color="neutral"
+              data-cy="settings-export-all-btn"
+              icon="i-heroicons-arrow-down-tray"
+              size="sm"
+              variant="outline"
+              @click="downloadAll"
             >
               {{ t('settings.export_all', 'Export all') }}
             </u-button>
@@ -416,36 +416,36 @@
 
           <!-- Per language -->
           <div
-              v-if="projectLanguages.length"
-              class="border-t border-gray-100 dark:border-gray-800 pt-4 space-y-2"
+            v-if="projectLanguages.length"
+            class="border-t border-gray-100 dark:border-gray-800 pt-4 space-y-2"
           >
             <p class="text-xs text-gray-400 font-medium uppercase tracking-wide mb-3">
               {{ t('settings.export_per_language', 'Per language') }}
             </p>
             <div
-                v-for="lang in projectLanguages"
-                :key="lang.code"
-                class="flex items-center justify-between py-1.5"
+              v-for="lang in projectLanguages"
+              :key="lang.code"
+              class="flex items-center justify-between py-1.5"
             >
               <div class="flex items-center gap-2">
                 <span class="text-sm font-medium text-gray-800 dark:text-gray-200">{{ lang.name }}</span>
                 <code class="text-xs text-gray-400 font-mono">{{ lang.code }}</code>
                 <u-badge
-                    v-if="lang.is_default"
-                    color="primary"
-                    size="xs"
-                    variant="soft"
+                  v-if="lang.is_default"
+                  color="primary"
+                  size="xs"
+                  variant="soft"
                 >
                   {{ t('languages.default_badge', 'Default') }}
                 </u-badge>
               </div>
               <u-button
-                  :data-cy="'export-lang-btn-' + lang.code"
-                  color="neutral"
-                  icon="i-heroicons-arrow-down-tray"
-                  size="xs"
-                  variant="ghost"
-                  @click="downloadLang(lang.code)"
+                :data-cy="'export-lang-btn-' + lang.code"
+                color="neutral"
+                icon="i-heroicons-arrow-down-tray"
+                size="xs"
+                variant="ghost"
+                @click="downloadLang(lang.code)"
               >
                 {{ lang.code }}.json
               </u-button>
@@ -453,8 +453,8 @@
           </div>
 
           <p
-              v-else
-              class="text-xs text-gray-400 italic"
+            v-else
+            class="text-xs text-gray-400 italic"
           >
             {{ t('settings.no_languages', 'No language configured for this project.') }}
           </p>
@@ -466,8 +466,8 @@
         <template #header>
           <div class="flex items-center gap-2">
             <u-icon
-                class="text-indigo-500"
-                name="i-heroicons-archive-box"
+              class="text-indigo-500"
+              name="i-heroicons-archive-box"
             />
             <h2 class="font-semibold text-gray-900 dark:text-white">
               {{ t('settings.snapshot_title', 'Project snapshot') }}
@@ -492,11 +492,11 @@
               </p>
             </div>
             <u-button
-                color="primary"
-                icon="i-heroicons-arrow-down-tray"
-                size="sm"
-                variant="outline"
-                @click="downloadSnapshot"
+              color="primary"
+              icon="i-heroicons-arrow-down-tray"
+              size="sm"
+              variant="outline"
+              @click="downloadSnapshot"
             >
               {{ t('settings.snapshot_export_btn', 'Export') }}
             </u-button>
@@ -517,37 +517,37 @@
               </div>
               <div class="flex items-center gap-2 shrink-0">
                 <u-select
-                    v-model="importMode"
-                    :items="importModes"
-                    class="w-28"
-                    size="xs"
+                  v-model="importMode"
+                  :items="importModes"
+                  class="w-28"
+                  size="xs"
                 />
                 <u-button
-                    :loading="importing"
-                    color="primary"
-                    icon="i-heroicons-arrow-up-tray"
-                    size="sm"
-                    variant="outline"
-                    @click="triggerImport"
+                  :loading="importing"
+                  color="primary"
+                  icon="i-heroicons-arrow-up-tray"
+                  size="sm"
+                  variant="outline"
+                  @click="triggerImport"
                 >
                   {{ t('settings.snapshot_import_btn', 'Import') }}
                 </u-button>
               </div>
             </div>
             <input
-                ref="fileInput"
-                accept=".json"
-                class="hidden"
-                type="file"
-                @change="onFileSelected"
+              ref="fileInput"
+              accept=".json"
+              class="hidden"
+              type="file"
+              @change="onFileSelected"
             >
             <div
-                v-if="importMode === 'replace'"
-                class="flex items-start gap-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg px-3 py-2 text-xs text-amber-700 dark:text-amber-300"
+              v-if="importMode === 'replace'"
+              class="flex items-start gap-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg px-3 py-2 text-xs text-amber-700 dark:text-amber-300"
             >
               <u-icon
-                  class="shrink-0 mt-0.5"
-                  name="i-heroicons-exclamation-triangle"
+                class="shrink-0 mt-0.5"
+                name="i-heroicons-exclamation-triangle"
               />
               {{
                 t('settings.snapshot_replace_warning', 'Replace mode: all existing keys and translations will be deleted before import.')
@@ -559,18 +559,18 @@
 
       <!-- Format import modal -->
       <format-import-modal
-          v-model:open="showFormatImport"
-          :root-path="form.root_path"
-          @done="refreshSnippet"
+        v-model:open="showFormatImport"
+        :root-path="form.root_path"
+        @done="refreshSnippet"
       />
 
       <!-- Save button -->
       <div class="flex justify-end">
         <u-button
-            :loading="saving || savingProject"
-            data-cy="settings-save-btn"
-            icon="i-heroicons-check"
-            @click="onSave"
+          :loading="saving || savingProject"
+          data-cy="settings-save-btn"
+          icon="i-heroicons-check"
+          @click="onSave"
         >
           {{ t('settings.save', 'Save') }}
         </u-button>

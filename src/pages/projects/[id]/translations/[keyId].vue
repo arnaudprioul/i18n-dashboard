@@ -1,49 +1,49 @@
 <template>
   <div>
     <div
-        v-if="pending"
-        class="p-4 lg:p-6 max-w-6xl mx-auto space-y-4"
+      v-if="pending"
+      class="p-4 lg:p-6 max-w-6xl mx-auto space-y-4"
     >
       <div class="flex items-start gap-3">
-        <u-skeleton class="w-8 h-8 rounded-lg shrink-0 mt-0.5"/>
+        <u-skeleton class="w-8 h-8 rounded-lg shrink-0 mt-0.5" />
         <div class="flex-1 space-y-2">
-          <u-skeleton class="h-6 w-1/2"/>
-          <u-skeleton class="h-3 w-1/4"/>
+          <u-skeleton class="h-6 w-1/2" />
+          <u-skeleton class="h-3 w-1/4" />
         </div>
       </div>
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6 items-start">
         <div class="lg:col-span-2 space-y-3">
           <u-card
-              v-for="i in 3"
-              :key="i"
+            v-for="i in 3"
+            :key="i"
           >
             <template #header>
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                  <u-skeleton class="h-5 w-10 rounded"/>
-                  <u-skeleton class="h-4 w-24"/>
+                  <u-skeleton class="h-5 w-10 rounded" />
+                  <u-skeleton class="h-4 w-24" />
                 </div>
-                <u-skeleton class="h-5 w-16 rounded"/>
+                <u-skeleton class="h-5 w-16 rounded" />
               </div>
             </template>
-            <u-skeleton class="h-12 w-full rounded-lg"/>
+            <u-skeleton class="h-12 w-full rounded-lg" />
           </u-card>
         </div>
         <div class="space-y-4">
           <u-card>
             <template #header>
-              <u-skeleton class="h-4 w-24"/>
+              <u-skeleton class="h-4 w-24" />
             </template>
-            <u-skeleton class="h-16 w-full"/>
+            <u-skeleton class="h-16 w-full" />
           </u-card>
           <u-card>
             <template #header>
-              <u-skeleton class="h-4 w-8"/>
+              <u-skeleton class="h-4 w-8" />
             </template>
             <div class="space-y-2">
-              <u-skeleton class="h-3 w-3/4"/>
-              <u-skeleton class="h-3 w-1/2"/>
-              <u-skeleton class="h-3 w-2/3"/>
+              <u-skeleton class="h-3 w-3/4" />
+              <u-skeleton class="h-3 w-1/2" />
+              <u-skeleton class="h-3 w-2/3" />
             </div>
           </u-card>
         </div>
@@ -51,37 +51,37 @@
     </div>
 
     <div
-        v-else-if="keyData"
-        class="p-4 lg:p-6 max-w-6xl mx-auto space-y-4"
+      v-else-if="keyData"
+      class="p-4 lg:p-6 max-w-6xl mx-auto space-y-4"
     >
       <!-- Header -->
       <div class="flex items-start gap-3">
         <u-button
-            :to="`/projects/${projectId}/translations`"
-            class="mt-0.5 shrink-0"
-            color="neutral"
-            data-cy="key-back-link"
-            icon="i-heroicons-arrow-left"
-            size="xs"
-            variant="ghost"
+          :to="`/projects/${projectId}/translations`"
+          class="mt-0.5 shrink-0"
+          color="neutral"
+          data-cy="key-back-link"
+          icon="i-heroicons-arrow-left"
+          size="xs"
+          variant="ghost"
         />
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
             <h1
-                class="text-lg font-mono font-bold text-gray-900 dark:text-white break-all"
-                data-cy="key-title"
+              class="text-lg font-mono font-bold text-gray-900 dark:text-white break-all"
+              data-cy="key-title"
             >
               {{ keyData.key }}
             </h1>
             <u-badge
-                v-if="keyData.is_unused"
-                color="warning"
-                size="xs"
-                variant="subtle"
+              v-if="keyData.is_unused"
+              color="warning"
+              size="xs"
+              variant="subtle"
             >
               <u-icon
-                  class="mr-1"
-                  name="i-heroicons-exclamation-triangle"
+                class="mr-1"
+                name="i-heroicons-exclamation-triangle"
               />
               {{ t('status.unused', 'Unused') }}
             </u-badge>
@@ -91,14 +91,14 @@
           </p>
         </div>
         <u-dropdown-menu
-            v-if="keyActions[0]?.length"
-            :items="keyActions"
+          v-if="keyActions[0]?.length"
+          :items="keyActions"
         >
           <u-button
-              color="neutral"
-              icon="i-heroicons-ellipsis-vertical"
-              size="sm"
-              variant="ghost"
+            color="neutral"
+            icon="i-heroicons-ellipsis-vertical"
+            size="sm"
+            variant="ghost"
           />
         </u-dropdown-menu>
       </div>
@@ -108,55 +108,57 @@
         <!-- ── Left : Translation cards ───────────────────────────────────── -->
         <div class="lg:col-span-2 space-y-3">
           <u-card
-              v-for="lang in keyData.languages"
-              :key="lang.code"
+            v-for="lang in keyData.languages"
+            :key="lang.code"
           >
             <template #header>
               <div class="flex items-center justify-between gap-2">
                 <div class="flex items-center gap-2">
                   <span
-                      class="font-mono text-xs font-bold bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-gray-500 dark:text-gray-400 uppercase">{{
-                      lang.code
-                    }}</span>
+                    class="font-mono text-xs font-bold bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-gray-500 dark:text-gray-400 uppercase"
+                  >{{
+                    lang.code
+                  }}</span>
                   <span class="text-sm font-medium text-gray-800 dark:text-gray-200">{{
-                      findLanguage(lang.code)?.nativeName || lang.name
-                    }}</span>
+                    findLanguage(lang.code)?.nativeName || lang.name
+                  }}</span>
                   <u-badge
-                      v-if="lang.is_default"
-                      color="primary"
-                      size="xs"
-                      variant="soft"
+                    v-if="lang.is_default"
+                    color="primary"
+                    size="xs"
+                    variant="soft"
                   >
                     {{ t('languages.default_badge', 'Default') }}
                   </u-badge>
                 </div>
                 <div class="flex items-center gap-1">
                   <u-badge
-                      :color="statusColor(lang.code)"
-                      :data-cy="'translation-status-' + lang.code"
-                      size="xs"
-                      variant="soft"
+                    :color="statusColor(lang.code)"
+                    :data-cy="'translation-status-' + lang.code"
+                    size="xs"
+                    variant="soft"
                   >
                     {{ statusLabel(lang.code) }}
                   </u-badge>
                   <u-tooltip
-                      :text="sourceText ? `${t('translations.translate_to', 'Translate to')} ${findLanguage(lang.code)?.nativeName || lang.name}` : t('translations.no_source', 'No source available')">
+                    :text="sourceText ? `${t('translations.translate_to', 'Translate to')} ${findLanguage(lang.code)?.nativeName || lang.name}` : t('translations.no_source', 'No source available')"
+                  >
                     <u-button
-                        :disabled="!sourceText || editingLang === lang.code"
-                        :loading="translating === lang.code"
-                        color="warning"
-                        icon="i-heroicons-sparkles"
-                        size="xs"
-                        variant="ghost"
-                        @click="autoTranslate(lang)"
+                      :disabled="!sourceText || editingLang === lang.code"
+                      :loading="translating === lang.code"
+                      color="warning"
+                      icon="i-heroicons-sparkles"
+                      size="xs"
+                      variant="ghost"
+                      @click="autoTranslate(lang)"
                     />
                   </u-tooltip>
                   <u-dropdown-menu :items="statusActions(lang.code)">
                     <u-button
-                        color="neutral"
-                        icon="i-heroicons-ellipsis-vertical"
-                        size="xs"
-                        variant="ghost"
+                      color="neutral"
+                      icon="i-heroicons-ellipsis-vertical"
+                      size="xs"
+                      variant="ghost"
                     />
                   </u-dropdown-menu>
                 </div>
@@ -166,12 +168,12 @@
             <div class="space-y-3">
               <!-- Rejected notice -->
               <div
-                  v-if="getStatus(lang.code) === 'rejected'"
-                  class="flex items-center gap-2 text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2"
+                v-if="getStatus(lang.code) === 'rejected'"
+                class="flex items-center gap-2 text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2"
               >
                 <u-icon
-                    class="shrink-0"
-                    name="i-heroicons-x-circle"
+                  class="shrink-0"
+                  name="i-heroicons-x-circle"
                 />
                 {{ t('key.rejected_notice', 'This translation was rejected. Please update it.') }}
               </div>
@@ -180,43 +182,44 @@
               <template v-if="editingLang === lang.code">
                 <!-- Plural editor -->
                 <project-plural-editor
-                    v-if="pluralMode"
-                    v-model="editValue"
+                  v-if="pluralMode"
+                  v-model="editValue"
                 />
 
                 <!-- Single textarea -->
                 <div
-                    v-else
-                    :ref="el => activeTextareaWrapper = el as HTMLElement"
+                  v-else
+                  :ref="el => activeTextareaWrapper = el as HTMLElement"
                 >
                   <u-textarea
-                      v-model="editValue"
-                      :data-cy="'translation-textarea-' + lang.code"
-                      :rows="3"
-                      autofocus
-                      class="w-full"
-                      @keydown.ctrl.enter="saveTranslation(lang.code)"
-                      @keydown.meta.enter="saveTranslation(lang.code)"
-                      @keydown.escape="editingLang = null"
+                    v-model="editValue"
+                    :data-cy="'translation-textarea-' + lang.code"
+                    :rows="3"
+                    autofocus
+                    class="w-full"
+                    @keydown.ctrl.enter="saveTranslation(lang.code)"
+                    @keydown.meta.enter="saveTranslation(lang.code)"
+                    @keydown.escape="editingLang = null"
                   />
                 </div>
 
                 <!-- Insertion helpers toolbar -->
                 <div
-                    class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-2 pb-1 border-b border-gray-100 dark:border-gray-800">
+                  class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-2 pb-1 border-b border-gray-100 dark:border-gray-800"
+                >
                   <!-- Named params -->
                   <template v-if="detectedParams.length">
                     <div class="flex items-center gap-1 flex-wrap">
                       <span class="text-xs text-gray-400">{{ t('key.params_label', 'Params:') }}</span>
                       <button
-                          v-for="param in detectedParams"
-                          :key="param"
-                          class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-mono bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700 hover:bg-amber-100 dark:hover:bg-amber-900/50 transition-colors"
-                          @mousedown.prevent="insertAtCursor('{' + param + '}')"
+                        v-for="param in detectedParams"
+                        :key="param"
+                        class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-mono bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700 hover:bg-amber-100 dark:hover:bg-amber-900/50 transition-colors"
+                        @mousedown.prevent="insertAtCursor('{' + param + '}')"
                       >
                         <u-icon
-                            class="text-xs opacity-60"
-                            name="i-heroicons-cursor-arrow-rays"
+                          class="text-xs opacity-60"
+                          name="i-heroicons-cursor-arrow-rays"
                         />
                         {{ '{' + param + '}' }}
                       </button>
@@ -227,13 +230,13 @@
                   <div class="flex items-center gap-1 flex-wrap">
                     <span class="text-xs text-gray-400">{{ t('key.escapes_label', 'Escapes:') }}</span>
                     <u-tooltip
-                        v-for="esc in ALL_ESCAPES"
-                        :key="esc.insert"
-                        :text="esc.hint"
+                      v-for="esc in ALL_ESCAPES"
+                      :key="esc.insert"
+                      :text="esc.hint"
                     >
                       <button
-                          class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors"
-                          @mousedown.prevent="insertAtCursor(esc.insert)"
+                        class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors"
+                        @mousedown.prevent="insertAtCursor(esc.insert)"
                       >
                         {{ esc.label }}
                       </button>
@@ -244,13 +247,13 @@
                   <div class="flex items-center gap-1 flex-wrap">
                     <span class="text-xs text-gray-400">{{ t('key.modifiers_label', 'Modifiers:') }}</span>
                     <u-tooltip
-                        v-for="mod in LINK_MODIFIERS"
-                        :key="mod.prefix"
-                        :text="mod.hint"
+                      v-for="mod in LINK_MODIFIERS"
+                      :key="mod.prefix"
+                      :text="mod.hint"
                     >
                       <button
-                          class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-mono bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-700 hover:bg-violet-100 dark:hover:bg-violet-900/50 transition-colors"
-                          @mousedown.prevent="insertAtCursor(mod.prefix)"
+                        class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-mono bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-700 hover:bg-violet-100 dark:hover:bg-violet-900/50 transition-colors"
+                        @mousedown.prevent="insertAtCursor(mod.prefix)"
                       >
                         {{ mod.prefix }}
                       </button>
@@ -259,39 +262,40 @@
 
                   <!-- Linked key -->
                   <project-linked-key-picker
-                      :project-id="currentProject?.id"
-                      @select="insertLinkedKey"
+                    :project-id="currentProject?.id"
+                    @select="insertLinkedKey"
                   />
                 </div>
 
                 <!-- Actions row -->
                 <div class="flex items-center gap-2 mt-2 flex-wrap">
                   <u-button
-                      :data-cy="'save-translation-btn-' + lang.code"
-                      :loading="saving === lang.code"
-                      size="xs"
-                      @click="saveTranslation(lang.code)"
+                    :data-cy="'save-translation-btn-' + lang.code"
+                    :loading="saving === lang.code"
+                    size="xs"
+                    @click="saveTranslation(lang.code)"
                   >
                     {{ t('translations.save', 'Save') }}
                   </u-button>
                   <u-button
-                      :data-cy="'cancel-translation-btn-' + lang.code"
-                      color="neutral"
-                      size="xs"
-                      variant="ghost"
-                      @click="editingLang = null"
+                    :data-cy="'cancel-translation-btn-' + lang.code"
+                    color="neutral"
+                    size="xs"
+                    variant="ghost"
+                    @click="editingLang = null"
                   >
                     {{ t('translations.cancel', 'Cancel') }}
                   </u-button>
                   <div class="ml-auto flex items-center gap-1.5">
                     <u-tooltip
-                        :text="pluralMode ? t('key.back_to_simple', 'Back to simple edit') : t('key.switch_to_plural', 'Switch to plural editor (form1 | form2 | …)')">
+                      :text="pluralMode ? t('key.back_to_simple', 'Back to simple edit') : t('key.switch_to_plural', 'Switch to plural editor (form1 | form2 | …)')"
+                    >
                       <u-button
-                          :color="pluralMode ? 'success' : 'neutral'"
-                          :variant="pluralMode ? 'soft' : 'ghost'"
-                          icon="i-heroicons-bars-3-bottom-left"
-                          size="xs"
-                          @click="togglePluralMode(lang.code)"
+                        :color="pluralMode ? 'success' : 'neutral'"
+                        :variant="pluralMode ? 'soft' : 'ghost'"
+                        icon="i-heroicons-bars-3-bottom-left"
+                        size="xs"
+                        @click="togglePluralMode(lang.code)"
                       >
                         {{
                           pluralMode ? `${editValue.split(' | ').length} ${t('key.forms', 'forms')}` : t('key.plural', 'Plural')
@@ -306,48 +310,48 @@
               <template v-else>
                 <!-- Plural display -->
                 <div
-                    v-if="getTranslationValue(lang.code) && getPluralForms(lang.code).length > 1"
-                    :data-cy="'translation-value-' + lang.code"
-                    class="cursor-pointer group"
-                    @click="startEdit(lang)"
+                  v-if="getTranslationValue(lang.code) && getPluralForms(lang.code).length > 1"
+                  :data-cy="'translation-value-' + lang.code"
+                  class="cursor-pointer group"
+                  @click="startEdit(lang)"
                 >
                   <div class="flex items-center gap-1.5 mb-1.5">
                     <u-badge
-                        color="success"
-                        icon="i-heroicons-bars-3-bottom-left"
-                        size="xs"
-                        variant="soft"
+                      color="success"
+                      icon="i-heroicons-bars-3-bottom-left"
+                      size="xs"
+                      variant="soft"
                     >
                       {{ getPluralForms(lang.code).length }} {{ t('key.plural_forms', 'plural forms') }}
                     </u-badge>
                   </div>
                   <div class="space-y-1">
                     <div
-                        v-for="(form, i) in getPluralForms(lang.code)"
-                        :key="i"
-                        class="flex items-start gap-2 px-2 py-1 rounded group-hover:bg-gray-50 dark:group-hover:bg-gray-800/60 transition-colors"
+                      v-for="(form, i) in getPluralForms(lang.code)"
+                      :key="i"
+                      class="flex items-start gap-2 px-2 py-1 rounded group-hover:bg-gray-50 dark:group-hover:bg-gray-800/60 transition-colors"
                     >
                       <span class="text-xs font-mono text-green-500 shrink-0 w-10 pt-0.5">{{
-                          PLURAL_FORM_LABELS[i] ?? `[${i}]`
-                        }}</span>
+                        PLURAL_FORM_LABELS[i] ?? `[${i}]`
+                      }}</span>
                       <span class="text-sm text-gray-700 dark:text-gray-300 leading-snug">{{ form.trim() }}</span>
                     </div>
                   </div>
                 </div>
                 <!-- Single value display -->
                 <p
-                    v-else-if="getTranslationValue(lang.code)"
-                    :data-cy="'translation-value-' + lang.code"
-                    class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 whitespace-pre-wrap px-2 py-1.5 rounded hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors"
-                    @click="startEdit(lang)"
+                  v-else-if="getTranslationValue(lang.code)"
+                  :data-cy="'translation-value-' + lang.code"
+                  class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed cursor-pointer hover:text-primary-600 dark:hover:text-primary-400 whitespace-pre-wrap px-2 py-1.5 rounded hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors"
+                  @click="startEdit(lang)"
                 >
                   {{ getTranslationValue(lang.code) }}
                 </p>
                 <button
-                    v-else
-                    :data-cy="'translation-value-' + lang.code"
-                    class="text-sm text-gray-400 italic hover:text-primary-500 transition-colors px-2 py-1.5"
-                    @click="startEdit(lang)"
+                  v-else
+                  :data-cy="'translation-value-' + lang.code"
+                  class="text-sm text-gray-400 italic hover:text-primary-500 transition-colors px-2 py-1.5"
+                  @click="startEdit(lang)"
                 >
                   {{ t('translations.click_to_add', 'Click to add...') }}
                 </button>
@@ -355,61 +359,62 @@
 
               <!-- History -->
               <div
-                  v-if="keyData.translations[lang.code]?.history?.length"
-                  class="border-t border-gray-100 dark:border-gray-800 pt-3"
+                v-if="keyData.translations[lang.code]?.history?.length"
+                class="border-t border-gray-100 dark:border-gray-800 pt-3"
               >
                 <button
-                    class="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors mb-2"
-                    @click="toggleHistory(lang.code)"
+                  class="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors mb-2"
+                  @click="toggleHistory(lang.code)"
                 >
                   <u-icon
-                      :name="expandedHistory.includes(lang.code) ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"/>
+                    :name="expandedHistory.includes(lang.code) ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"
+                  />
                   {{ t('translations.history', 'History') }} · {{ keyData.translations[lang.code].history.length }}
                 </button>
 
                 <div
-                    v-if="expandedHistory.includes(lang.code)"
-                    class="space-y-2"
+                  v-if="expandedHistory.includes(lang.code)"
+                  class="space-y-2"
                 >
                   <div
-                      v-for="entry in keyData.translations[lang.code].history"
-                      :key="entry.id"
-                      class="group flex items-start gap-2 text-xs p-2 rounded-lg bg-gray-50 dark:bg-gray-800/50"
+                    v-for="entry in keyData.translations[lang.code].history"
+                    :key="entry.id"
+                    class="group flex items-start gap-2 text-xs p-2 rounded-lg bg-gray-50 dark:bg-gray-800/50"
                   >
                     <div class="flex-1 min-w-0 space-y-1">
                       <div class="flex items-center gap-2 text-gray-400">
-                        <u-icon name="i-heroicons-clock"/>
+                        <u-icon name="i-heroicons-clock" />
                         <span>{{ formatDate(entry.changed_at) }}</span>
                         <u-badge
-                            color="neutral"
-                            size="xs"
-                            variant="soft"
+                          color="neutral"
+                          size="xs"
+                          variant="soft"
                         >
                           {{ entry.changed_by || 'user' }}
                         </u-badge>
                       </div>
                       <div class="flex gap-2 items-start flex-wrap">
                         <span
-                            v-if="entry.old_value"
-                            class="line-through text-red-400 max-w-xs truncate"
+                          v-if="entry.old_value"
+                          class="line-through text-red-400 max-w-xs truncate"
                         >{{ entry.old_value }}</span>
                         <u-icon
-                            v-if="entry.old_value"
-                            class="text-gray-300 shrink-0 mt-0.5"
-                            name="i-heroicons-arrow-right"
+                          v-if="entry.old_value"
+                          class="text-gray-300 shrink-0 mt-0.5"
+                          name="i-heroicons-arrow-right"
                         />
                         <span class="text-gray-700 dark:text-gray-300 break-words">{{ entry.new_value }}</span>
                       </div>
                     </div>
                     <u-button
-                        v-if="entry.new_value && entry.new_value !== getTranslationValue(lang.code)"
-                        :loading="restoring === `${lang.code}-${entry.id}`"
-                        class="opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
-                        color="neutral"
-                        icon="i-heroicons-arrow-uturn-left"
-                        size="xs"
-                        variant="soft"
-                        @click="restoreVersion(lang.code, entry)"
+                      v-if="entry.new_value && entry.new_value !== getTranslationValue(lang.code)"
+                      :loading="restoring === `${lang.code}-${entry.id}`"
+                      class="opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+                      color="neutral"
+                      icon="i-heroicons-arrow-uturn-left"
+                      size="xs"
+                      variant="soft"
+                      @click="restoreVersion(lang.code, entry)"
                     >
                       {{ t('key.restore', 'Restore') }}
                     </u-button>
@@ -430,36 +435,36 @@
                   {{ t('translations.description_label', 'Description') }}
                 </p>
                 <u-button
-                    v-if="!editingDescription"
-                    color="neutral"
-                    icon="i-heroicons-pencil"
-                    size="xs"
-                    variant="ghost"
-                    @click="startEditDescription"
+                  v-if="!editingDescription"
+                  color="neutral"
+                  icon="i-heroicons-pencil"
+                  size="xs"
+                  variant="ghost"
+                  @click="startEditDescription"
                 />
               </div>
             </template>
             <template v-if="editingDescription">
               <u-textarea
-                  v-model="descriptionDraft"
-                  :placeholder="t('translations.add_description', 'Add a description…')"
-                  :rows="3"
-                  autofocus
-                  class="w-full"
+                v-model="descriptionDraft"
+                :placeholder="t('translations.add_description', 'Add a description…')"
+                :rows="3"
+                autofocus
+                class="w-full"
               />
               <div class="flex gap-2 mt-2">
                 <u-button
-                    :loading="savingDescription"
-                    size="xs"
-                    @click="saveDescription"
+                  :loading="savingDescription"
+                  size="xs"
+                  @click="saveDescription"
                 >
                   {{ t('translations.save', 'Save') }}
                 </u-button>
                 <u-button
-                    color="neutral"
-                    size="xs"
-                    variant="ghost"
-                    @click="editingDescription = false"
+                  color="neutral"
+                  size="xs"
+                  variant="ghost"
+                  @click="editingDescription = false"
                 >
                   {{ t('translations.cancel', 'Cancel') }}
                 </u-button>
@@ -467,17 +472,17 @@
             </template>
             <template v-else>
               <p
-                  v-if="keyData.description"
-                  class="text-sm text-gray-700 dark:text-gray-300 cursor-pointer hover:text-primary-500 transition-colors"
-                  data-cy="key-description"
-                  @click="startEditDescription"
+                v-if="keyData.description"
+                class="text-sm text-gray-700 dark:text-gray-300 cursor-pointer hover:text-primary-500 transition-colors"
+                data-cy="key-description"
+                @click="startEditDescription"
               >
                 {{ keyData.description }}
               </p>
               <button
-                  v-else
-                  class="text-sm text-gray-400 italic hover:text-primary-500 transition-colors"
-                  @click="startEditDescription"
+                v-else
+                class="text-sm text-gray-400 italic hover:text-primary-500 transition-colors"
+                @click="startEditDescription"
               >
                 {{ t('translations.add_description', 'Add a description…') }}
               </button>
@@ -494,29 +499,29 @@
             <div class="space-y-2 text-xs text-gray-500 dark:text-gray-400">
               <div class="flex items-center gap-2">
                 <u-icon
-                    class="shrink-0"
-                    name="i-heroicons-calendar"
+                  class="shrink-0"
+                  name="i-heroicons-calendar"
                 />
                 <span>{{ formatDate(keyData.created_at) }}</span>
               </div>
               <div
-                  v-if="keyData.last_scanned_at"
-                  class="flex items-center gap-2"
+                v-if="keyData.last_scanned_at"
+                class="flex items-center gap-2"
               >
                 <u-icon
-                    class="shrink-0"
-                    name="i-heroicons-magnifying-glass"
+                  class="shrink-0"
+                  name="i-heroicons-magnifying-glass"
                 />
                 <span>{{ formatDate(keyData.last_scanned_at) }}</span>
               </div>
               <div class="flex items-center gap-2">
                 <u-icon
-                    class="shrink-0"
-                    name="i-heroicons-language"
+                  class="shrink-0"
+                  name="i-heroicons-language"
                 />
                 <span>{{ coverageCount }} / {{ keyData.languages.length }} {{
-                    t('translations.langs_count', 'languages')
-                  }}</span>
+                  t('translations.langs_count', 'languages')
+                }}</span>
               </div>
             </div>
           </u-card>
@@ -526,12 +531,12 @@
             <template #header>
               <div class="flex items-center gap-2">
                 <u-icon
-                    class="text-gray-400 shrink-0"
-                    name="i-heroicons-code-bracket"
+                  class="text-gray-400 shrink-0"
+                  name="i-heroicons-code-bracket"
                 />
                 <p
-                    class="text-xs font-semibold text-gray-400 uppercase tracking-wide"
-                    data-cy="history-section"
+                  class="text-xs font-semibold text-gray-400 uppercase tracking-wide"
+                  data-cy="history-section"
                 >
                   {{ keyData.usages.length }} {{
                     keyData.usages.length > 1 ? t('translations.references_plural', 'references') : t('translations.references', 'reference')
@@ -540,26 +545,26 @@
               </div>
             </template>
             <div
-                class="space-y-3"
-                data-cy="key-usages"
+              class="space-y-3"
+              data-cy="key-usages"
             >
               <div
-                  v-for="(usage, i) in keyData.usages"
-                  :key="i"
-                  class="text-xs"
+                v-for="(usage, i) in keyData.usages"
+                :key="i"
+                class="text-xs"
               >
                 <p
-                    :title="usage.file_path"
-                    class="font-mono text-gray-600 dark:text-gray-400 truncate"
+                  :title="usage.file_path"
+                  class="font-mono text-gray-600 dark:text-gray-400 truncate"
                 >
                   {{ usage.file_path }}
                 </p>
                 <div class="flex items-center gap-2 text-gray-400 mt-0.5">
                   <span>{{ t('translations.line', 'line') }} {{ usage.line_number }}</span>
                   <u-badge
-                      color="neutral"
-                      size="xs"
-                      variant="soft"
+                    color="neutral"
+                    size="xs"
+                    variant="soft"
                   >
                     {{ usage.detected_function }}
                   </u-badge>
@@ -573,8 +578,8 @@
 
     <!-- Delete confirm modal -->
     <u-modal
-        v-model:open="showDeleteConfirm"
-        :title="t('translations.delete_key', 'Delete key')"
+      v-model:open="showDeleteConfirm"
+      :title="t('translations.delete_key', 'Delete key')"
     >
       <template #body>
         <p class="text-gray-600 dark:text-gray-400">
@@ -588,16 +593,16 @@
       <template #footer>
         <div class="flex justify-end gap-3">
           <u-button
-              color="neutral"
-              variant="ghost"
-              @click="showDeleteConfirm = false"
+            color="neutral"
+            variant="ghost"
+            @click="showDeleteConfirm = false"
           >
             {{ t('translations.cancel', 'Cancel') }}
           </u-button>
           <u-button
-              :loading="deleting"
-              color="error"
-              @click="deleteKey"
+            :loading="deleting"
+            color="error"
+            @click="deleteKey"
           >
             {{ t('translations.delete_key', 'Delete') }}
           </u-button>

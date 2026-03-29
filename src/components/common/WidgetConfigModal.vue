@@ -1,34 +1,34 @@
 <template>
   <u-modal
-      :open="open"
-      :title="t('dashboard.configure_widget', 'Configure widget')"
-      @update:open="emit('update:open', $event)"
+    :open="open"
+    :title="t('dashboard.configure_widget', 'Configure widget')"
+    @update:open="emit('update:open', $event)"
   >
     <template #body>
       <div class="space-y-6">
         <div
-            v-if="hasDataSource"
-            class="space-y-3"
+          v-if="hasDataSource"
+          class="space-y-3"
         >
           <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
             {{ t('dashboard.data_source', 'Data source') }}
           </p>
           <div class="flex gap-2">
             <button
-                :class="draftSource === DATA_SOURCE_TYPE.GLOBAL
+              :class="draftSource === DATA_SOURCE_TYPE.GLOBAL
                 ? 'bg-primary-500 text-white border-primary-500'
                 : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'"
-                class="flex-1 px-3 py-2 rounded-lg text-sm font-medium border transition-colors"
-                @click="draftSource = DATA_SOURCE_TYPE.GLOBAL"
+              class="flex-1 px-3 py-2 rounded-lg text-sm font-medium border transition-colors"
+              @click="draftSource = DATA_SOURCE_TYPE.GLOBAL"
             >
               {{ t('dashboard.global_project', 'Global') }}
             </button>
             <button
-                :class="draftSource === DATA_SOURCE_TYPE.PROJECT
+              :class="draftSource === DATA_SOURCE_TYPE.PROJECT
                 ? 'bg-primary-500 text-white border-primary-500'
                 : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'"
-                class="flex-1 px-3 py-2 rounded-lg text-sm font-medium border transition-colors"
-                @click="draftSource = DATA_SOURCE_TYPE.PROJECT"
+              class="flex-1 px-3 py-2 rounded-lg text-sm font-medium border transition-colors"
+              @click="draftSource = DATA_SOURCE_TYPE.PROJECT"
             >
               {{ t('dashboard.specific_project', 'Specific project') }}
             </button>
@@ -36,9 +36,9 @@
 
           <div v-if="draftSource === DATA_SOURCE_TYPE.PROJECT">
             <u-select
-                v-model="draftProjectId"
-                :items="projectItems"
-                :placeholder="t('dashboard.select_project', 'Select a project')"
+              v-model="draftProjectId"
+              :items="projectItems"
+              :placeholder="t('dashboard.select_project', 'Select a project')"
             />
           </div>
         </div>
@@ -48,8 +48,8 @@
             {{ t('dashboard.custom_title', 'Custom title') }}
           </p>
           <u-input
-              v-model="draftTitle"
-              :placeholder="t('dashboard.default_title', 'Default title')"
+            v-model="draftTitle"
+            :placeholder="t('dashboard.default_title', 'Default title')"
           />
         </div>
       </div>
@@ -58,9 +58,9 @@
     <template #footer>
       <div class="flex justify-end gap-2">
         <u-button
-            color="neutral"
-            variant="ghost"
-            @click="emit('update:open', false)"
+          color="neutral"
+          variant="ghost"
+          @click="emit('update:open', false)"
         >
           {{ t('common.cancel', 'Cancel') }}
         </u-button>
