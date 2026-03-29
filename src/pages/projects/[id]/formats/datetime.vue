@@ -163,14 +163,14 @@
             <u-form-field :label="t('formats.date_style', 'Date style (shortcut)')">
               <u-select
                   v-model="form.options.dateStyle"
-                  :items="[{label: t('formats.none_default', 'None (default)'), value: ''}, 'full', 'long', 'medium', 'short']"
+                  :items="[{label: t('formats.none_default', 'None (default)'), value: null}, 'full', 'long', 'medium', 'short']"
                   class="w-full"
               />
             </u-form-field>
             <u-form-field :label="t('formats.time_style', 'Time style (shortcut)')">
               <u-select
                   v-model="form.options.timeStyle"
-                  :items="[{label: t('formats.none_default', 'None (default)'), value: ''}, 'full', 'long', 'medium', 'short']"
+                  :items="[{label: t('formats.none_default', 'None (default)'), value: null}, 'full', 'long', 'medium', 'short']"
                   class="w-full"
               />
             </u-form-field>
@@ -182,21 +182,21 @@
               <u-form-field :label="t('formats.year', 'Year')">
                 <u-select
                     v-model="form.options.year"
-                    :items="[{label: '—', value: ''}, 'numeric', '2-digit']"
+                    :items="[{label: '—', value: null}, 'numeric', '2-digit']"
                     class="w-full"
                 />
               </u-form-field>
               <u-form-field :label="t('formats.month', 'Month')">
                 <u-select
                     v-model="form.options.month"
-                    :items="[{label: '—', value: ''}, 'numeric', '2-digit', 'long', 'short', 'narrow']"
+                    :items="[{label: '—', value: null}, 'numeric', '2-digit', 'long', 'short', 'narrow']"
                     class="w-full"
                 />
               </u-form-field>
               <u-form-field :label="t('formats.day', 'Day')">
                 <u-select
                     v-model="form.options.day"
-                    :items="[{label: '—', value: ''}, 'numeric', '2-digit']"
+                    :items="[{label: '—', value: null}, 'numeric', '2-digit']"
                     class="w-full"
                 />
               </u-form-field>
@@ -205,21 +205,21 @@
               <u-form-field :label="t('formats.weekday', 'Weekday')">
                 <u-select
                     v-model="form.options.weekday"
-                    :items="[{label: '—', value: ''}, 'long', 'short', 'narrow']"
+                    :items="[{label: '—', value: null}, 'long', 'short', 'narrow']"
                     class="w-full"
                 />
               </u-form-field>
               <u-form-field :label="t('formats.hour', 'Hour')">
                 <u-select
                     v-model="form.options.hour"
-                    :items="[{label: '—', value: ''}, 'numeric', '2-digit']"
+                    :items="[{label: '—', value: null}, 'numeric', '2-digit']"
                     class="w-full"
                 />
               </u-form-field>
               <u-form-field :label="t('formats.minute', 'Minute')">
                 <u-select
                     v-model="form.options.minute"
-                    :items="[{label: '—', value: ''}, 'numeric', '2-digit']"
+                    :items="[{label: '—', value: null}, 'numeric', '2-digit']"
                     class="w-full"
                 />
               </u-form-field>
@@ -228,14 +228,14 @@
               <u-form-field :label="t('formats.second', 'Second')">
                 <u-select
                     v-model="form.options.second"
-                    :items="[{label: '—', value: ''}, 'numeric', '2-digit']"
+                    :items="[{label: '—', value: null}, 'numeric', '2-digit']"
                     class="w-full"
                 />
               </u-form-field>
               <u-form-field :label="t('formats.hour12', '12h format')">
                 <u-select
                     v-model="form.options.hour12"
-                    :items="[{label: t('formats.auto_default', 'Auto (default)'), value: ''}, {label: t('formats.yes', 'Yes'), value: true}, {label: t('formats.no', 'No'), value: false}]"
+                    :items="[{label: t('formats.auto_default', 'Auto (default)'), value: null}, {label: t('formats.yes', 'Yes'), value: true}, {label: t('formats.no', 'No'), value: false}]"
                     class="w-full"
                 />
               </u-form-field>
@@ -318,16 +318,16 @@
   const editing = ref<any>(null)
 
   const defaultOptions = () => ({
-    dateStyle: '',
-    timeStyle: '',
-    year: '',
-    month: '',
-    day: '',
-    weekday: '',
-    hour: '',
-    minute: '',
-    second: '',
-    hour12: '',
+    dateStyle: null,
+    timeStyle: null,
+    year: null,
+    month: null,
+    day: null,
+    weekday: null,
+    hour: null,
+    minute: null,
+    second: null,
+    hour12: null,
     timeZone: '',
   } as Record<string, any>)
 

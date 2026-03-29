@@ -244,14 +244,14 @@
             <u-form-field :label="t('formats.notation', 'Notation')">
               <u-select
                   v-model="form.options.notation"
-                  :items="[{label: t('formats.standard_default', 'Standard (default)'), value: ''}, 'standard', 'scientific', 'engineering', 'compact']"
+                  :items="[{label: t('formats.standard_default', 'Standard (default)'), value: null}, 'standard', 'scientific', 'engineering', 'compact']"
                   class="w-full"
               />
             </u-form-field>
             <u-form-field :label="t('formats.grouping', 'Grouping')">
               <u-select
                   v-model="form.options.useGrouping"
-                  :items="[{label: t('formats.auto_default', 'Auto (default)'), value: ''}, {label: t('formats.enabled', 'Enabled'), value: true}, {label: t('formats.disabled', 'Disabled'), value: false}]"
+                  :items="[{label: t('formats.auto_default', 'Auto (default)'), value: null}, {label: t('formats.enabled', 'Enabled'), value: true}, {label: t('formats.disabled', 'Disabled'), value: false}]"
                   class="w-full"
               />
             </u-form-field>
@@ -354,8 +354,8 @@
       style: 'decimal',
       currency: '',
       currencyDisplay: 'symbol',
-      notation: '',
-      useGrouping: '',
+      notation: null,
+      useGrouping: null,
       minimumFractionDigits: '',
       maximumFractionDigits: '',
       unit: '',
@@ -388,8 +388,8 @@
         style: 'decimal',
         currency: '',
         currencyDisplay: 'symbol',
-        notation: '',
-        useGrouping: '',
+        notation: null,
+        useGrouping: null,
         minimumFractionDigits: '',
         maximumFractionDigits: '',
         unit: '',
