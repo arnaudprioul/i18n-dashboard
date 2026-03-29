@@ -479,7 +479,7 @@ const hasSourceText = computed(() =>
   Object.values(props.translationKey.translations).some((tr) => tr?.value),
 )
 
-const getSourceText = (): => { text: string; lang: string } | null {
+const getSourceText = (): { text: string; lang: string } | null => {
   const entries = Object.entries(props.translationKey.translations)
   const withValue = entries.filter(([, tr]) => tr?.value)
   if (!withValue.length) return null

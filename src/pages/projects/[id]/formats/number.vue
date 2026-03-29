@@ -313,7 +313,7 @@
 </template>
 
 <script lang="ts" setup>
-  const { numberFormats, createNumberFormat, updateNumberFormat, deleteNumberFormat } = useFormats()
+  const { numberFormats, snippet, createNumberFormat, updateNumberFormat, deleteNumberFormat } = useFormats()
   const { findLanguage, projectLanguages } = useLanguages()
   const toast = useToast()
   const { t } = useT()

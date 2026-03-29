@@ -5,7 +5,7 @@ import { resolve } from 'path'
 export default defineEventHandler(async (event) => {
   const id = Number(getRouterParam(event, 'id'))
   const body = await readBody(event)
-  const { name, root_path, locales_path, key_separator, color, description, enable_number_formats, enable_datetime_formats, enable_modifiers, git_repo } = body
+  const { name, root_path, source_url, locales_path, key_separator, color, description, enable_number_formats, enable_datetime_formats, enable_modifiers, git_repo } = body
 
   const db = getDb()
   const project = await db('projects').where({ id }).first()
@@ -14,6 +14,7 @@ export default defineEventHandler(async (event) => {
 
   const updates: Record<string, any> = {}
   if (name !== undefined) updates.name = name.trim()
+  if (source_url !== undefined) updates.source_url = source_url
   if (locales_path !== undefined) updates.locales_path = locales_path
   if (key_separator !== undefined) updates.key_separator = key_separator
   if (color !== undefined) updates.color = color

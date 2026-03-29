@@ -122,7 +122,7 @@
           </div>
 
           <u-form-field :label="t('smtp.secure_label', 'Secure connection (SSL/TLS on port 465)')">
-            <u-toggle v-model="form.secure"/>
+            <u-switch v-model="form.secure"/>
             <template #hint>
               <span class="text-xs text-gray-400">
                 {{ t('smtp.secure_hint', 'Keep off for port 587 (STARTTLS). Enable only for port 465.') }}

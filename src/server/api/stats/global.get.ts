@@ -48,23 +48,39 @@ export default defineEventHandler(async (event) => {
   const totalKeys = Number((totalKeysRow as any)?.count || 0)
   const unusedKeys = Number((unusedKeysRow as any)?.count || 0)
 
-  // Languages: aggregate by code across all accessible projects
+  // Languages: aggregate by code — each language only counts keys from its own projects
   const allLanguages = await db('languages')
     .whereIn('project_id', projectIds)
     .select('*')
     .orderBy('is_default', 'desc')
     .orderBy('code', 'asc')
 
-  // Group language stats by code
+  // Build a map: code → { meta, projectIds[] } to know which projects each language belongs to
+  const langProjectsMap = new Map<string, { lang: any; langProjectIds: number[] }>()
+  for (const lang of allLanguages) {
+    const existing = langProjectsMap.get(lang.code)
+    if (!existing) {
+      langProjectsMap.set(lang.code, { lang, langProjectIds: [lang.project_id] })
+    } else {
+      existing.langProjectIds.push(lang.project_id)
+    }
+  }
+
   const langMap = new Map<string, { code: string; name: string; is_default: boolean; total: number; translated: number; draft: number; reviewed: number; approved: number }>()
 
-  for (const lang of allLanguages) {
-    const existing = langMap.get(lang.code)
+  for (const [code, { lang, langProjectIds }] of langProjectsMap) {
+    // Total keys only from projects where this language exists
+    const totalRow = await db('translation_keys')
+      .whereIn('project_id', langProjectIds)
+      .count('* as count')
+      .first()
+
+    const langTotal = Number((totalRow as any)?.count || 0)
 
     const translatedRow = await db('translations as t')
       .join('translation_keys as k', 't.key_id', 'k.id')
-      .whereIn('k.project_id', projectIds)
-      .where('t.language_code', lang.code)
+      .whereIn('k.project_id', langProjectIds)
+      .where('t.language_code', code)
       .whereNotNull('t.value')
       .where('t.value', '!=', '')
       .count('* as count')
@@ -72,8 +88,8 @@ export default defineEventHandler(async (event) => {
 
     const byStatus = await db('translations as t')
       .join('translation_keys as k', 't.key_id', 'k.id')
-      .whereIn('k.project_id', projectIds)
-      .where('t.language_code', lang.code)
+      .whereIn('k.project_id', langProjectIds)
+      .where('t.language_code', code)
       .whereNotNull('t.value')
       .where('t.value', '!=', '')
       .groupBy('t.status')
@@ -85,21 +101,16 @@ export default defineEventHandler(async (event) => {
       statusMap[(row as any).status || 'draft'] = Number((row as any).count)
     }
 
-    const translatedCount = Number((translatedRow as any)?.count || 0)
-
-    if (!existing) {
-      langMap.set(lang.code, {
-        code: lang.code,
-        name: lang.name,
-        is_default: !!lang.is_default,
-        total: totalKeys,
-        translated: translatedCount,
-        draft: statusMap.draft,
-        reviewed: statusMap.reviewed,
-        approved: statusMap.approved,
-      })
-    }
-    // If already exists (same lang code in multiple projects), skip — already aggregated above per-code
+    langMap.set(code, {
+      code,
+      name: lang.name,
+      is_default: !!lang.is_default,
+      total: langTotal,
+      translated: Number((translatedRow as any)?.count || 0),
+      draft: statusMap.draft,
+      reviewed: statusMap.reviewed,
+      approved: statusMap.approved,
+    })
   }
 
   const langStats = Array.from(langMap.values()).map(l => ({

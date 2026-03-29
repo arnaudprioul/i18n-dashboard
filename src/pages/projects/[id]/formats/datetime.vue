@@ -281,7 +281,7 @@
 </template>
 
 <script lang="ts" setup>
-  const { datetimeFormats, createDatetimeFormat, updateDatetimeFormat, deleteDatetimeFormat } = useFormats()
+  const { datetimeFormats, snippet, createDatetimeFormat, updateDatetimeFormat, deleteDatetimeFormat } = useFormats()
   const { findLanguage, projectLanguages } = useLanguages()
   const toast = useToast()
   const { t } = useT()

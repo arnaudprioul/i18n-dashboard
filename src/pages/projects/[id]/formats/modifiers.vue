@@ -241,7 +241,7 @@
 </template>
 
 <script lang="ts" setup>
-  const { modifiers, createModifier, updateModifier, deleteModifier } = useFormats()
+  const { modifiers, snippet, createModifier, updateModifier, deleteModifier } = useFormats()
   const toast = useToast()
   const { t } = useT()
 

@@ -51,6 +51,26 @@ class SFormats extends SBase {
   async deleteModifier(id: number): Promise<void> {
     return this.delete(`/api/formats/modifiers/${id}`)
   }
+
+  async getSnippet(projectId?: number): Promise<{ snippet: string }> {
+    if (!projectId) return { snippet: '' }
+    return this.get<{ snippet: string }>('/api/formats/snippet', { query: { project_id: projectId } })
+  }
+
+  async detectFromConfig(projectId: number, rootPath?: string): Promise<any> {
+    return this.post('/api/formats/detect', { body: { project_id: projectId, root_path: rootPath } })
+  }
+
+  async importFromConfig(
+    projectId: number,
+    numberFormats: Array<{ locale: string; name: string; options: Record<string, any> }>,
+    datetimeFormats: Array<{ locale: string; name: string; options: Record<string, any> }>,
+    modifiers: Array<{ name: string; body: string }>,
+  ): Promise<any> {
+    return this.post('/api/formats/import-from-config', {
+      body: { project_id: projectId, numberFormats, datetimeFormats, modifiers },
+    })
+  }
 }
 
 export const formatsService = new SFormats()

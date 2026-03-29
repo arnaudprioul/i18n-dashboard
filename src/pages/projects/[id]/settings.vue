@@ -217,7 +217,7 @@
                   'currency')</code> — Intl.NumberFormat
                 </p>
               </div>
-              <u-toggle v-model="form.enable_number_formats"/>
+              <u-switch v-model="form.enable_number_formats"/>
             </div>
             <div class="flex items-center justify-between py-1 border-t border-gray-100 dark:border-gray-800">
               <div>
@@ -229,7 +229,7 @@
                   'short')</code> — Intl.DateTimeFormat
                 </p>
               </div>
-              <u-toggle v-model="form.enable_datetime_formats"/>
+              <u-switch v-model="form.enable_datetime_formats"/>
             </div>
             <div class="flex items-center justify-between py-1 border-t border-gray-100 dark:border-gray-800">
               <div>
@@ -241,9 +241,44 @@
                   {{ t('settings.custom_modifiers_hint2', 'modifiers') }}
                 </p>
               </div>
-              <u-toggle v-model="form.enable_modifiers"/>
+              <u-switch v-model="form.enable_modifiers"/>
             </div>
           </div>
+        </div>
+      </u-card>
+
+      <!-- Format import from project config -->
+      <u-card v-if="currentProject && (form.enable_number_formats || form.enable_datetime_formats || form.enable_modifiers)">
+        <template #header>
+          <div class="flex items-center gap-2">
+            <u-icon
+                class="text-purple-500"
+                name="i-heroicons-arrow-down-tray"
+            />
+            <h2 class="font-semibold text-gray-900 dark:text-white">
+              {{ t('formats.import_from_config_title', 'Import formats from project') }}
+            </h2>
+          </div>
+        </template>
+        <div class="space-y-3">
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            {{ t('formats.import_from_config_hint', 'Scan the project i18n config file (i18n.ts, nuxt.config.ts…) to detect existing numberFormats, datetimeFormats or modifiers and import them automatically.') }}
+          </p>
+          <u-button
+              :disabled="!form.root_path"
+              icon="i-heroicons-magnifying-glass"
+              size="sm"
+              variant="outline"
+              @click="showFormatImport = true"
+          >
+            {{ t('formats.import_detect_btn', 'Detect & import formats') }}
+          </u-button>
+          <p
+              v-if="!form.root_path"
+              class="text-xs text-amber-500"
+          >
+            {{ t('formats.import_no_path', 'Set a root path above to enable detection.') }}
+          </p>
         </div>
       </u-card>
 
@@ -335,6 +370,12 @@
           </div>
         </div>
       </u-card>
+
+      <!-- Integration snippet -->
+      <format-snippet
+          v-if="snippet"
+          :snippet="snippet"
+      />
 
       <!-- Export -->
       <u-card v-if="currentProject">
@@ -451,7 +492,7 @@
               </p>
             </div>
             <u-button
-                color="indigo"
+                color="primary"
                 icon="i-heroicons-arrow-down-tray"
                 size="sm"
                 variant="outline"
@@ -483,7 +524,7 @@
                 />
                 <u-button
                     :loading="importing"
-                    color="indigo"
+                    color="primary"
                     icon="i-heroicons-arrow-up-tray"
                     size="sm"
                     variant="outline"
@@ -516,6 +557,13 @@
         </div>
       </u-card>
 
+      <!-- Format import modal -->
+      <format-import-modal
+          v-model:open="showFormatImport"
+          :root-path="form.root_path"
+          @done="refreshSnippet"
+      />
+
       <!-- Save button -->
       <div class="flex justify-end">
         <u-button
@@ -532,10 +580,15 @@
 </template>
 
 <script lang="ts" setup>
+  import FormatSnippet from '../../../components/common/FormatSnippet.vue'
+  import FormatImportModal from '../../../components/common/FormatImportModal.vue'
+
   const toast = useToast()
   const { t } = useT()
   const { currentProject, fetchProjects, updateProject, importSnapshot } = useProject()
   const { settings, pending, saving, saveSettings } = useSettings()
+  const { snippet, refreshSnippet } = useFormats()
+  const showFormatImport = ref(false)
   const savingProject = ref(false)
   const { projectLanguages } = useLanguages()
 

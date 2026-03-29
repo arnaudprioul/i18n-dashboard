@@ -1,9 +1,224 @@
 import { readdirSync, readFileSync, statSync, existsSync } from 'fs'
 import { resolve, extname, relative, basename } from 'path'
 
-import type { IDetectedLanguage, IKeyUsage, IScanResult } from '../../interfaces/scanner.interface'
+import type { IDetectedFormats, IDetectedLanguage, IKeyUsage, IScanResult } from '../../interfaces/scanner.interface'
 import { AVAILABLE_LOCALES_PATTERN, LOCALE_ARRAY_PATTERN, LOCALE_SINGLE_PATTERN } from '../../consts/scanner.const'
 import { LANGUAGES } from '../../consts/languages.const'
+
+// ── Format detection helpers ───────────────────────────────────────────────
+
+/**
+ * Extract a balanced braces block from content starting at fromIndex.
+ * Handles string literals, line/block comments.
+ */
+function extractBracedBlock(content: string, fromIndex: number): string | null {
+  let depth = 0
+  let startIdx = -1
+  let i = fromIndex
+
+  while (i < content.length) {
+    const ch = content[i]
+
+    if (ch === '`') {
+      i++
+      while (i < content.length) {
+        if (content[i] === '\\') { i += 2; continue }
+        if (content[i] === '$' && content[i + 1] === '{') {
+          i += 2
+          let d = 1
+          while (i < content.length && d > 0) {
+            if (content[i] === '{') d++
+            else if (content[i] === '}') d--
+            i++
+          }
+          continue
+        }
+        if (content[i] === '`') break
+        i++
+      }
+      i++
+      continue
+    }
+
+    if (ch === '"' || ch === "'") {
+      const q = ch; i++
+      while (i < content.length) {
+        if (content[i] === '\\') { i += 2; continue }
+        if (content[i] === q) break
+        i++
+      }
+      i++; continue
+    }
+
+    if (ch === '/' && content[i + 1] === '/') {
+      while (i < content.length && content[i] !== '\n') i++
+      continue
+    }
+
+    if (ch === '/' && content[i + 1] === '*') {
+      i += 2
+      while (i < content.length && !(content[i] === '*' && content[i + 1] === '/')) i++
+      i += 2; continue
+    }
+
+    if (ch === '{') {
+      if (depth === 0) startIdx = i
+      depth++
+    } else if (ch === '}') {
+      depth--
+      if (depth === 0 && startIdx >= 0) return content.slice(startIdx, i + 1)
+    }
+
+    i++
+  }
+  return null
+}
+
+/**
+ * Normalize a JS object literal string to valid JSON.
+ */
+function tryParseAsJson(raw: string): Record<string, any> | null {
+  try {
+    const s = raw
+      .replace(/\/\/[^\n]*/g, '')
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/([{,]\s*)\n?\s*([a-zA-Z_$][a-zA-Z0-9_$]*)\s*:/g, '$1\n"$2":')
+      .replace(/'([^'\\]*)'/g, '"$1"')
+      .replace(/,(\s*[}\]])/g, '$1')
+    return JSON.parse(s)
+  } catch {
+    return null
+  }
+}
+
+function extractFormatObject(
+  content: string,
+  key: string,
+): Record<string, Record<string, Record<string, any>>> {
+  const pattern = new RegExp(`\\b${key}\\s*[=:]\\s*`, 'g')
+  let match: RegExpExecArray | null
+
+  while ((match = pattern.exec(content)) !== null) {
+    const afterKey = match.index + match[0].length
+    const braceStart = content.indexOf('{', afterKey)
+    if (braceStart < 0 || braceStart - afterKey > 5) continue
+
+    const block = extractBracedBlock(content, braceStart)
+    if (!block) continue
+
+    const parsed = tryParseAsJson(block)
+    if (!parsed) continue
+
+    const result: Record<string, Record<string, Record<string, any>>> = {}
+    let valid = true
+    for (const [locale, formats] of Object.entries(parsed)) {
+      if (typeof formats !== 'object' || formats === null || Array.isArray(formats)) { valid = false; break }
+      result[locale] = {}
+      for (const [name, options] of Object.entries(formats as any)) {
+        if (typeof options !== 'object' || options === null || Array.isArray(options)) { valid = false; break }
+        result[locale][name] = options as Record<string, any>
+      }
+      if (!valid) break
+    }
+
+    if (valid && Object.keys(result).length > 0) return result
+  }
+  return {}
+}
+
+function extractModifiersContent(content: string): Record<string, string> {
+  const result: Record<string, string> = {}
+  const pattern = /\bmodifiers\s*[=:]\s*/g
+  let match: RegExpExecArray | null
+
+  while ((match = pattern.exec(content)) !== null) {
+    const afterKey = match.index + match[0].length
+    const braceStart = content.indexOf('{', afterKey)
+    if (braceStart < 0 || braceStart - afterKey > 5) continue
+
+    const block = extractBracedBlock(content, braceStart)
+    if (!block) continue
+
+    const inner = block.slice(1, -1)
+    let pos = 0
+
+    while (pos < inner.length) {
+      while (pos < inner.length && /[\s,]/.test(inner[pos])) pos++
+      if (pos >= inner.length) break
+
+      const keyMatch = /^([a-zA-Z_$][a-zA-Z0-9_$]*)\s*:/.exec(inner.slice(pos))
+      if (!keyMatch) break
+
+      const key = keyMatch[1]
+      pos += keyMatch[0].length
+      while (pos < inner.length && /\s/.test(inner[pos])) pos++
+
+      let depth = 0
+      const valueStart = pos
+      let inStr = false; let strCh = ''
+
+      while (pos < inner.length) {
+        const ch = inner[pos]
+        if (inStr) {
+          if (ch === '\\') { pos += 2; continue }
+          if (ch === strCh) inStr = false
+          pos++; continue
+        }
+        if (ch === '"' || ch === "'" || ch === '`') { inStr = true; strCh = ch; pos++; continue }
+        if (ch === '{' || ch === '(' || ch === '[') { depth++; pos++; continue }
+        if (ch === '}' || ch === ')' || ch === ']') {
+          if (depth === 0) break
+          depth--; pos++; continue
+        }
+        if (ch === ',' && depth === 0) break
+        pos++
+      }
+
+      const value = inner.slice(valueStart, pos).trim()
+      if (value) result[key] = value
+      if (pos < inner.length && inner[pos] === ',') pos++
+    }
+
+    if (Object.keys(result).length > 0) return result
+  }
+  return result
+}
+
+/**
+ * Scan i18n config files in the project root for numberFormats, datetimeFormats and modifiers.
+ */
+export function detectFormats(options: { projectRoot: string }): IDetectedFormats {
+  const { projectRoot } = options
+
+  const configFileNames = [
+    'i18n.js', 'i18n.ts', 'i18n.mjs', 'i18n.mts',
+    'i18n/index.js', 'i18n/index.ts',
+    'nuxt.config.js', 'nuxt.config.ts', 'nuxt.config.mjs',
+    'vite.config.js', 'vite.config.ts',
+    'src/i18n.js', 'src/i18n.ts', 'src/i18n/index.js', 'src/i18n/index.ts',
+    'src/plugins/i18n.js', 'src/plugins/i18n.ts',
+  ]
+
+  for (const relPath of configFileNames) {
+    const absPath = resolve(projectRoot, relPath)
+    if (!existsSync(absPath)) continue
+
+    let content: string
+    try { content = readFileSync(absPath, 'utf-8') } catch { continue }
+
+    const numberFormats = extractFormatObject(content, 'numberFormats')
+    const datetimeFormats = extractFormatObject(content, 'datetimeFormats')
+    const modifiers = extractModifiersContent(content)
+
+    if (Object.keys(numberFormats).length || Object.keys(datetimeFormats).length || Object.keys(modifiers).length) {
+      return { numberFormats, datetimeFormats, modifiers, sourceFile: relPath }
+    }
+  }
+
+  return { numberFormats: {}, datetimeFormats: {}, modifiers: {}, sourceFile: null }
+}
+
+// ── End format detection ───────────────────────────────────────────────────
 
 function langName(code: string): string {
   return LANGUAGES[code.toLowerCase()] || code.toUpperCase()

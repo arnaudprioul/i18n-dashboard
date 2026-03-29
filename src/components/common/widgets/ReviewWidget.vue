@@ -8,8 +8,8 @@
         />
         <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ displayTitle }}</span>
         <u-badge
-            v-if="reviewItems.length"
-            :label="String(reviewItems.length)"
+            v-if="allReviewItems.length"
+            :label="String(allReviewItems.length)"
             class="ml-auto"
             color="warning"
             size="xs"

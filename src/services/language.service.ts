@@ -18,8 +18,8 @@ class SLanguage extends SBase {
     })
   }
 
-  async update(id: number, data: { fallback_code?: string | null }): Promise<void> {
-    return this.put(`/api/languages/${id}`, { body: data })
+  async update(code: string, projectId: number, data: { fallback_code?: string | null; name?: string; is_default?: boolean }): Promise<void> {
+    return this.put(`/api/languages/${code}`, { body: { ...data, project_id: projectId } })
   }
 
   async remove(code: string, projectId: number): Promise<void> {

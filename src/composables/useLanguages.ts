@@ -98,7 +98,7 @@ export function useLanguages() {
   }
 
   const setFallback = async (lang: ILanguageItem, fallbackCode: string | null): Promise<void> => {
-    await languageService.update(lang.id, { fallback_code: fallbackCode })
+    await languageService.update(lang.code, lang.project_id, { fallback_code: fallbackCode })
     await refresh()
   }
 

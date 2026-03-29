@@ -1,5 +1,5 @@
 <template>
-  <u-card class="h-full overflow-hidden">
+  <u-card class="h-full overflow-hidden flex flex-col">
     <template #header>
       <div class="flex items-center gap-2">
         <u-icon
@@ -39,7 +39,7 @@
     </div>
 
     <div
-        v-else-if="!displayedLanguages.length"
+        v-else-if="!allLanguages.length"
         class="flex flex-col items-center justify-center h-full py-6 text-center"
     >
       <u-icon
@@ -51,43 +51,65 @@
       </p>
     </div>
 
-    <div
-        v-else
-        :class="size === WIDGET_SIZE.WIDE ? 'grid grid-cols-2 gap-3 space-y-0' : ''"
-        class="overflow-y-auto space-y-3"
-    >
+    <template v-else>
       <div
-          v-for="lang in displayedLanguages"
-          :key="lang.code"
-          class="space-y-1"
+          :class="size === WIDGET_SIZE.WIDE ? 'grid grid-cols-2 gap-3 space-y-0' : 'space-y-3'"
+          class="overflow-y-auto flex-1"
       >
-        <div class="flex items-center justify-between text-xs">
-          <span class="font-medium text-gray-700 dark:text-gray-300">
-            {{ lang.name }}
-            <span class="text-gray-400 ml-1 font-mono">{{ lang.code }}</span>
-          </span>
-          <span
-              :class="lang.coverage >= 90 ? 'text-green-600' : lang.coverage >= 60 ? 'text-yellow-500' : 'text-red-500'"
-              class="font-semibold"
-          >
-            {{ lang.coverage.toFixed(2) }}%
-          </span>
-        </div>
-        <div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-1.5">
-          <div
-              :class="coverageColor(lang.coverage)"
-              :style="{ width: `${lang.coverage}%` }"
-              class="h-1.5 rounded-full transition-all"
-          />
-        </div>
-        <p
-            v-if="size !== WIDGET_SIZE.SM"
-            class="text-xs text-gray-400"
+        <div
+            v-for="lang in displayedLanguages"
+            :key="lang.code"
+            class="space-y-1"
         >
-          {{ lang.translated }} / {{ lang.total }} · {{ lang.missing }} {{ t('dashboard.missing', 'missing') }}
-        </p>
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium text-gray-700 dark:text-gray-300">
+              {{ lang.name }}
+              <span class="text-gray-400 ml-1 font-mono">{{ lang.code }}</span>
+            </span>
+            <span
+                :class="lang.coverage >= 90 ? 'text-green-600' : lang.coverage >= 60 ? 'text-yellow-500' : 'text-red-500'"
+                class="font-semibold"
+            >
+              {{ lang.coverage.toFixed(2) }}%
+            </span>
+          </div>
+          <div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-1.5">
+            <div
+                :class="coverageColor(lang.coverage)"
+                :style="{ width: `${lang.coverage}%` }"
+                class="h-1.5 rounded-full transition-all"
+            />
+          </div>
+          <p
+              v-if="size !== WIDGET_SIZE.SM"
+              class="text-xs text-gray-400"
+          >
+            {{ lang.translated }} / {{ lang.total }} · {{ lang.missing }} {{ t('dashboard.missing', 'missing') }}
+          </p>
+        </div>
       </div>
-    </div>
+
+      <div
+          v-if="totalPages > 1"
+          class="flex items-center justify-between pt-2 mt-2 border-t border-gray-100 dark:border-gray-800"
+      >
+        <button
+            :disabled="page === 1"
+            class="p-1 rounded text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            @click="page--"
+        >
+          <u-icon name="i-heroicons-chevron-left" class="text-sm" />
+        </button>
+        <span class="text-xs text-gray-400">{{ page }} / {{ totalPages }}</span>
+        <button
+            :disabled="page === totalPages"
+            class="p-1 rounded text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            @click="page++"
+        >
+          <u-icon name="i-heroicons-chevron-right" class="text-sm" />
+        </button>
+      </div>
+    </template>
   </u-card>
 </template>
 
@@ -107,10 +129,22 @@
   const maxItems = computed(() => {
     if (props.size === WIDGET_SIZE.LG) return 6
     if (props.size === WIDGET_SIZE.WIDE) return 8
+    if (props.size === WIDGET_SIZE.MD) return 4
     return 3
   })
 
-  const displayedLanguages = computed(() => (stats.value?.languages ?? []).slice(0, maxItems.value))
+  const allLanguages = computed(() => stats.value?.languages ?? [])
+
+  const totalPages = computed(() => Math.ceil(allLanguages.value.length / maxItems.value))
+
+  const page = ref(1)
+
+  watch(maxItems, () => { page.value = 1 })
+
+  const displayedLanguages = computed(() => {
+    const start = (page.value - 1) * maxItems.value
+    return allLanguages.value.slice(start, start + maxItems.value)
+  })
 
   const displayTitle = computed(() => props.title || t('dashboard.languages_coverage', 'Language coverage'))
 

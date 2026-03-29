@@ -300,7 +300,7 @@
             @click="toggleDark"
         />
 
-        <u-divider
+        <u-separator
             class="h-5"
             orientation="vertical"
         />

@@ -51,7 +51,7 @@
           </p>
           <project-git-repo-manager v-model="gitRepo" />
           <label class="flex items-center gap-2 cursor-pointer">
-            <u-toggle
+            <u-switch
               v-model="saveRepo"
               size="sm"
             />
