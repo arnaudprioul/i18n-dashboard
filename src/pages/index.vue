@@ -3,6 +3,6 @@
     data-cy="dashboard-page"
     class="p-6"
   >
-    <DashboardWidgetGrid />
+    <dashboard-widget-grid />
   </div>
 </template>

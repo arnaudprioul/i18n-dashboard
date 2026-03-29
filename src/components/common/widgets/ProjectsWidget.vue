@@ -1,0 +1,103 @@
+<template>
+  <u-card class="h-full overflow-hidden">
+    <template #header>
+      <div class="flex items-center gap-2">
+        <u-icon
+            class="text-gray-400"
+            name="i-heroicons-rectangle-stack"
+        />
+        <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">{{ t('nav.projects', 'Projects') }}</span>
+        <u-badge
+            v-if="visibleProjects.length"
+            :label="String(visibleProjects.length)"
+            class="ml-auto"
+            color="neutral"
+            size="xs"
+            variant="soft"
+        />
+      </div>
+    </template>
+
+    <div
+        v-if="pending"
+        class="space-y-2"
+    >
+      <u-skeleton
+          v-for="i in 3"
+          :key="i"
+          class="h-10 w-full"
+      />
+    </div>
+
+    <div
+        v-else-if="!displayedProjects.length"
+        class="flex flex-col items-center justify-center h-full py-6 text-center"
+    >
+      <u-icon
+          class="text-3xl text-gray-300 dark:text-gray-600 mb-2"
+          name="i-heroicons-folder-open"
+      />
+      <p class="text-sm text-gray-400">
+        {{ t('projects.none', 'No project') }}
+      </p>
+    </div>
+
+    <div
+        v-else
+        :class="size === WIDGET_SIZE.WIDE ? 'grid grid-cols-2 gap-2' : 'space-y-2'"
+        class="overflow-y-auto"
+    >
+      <button
+          v-for="project in displayedProjects"
+          :key="project.id"
+          :class="{ 'cursor-default': editing }"
+          class="w-full flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-left"
+          @click="navigate(project.id)"
+      >
+        <div
+            :class="`bg-${project.color || 'primary'}-100 dark:bg-${project.color || 'primary'}-900/30`"
+            class="w-8 h-8 rounded-md flex items-center justify-center shrink-0"
+        >
+          <u-icon
+              :class="`text-${project.color || 'primary'}-600`"
+              class="text-sm"
+              name="i-heroicons-folder"
+          />
+        </div>
+        <div class="min-w-0 flex-1">
+          <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+            {{ project.name }}
+          </p>
+          <p class="text-xs text-gray-400">
+            {{ project.key_count ?? 0 }} {{ t('translations.keys_count', 'keys') }} · {{ project.language_count ?? 0 }}
+            {{ t('translations.langs_count', 'languages') }}
+          </p>
+        </div>
+      </button>
+    </div>
+  </u-card>
+</template>
+
+<script lang="ts" setup>
+  import type { IProjectsWidgetProps } from '../../../interfaces/dashboard.interface'
+  import { WIDGET_SIZE } from '../../../enums/dashboard.enum'
+
+  const props = defineProps<IProjectsWidgetProps>()
+
+  const { t } = useT()
+  const { visibleProjects, pending } = useProject()
+  const router = useRouter()
+
+  const maxItems = computed(() => {
+    if (props.size === WIDGET_SIZE.LG) return 6
+    if (props.size === WIDGET_SIZE.WIDE) return 4
+    return 3
+  })
+
+  const displayedProjects = computed(() => visibleProjects.value.slice(0, maxItems.value))
+
+  const navigate = (id: number) => {
+    if (props.editing) return
+    router.push(`/projects/${id}`)
+  }
+</script>

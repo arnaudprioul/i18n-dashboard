@@ -4,11 +4,11 @@
     data-cy="forgot-password-mounted"
     class="sr-only"
   />
-  <UCard class="w-full max-w-md">
+  <u-card class="w-full max-w-md">
     <template #header>
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-xl bg-primary-500 flex items-center justify-center shrink-0">
-          <UIcon
+          <u-icon
             name="i-heroicons-language"
             class="text-white text-lg"
           />
@@ -29,18 +29,18 @@
       class="space-y-4"
     >
       <p class="text-sm text-green-600 bg-green-50 dark:bg-green-900/20 rounded-lg px-3 py-2">
-        <UIcon
+        <u-icon
           name="i-heroicons-check-circle"
           class="inline mr-1"
         />
         {{ t('forgot_password.success', 'If this email is associated with an account, a reset link has been sent to you.') }}
       </p>
-      <NuxtLink
+      <nuxt-link
         to="/login"
         class="block text-center text-sm text-primary-600 hover:underline mt-2"
       >
         {{ t('forgot_password.back_to_login', 'Back to login') }}
-      </NuxtLink>
+      </nuxt-link>
     </div>
 
     <form
@@ -52,11 +52,11 @@
         {{ t('forgot_password.description', "Enter your email address and we'll send you a link to reset your password.") }}
       </p>
 
-      <UFormField
+      <u-form-field
         label="Email"
         required
       >
-        <UInput
+        <u-input
           v-model="email"
           type="email"
           placeholder="admin@example.com"
@@ -64,42 +64,43 @@
           autocomplete="email"
           autofocus
         />
-      </UFormField>
+      </u-form-field>
 
       <p
         v-if="error"
         class="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 rounded-lg px-3 py-2"
       >
-        <UIcon
+        <u-icon
           name="i-heroicons-exclamation-circle"
           class="inline mr-1"
         />
         {{ error }}
       </p>
 
-      <UButton
+      <u-button
         type="submit"
         block
         :loading="loading"
         class="mt-2"
       >
         {{ t('forgot_password.submit', 'Send link') }}
-      </UButton>
+      </u-button>
 
-      <NuxtLink
+      <nuxt-link
         to="/login"
         class="block text-center text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 mt-2"
       >
         {{ t('forgot_password.back_to_login', 'Back to login') }}
-      </NuxtLink>
+      </nuxt-link>
     </form>
-  </UCard>
+  </u-card>
 </template>
 
 <script setup lang="ts">
 definePageMeta({ layout: 'auth' })
 
 const { t } = useT()
+const { forgotPassword } = useAuth()
 
 const email = ref('')
 const loading = ref(false)
@@ -109,18 +110,15 @@ const sent = ref(false)
 const isMounted = ref(false)
 onMounted(() => { isMounted.value = true })
 
-async function handleSubmit() {
+const handleSubmit = async () => {
   if (!email.value) return
   loading.value = true
   error.value = ''
   try {
-    await $fetch('/api/auth/forgot-password', {
-      method: 'POST',
-      body: { email: email.value },
-    })
+    await forgotPassword(email.value)
     sent.value = true
   } catch (e: any) {
-    error.value = e.data?.message || t('forgot_password.error_fallback', 'An error occurred')
+    error.value = e.message || t('forgot_password.error_fallback', 'An error occurred')
   } finally {
     loading.value = false
   }

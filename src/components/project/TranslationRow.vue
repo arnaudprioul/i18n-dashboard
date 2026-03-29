@@ -7,26 +7,26 @@
     <!-- Key column -->
     <div class="px-4 py-3 flex flex-col justify-center min-w-0">
       <div class="flex items-center gap-2 min-w-0">
-        <UTooltip
+        <u-tooltip
           v-if="translationKey.is_unused"
           :text="t('translations.unused_tooltip', 'Key not found in source code')"
         >
-          <UIcon
+          <u-icon
             name="i-heroicons-exclamation-triangle"
             class="text-orange-400 text-sm shrink-0"
           />
-        </UTooltip>
-        <NuxtLink
+        </u-tooltip>
+        <nuxt-link
           :to="projectId ? `/projects/${projectId}/translations/${translationKey.id}` : `/keys/${translationKey.id}`"
           class="text-sm font-mono font-medium text-gray-900 dark:text-gray-100 truncate hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
         >
           {{ translationKey.key }}
-        </NuxtLink>
+        </nuxt-link>
       </div>
       <!-- Description: inline edit -->
       <template v-if="editingDescription">
         <div class="flex items-center gap-1 mt-0.5">
-          <UInput
+          <u-input
             v-model="descriptionDraft"
             size="xs"
             class="flex-1 text-xs"
@@ -35,21 +35,21 @@
             @keydown.enter="saveDescription"
             @keydown.escape="cancelDescription"
           />
-          <UButton
+          <u-button
             size="xs"
             :loading="savingDescription"
             @click="saveDescription"
           >
             OK
-          </UButton>
-          <UButton
+          </u-button>
+          <u-button
             size="xs"
             color="neutral"
             variant="ghost"
             @click="cancelDescription"
           >
             ✕
-          </UButton>
+          </u-button>
         </div>
       </template>
       <template v-else>
@@ -66,15 +66,15 @@
         v-if="translationKey.usages?.length"
         class="flex items-center gap-1 mt-1"
       >
-        <UTooltip :text="usageTooltip">
+        <u-tooltip :text="usageTooltip">
           <button class="flex items-center gap-1 text-xs text-gray-400 hover:text-primary-500 transition-colors">
-            <UIcon
+            <u-icon
               name="i-heroicons-code-bracket"
               class="text-xs"
             />
             <span>{{ translationKey.usages.length }} {{ translationKey.usages.length > 1 ? t('translations.references', 'references') : t('translations.reference', 'reference') }}</span>
           </button>
-        </UTooltip>
+        </u-tooltip>
       </div>
     </div>
 
@@ -88,7 +88,7 @@
         <!-- Edit mode -->
         <template v-if="editingCell === `${translationKey.id}-${lang.code}`">
           <div :ref="el => textareaWrappers[lang.code] = el as HTMLElement">
-            <UTextarea
+            <u-textarea
               v-model="editValues[lang.code]"
               :rows="2"
               autofocus
@@ -110,7 +110,7 @@
                   class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-mono bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700 hover:bg-amber-100 dark:hover:bg-amber-900/50 transition-colors"
                   @mousedown.prevent="insertAtCursor(lang.code, '{' + param + '}')"
                 >
-                  <UIcon
+                  <u-icon
                     name="i-heroicons-cursor-arrow-rays"
                     class="text-xs opacity-60"
                   />
@@ -121,7 +121,7 @@
             <!-- Literal / backslash escapes -->
             <div class="flex items-center gap-1 flex-wrap">
               <span class="text-xs text-gray-400">{{ t('key.escapes_label', 'Escapes:') }}</span>
-              <UTooltip
+              <u-tooltip
                 v-for="esc in ALL_ESCAPES"
                 :key="esc.insert"
                 :text="esc.hint"
@@ -132,12 +132,12 @@
                 >
                   {{ esc.label }}
                 </button>
-              </UTooltip>
+              </u-tooltip>
             </div>
             <!-- Modifiers -->
             <div class="flex items-center gap-1 flex-wrap">
               <span class="text-xs text-gray-400">{{ t('key.modifiers_label', 'Modifiers:') }}</span>
-              <UTooltip
+              <u-tooltip
                 v-for="mod in LINK_MODIFIERS"
                 :key="mod.prefix"
                 :text="mod.hint"
@@ -148,43 +148,43 @@
                 >
                   {{ mod.prefix }}
                 </button>
-              </UTooltip>
+              </u-tooltip>
             </div>
             <!-- Plural separator -->
-            <UTooltip :text="t('translations.insert_plural_sep', 'Insert a plural form separator | (e.g. car | cars)')">
+            <u-tooltip :text="t('translations.insert_plural_sep', 'Insert a plural form separator | (e.g. car | cars)')">
               <button
                 class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-mono bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors"
                 @mousedown.prevent="insertAtCursor(lang.code, ' | ')"
               >
-                <UIcon
+                <u-icon
                   name="i-heroicons-bars-3-bottom-left"
                   class="text-xs opacity-60"
                 />
                 {{ ' | ' }}
               </button>
-            </UTooltip>
+            </u-tooltip>
             <!-- Linked key picker -->
-            <LinkedKeyPicker
+            <project-linked-key-picker
               :project-id="projectId"
               @select="(val) => insertLinkedKey(lang.code, val)"
             />
           </div>
           <div class="flex gap-1 mt-1.5">
-            <UButton
+            <u-button
               size="xs"
               :loading="saving === `${translationKey.id}-${lang.code}`"
               @click="saveTranslation(lang.code)"
             >
               {{ t('translations.save', 'Save') }}
-            </UButton>
-            <UButton
+            </u-button>
+            <u-button
               size="xs"
               color="neutral"
               variant="ghost"
               @click="cancelEdit(lang.code)"
             >
               {{ t('common.cancel', 'Cancel') }}
-            </UButton>
+            </u-button>
           </div>
         </template>
 
@@ -192,7 +192,7 @@
         <template v-else>
           <div class="flex items-start gap-1.5">
             <!-- Status dot -->
-            <UTooltip
+            <u-tooltip
               :text="statusLabel(lang.code)"
               :delay-duration="300"
             >
@@ -204,7 +204,7 @@
                 ]"
                 @click="cycleStatus(lang.code)"
               />
-            </UTooltip>
+            </u-tooltip>
 
             <div
               class="flex-1 min-w-0 cursor-pointer"
@@ -246,8 +246,8 @@
 
       <!-- Actions: Google Translate + status toggle -->
       <div class="flex flex-col gap-1 opacity-0 group-hover/cell:opacity-100 transition-opacity shrink-0">
-        <UTooltip :text="hasSourceText ? t('translations.translate_to', 'Translate to') + ` ${lang.name}` : t('translations.no_source', 'No source available')">
-          <UButton
+        <u-tooltip :text="hasSourceText ? t('translations.translate_to', 'Translate to') + ` ${lang.name}` : t('translations.no_source', 'No source available')">
+          <u-button
             icon="i-heroicons-sparkles"
             size="xs"
             color="warning"
@@ -256,26 +256,26 @@
             :loading="translateLoading === `${translationKey.id}-${lang.code}`"
             @click="autoTranslate(lang)"
           />
-        </UTooltip>
+        </u-tooltip>
       </div>
     </div>
 
     <!-- Row actions -->
     <div class="px-2 py-3 flex items-center justify-center">
-      <UDropdownMenu :items="rowActions">
-        <UButton
+      <u-dropdown-menu :items="rowActions">
+        <u-button
           icon="i-heroicons-ellipsis-vertical"
           size="xs"
           color="neutral"
           variant="ghost"
           class="opacity-0 group-hover/row:opacity-100 transition-opacity"
         />
-      </UDropdownMenu>
+      </u-dropdown-menu>
     </div>
   </div>
 
   <!-- History modal -->
-  <TranslationHistoryModal
+  <tranlation-history-modal
     v-if="showHistory"
     :translation-id="historyTranslationId"
     @close="showHistory = false"
@@ -283,25 +283,21 @@
 </template>
 
 <script setup lang="ts">
-import { TRANSLATION_STATUS } from '../enums/translation.enum'
+import { TRANSLATION_STATUS } from '../../enums/translation.enum'
+import type { ITranslationRowProps, ITranslationRowEmits } from '../../interfaces/key.interface'
 
 const { t } = useT()
+const {
+  saveTranslationById,
+  setTranslationStatusById,
+  autoTranslateById,
+  updateDescriptionById,
+  deleteKeyById,
+} = useKeys()
 
-const props = defineProps<{
-  translationKey: {
-    id: number
-    key: string
-    description?: string
-    is_unused?: boolean
-    translations: Record<string, { id: number; value: string; language_code: string; status?: string } | undefined>
-    usages?: Array<{ file_path: string; line_number: number; detected_function: string }>
-  }
-  languages: Array<{ code: string; name: string }>
-  gridStyle: Record<string, string>
-  projectId?: number
-}>()
+const props = defineProps<ITranslationRowProps>()
 
-const emit = defineEmits<{ updated: [] }>()
+const emit = defineEmits<ITranslationRowEmits>()
 
 const toast = useToast()
 const { canApprove, canManageProject } = useAuth()
@@ -314,26 +310,23 @@ const editingDescription = ref(false)
 const descriptionDraft = ref('')
 const savingDescription = ref(false)
 
-function startEditDescription() {
+const startEditDescription = () => {
   descriptionDraft.value = props.translationKey.description || ''
   editingDescription.value = true
 }
 
-function cancelDescription() {
+const cancelDescription = () => {
   editingDescription.value = false
 }
 
-async function saveDescription() {
+const saveDescription = async () => {
   savingDescription.value = true
   try {
-    await $fetch(`/api/keys/${props.translationKey.id}`, {
-      method: 'PATCH',
-      body: { description: descriptionDraft.value || null },
-    })
+    await updateDescriptionById(props.translationKey.id, descriptionDraft.value || null)
     editingDescription.value = false
     emit('updated')
   } catch (e: any) {
-    toast.add({ title: t('common.error', 'Error'), description: e.data?.message || e.message, color: 'error' })
+    toast.add({ title: t('common.error', 'Error'), description: e.message, color: 'error' })
   } finally {
     savingDescription.value = false
   }
@@ -383,7 +376,7 @@ const detectedParams = computed(() => {
   return [...params]
 })
 
-function insertAtCursor(langCode: string, insertion: string) {
+const insertAtCursor = (langCode: string, insertion: string) => {
   const wrapper = textareaWrappers.value[langCode]
   const textarea = wrapper?.querySelector('textarea')
   const current = editValues.value[langCode] || ''
@@ -401,26 +394,26 @@ function insertAtCursor(langCode: string, insertion: string) {
   }
 }
 
-function insertLinkedKey(langCode: string, value: string) {
+const insertLinkedKey = (langCode: string, value: string) => {
   insertAtCursor(langCode, value)
 }
 
-function getTranslation(langCode: string): string {
+const getTranslation = (langCode: string): string => {
   return props.translationKey.translations[langCode]?.value || ''
 }
 
-function getPluralCount(langCode: string): number {
+const getPluralCount = (langCode: string): number => {
   const val = getTranslation(langCode)
   return val ? val.split(' | ').length : 0
 }
 
-function getStatus(langCode: string): TRANSLATION_STATUS | null {
+const getStatus = (langCode: string): TRANSLATION_STATUS | null => {
   const tr = props.translationKey.translations[langCode]
   if (!tr?.value) return null
   return (tr.status as TRANSLATION_STATUS) || TRANSLATION_STATUS.DRAFT
 }
 
-function statusDot(langCode: string): string {
+const statusDot = (langCode: string): string => {
   const status = getStatus(langCode)
   if (!status) return 'bg-gray-200 dark:bg-gray-700'
   const map: Record<TRANSLATION_STATUS, string> = {
@@ -432,7 +425,7 @@ function statusDot(langCode: string): string {
   return map[status] || 'bg-gray-200'
 }
 
-function statusLabel(langCode: string): string {
+const statusLabel = (langCode: string): string => {
   const status = getStatus(langCode)
   if (!status) return t('translations.status_missing', 'Missing — click to add')
   if (status === TRANSLATION_STATUS.DRAFT) return userCanApprove.value
@@ -448,14 +441,14 @@ function statusLabel(langCode: string): string {
   return status
 }
 
-function canClickStatus(langCode: string): boolean {
+const canClickStatus = (langCode: string): boolean => {
   const tr = props.translationKey.translations[langCode]
   if (!tr?.value) return false
   if (!userCanApprove.value && tr.status === TRANSLATION_STATUS.APPROVED) return false
   return true
 }
 
-async function cycleStatus(langCode: string) {
+const cycleStatus = async (langCode: string) => {
   const tr = props.translationKey.translations[langCode]
   if (!tr?.value || cyclingStatusLang.value) return
 
@@ -472,14 +465,11 @@ async function cycleStatus(langCode: string) {
 
   cyclingStatusLang.value = langCode
   try {
-    await $fetch('/api/translations/status', {
-      method: 'POST',
-      body: { key_id: props.translationKey.id, language_code: langCode, status: next },
-    })
+    await setTranslationStatusById(props.translationKey.id, langCode, next)
     emit('updated')
     refreshNuxtData('project-stats')
   } catch (e: any) {
-    toast.add({ title: t('common.error', 'Error'), description: e.data?.message || e.message, color: 'error' })
+    toast.add({ title: t('common.error', 'Error'), description: e.message, color: 'error' })
   } finally {
     cyclingStatusLang.value = null
   }
@@ -489,7 +479,7 @@ const hasSourceText = computed(() =>
   Object.values(props.translationKey.translations).some((tr) => tr?.value),
 )
 
-function getSourceText(): { text: string; lang: string } | null {
+const getSourceText = (): { text: string; lang: string } | null => {
   const entries = Object.entries(props.translationKey.translations)
   const withValue = entries.filter(([, tr]) => tr?.value)
   if (!withValue.length) return null
@@ -510,62 +500,46 @@ const usageTooltip = computed(() => {
     .join('\n')
 })
 
-function startEdit(langCode: string) {
+const startEdit = (langCode: string) => {
   editingCell.value = `${props.translationKey.id}-${langCode}`
   editValues.value[langCode] = getTranslation(langCode)
 }
 
-function cancelEdit(langCode: string) {
+const cancelEdit = (langCode: string) => {
   editingCell.value = null
   delete editValues.value[langCode]
 }
 
-async function saveTranslation(langCode: string) {
+const saveTranslation = async (langCode: string) => {
   saving.value = `${props.translationKey.id}-${langCode}`
   try {
-    await $fetch('/api/translations', {
-      method: 'POST',
-      body: {
-        key_id: props.translationKey.id,
-        language_code: langCode,
-        value: editValues.value[langCode],
-      },
-    })
+    await saveTranslationById(props.translationKey.id, langCode, editValues.value[langCode])
     editingCell.value = null
     emit('updated')
   } catch (e: any) {
-    toast.add({ title: t('common.error', 'Error'), description: e.data?.message || e.message, color: 'error' })
+    toast.add({ title: t('common.error', 'Error'), description: e.message, color: 'error' })
   } finally {
     saving.value = null
   }
 }
 
-async function autoTranslate(lang: { code: string; name: string }) {
+const autoTranslate = async (lang: { code: string; name: string }) => {
   const source = getSourceText()
   if (!source) return
 
   translateLoading.value = `${props.translationKey.id}-${lang.code}`
   try {
-    await $fetch('/api/translate', {
-      method: 'POST',
-      body: {
-        text: source.text,
-        from: source.lang,
-        to: lang.code,
-        key_id: props.translationKey.id,
-        language_code: lang.code,
-      },
-    })
+    await autoTranslateById(props.translationKey.id, lang.code, source.text, source.lang)
     toast.add({ title: t('translations.translated', 'Translated'), description: `${props.translationKey.key} → ${lang.name}`, color: 'success' })
     emit('updated')
   } catch (e: any) {
-    toast.add({ title: t('translations.translate_error', 'Google Translate error'), description: e.data?.message || e.message, color: 'error' })
+    toast.add({ title: t('translations.translate_error', 'Google Translate error'), description: e.message, color: 'error' })
   } finally {
     translateLoading.value = null
   }
 }
 
-function viewHistory(langCode: string) {
+const viewHistory = (langCode: string) => {
   const tr = props.translationKey.translations[langCode]
   if (tr) {
     historyTranslationId.value = tr.id
@@ -601,15 +575,15 @@ const rowActions = computed(() => {
   return groups
 })
 
-async function deleteKey() {
+const deleteKey = async () => {
   deletingKey.value = true
   try {
-    await $fetch(`/api/keys/${props.translationKey.id}`, { method: 'DELETE' })
+    await deleteKeyById(props.translationKey.id)
     toast.add({ title: t('translations.key_deleted', 'Key deleted'), color: 'success' })
     emit('updated')
     refreshNuxtData('project-stats')
   } catch (e: any) {
-    toast.add({ title: t('common.error', 'Error'), description: e.data?.message || e.message, color: 'error' })
+    toast.add({ title: t('common.error', 'Error'), description: e.message, color: 'error' })
   } finally {
     deletingKey.value = false
   }

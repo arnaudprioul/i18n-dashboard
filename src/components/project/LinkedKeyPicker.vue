@@ -1,6 +1,6 @@
 <template>
-  <UTooltip :text="t('key.link_key_tooltip', 'Link a key (@:key) with optional modifier')">
-    <UButton
+  <u-tooltip :text="t('key.link_key_tooltip', 'Link a key (@:key) with optional modifier')">
+    <u-button
       icon="i-heroicons-link"
       size="xs"
       color="neutral"
@@ -8,9 +8,9 @@
       class="shrink-0"
       @click="openModal"
     />
-  </UTooltip>
+  </u-tooltip>
 
-  <UModal
+  <u-modal
     v-model:open="open"
     :title="t('key.link_key_title', 'Link a key')"
     :ui="{ width: 'sm:max-w-lg' }"
@@ -33,7 +33,7 @@
         </div>
 
         <!-- Search -->
-        <UInput
+        <u-input
           ref="searchInput"
           v-model="search"
           icon="i-heroicons-magnifying-glass"
@@ -48,7 +48,7 @@
             v-if="loading"
             class="py-8 text-center"
           >
-            <UIcon
+            <u-icon
               name="i-heroicons-arrow-path"
               class="animate-spin text-gray-400 text-lg"
             />
@@ -78,19 +78,19 @@
         </div>
       </div>
     </template>
-  </UModal>
+  </u-modal>
 </template>
 
 <script setup lang="ts">
+import type { ILinkedKeyPickerProps, ILinkedKeyPickerEmits } from '../../interfaces/key.interface'
+
 const { t } = useT()
 
-const props = defineProps<{
-  projectId?: number
-}>()
+const props = defineProps<ILinkedKeyPickerProps>()
 
-const emit = defineEmits<{
-  select: [value: string]
-}>()
+const emit = defineEmits<ILinkedKeyPickerEmits>()
+
+const { searchKeys } = useKeys({})
 
 const open = ref(false)
 const search = ref('')
@@ -110,7 +110,7 @@ const previewSyntax = computed(() =>
   selectedModifier.value ? `@.${selectedModifier.value}:` : '@:',
 )
 
-function openModal() {
+const openModal = () => {
   open.value = true
   search.value = ''
   selectedModifier.value = ''
@@ -119,24 +119,16 @@ function openModal() {
 }
 
 let searchTimeout: ReturnType<typeof setTimeout>
-function onSearch() {
+const onSearch = () => {
   clearTimeout(searchTimeout)
   searchTimeout = setTimeout(fetchKeys, 200)
 }
 
-async function fetchKeys() {
+const fetchKeys = async () => {
   if (!props.projectId) return
   loading.value = true
   try {
-    const res = await $fetch<{ data: Array<{ id: number; key: string }> }>('/api/keys', {
-      query: {
-        project_id: props.projectId,
-        search: search.value || undefined,
-        limit: 50,
-        page: 1,
-      },
-    })
-    keys.value = res.data
+    keys.value = await searchKeys(props.projectId, search.value)
   } catch {
     keys.value = []
   } finally {
@@ -144,7 +136,7 @@ async function fetchKeys() {
   }
 }
 
-function selectKey(key: string) {
+const selectKey = (key: string) => {
   emit('select', `${previewSyntax.value}${key}`)
   open.value = false
 }

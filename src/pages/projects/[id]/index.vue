@@ -1,6 +1,6 @@
 <template>
   <div class="p-6">
-    <DashboardProjectWidgetGrid :project-id="projectId" />
+    <project-widget-grid :project-id="projectId" />
   </div>
 </template>
 

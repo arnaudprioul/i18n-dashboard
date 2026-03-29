@@ -9,6 +9,10 @@ class SSettings extends SBase {
   async saveSettings(data: ISettingsPayload): Promise<void> {
     return this.post('/api/settings', { body: data, skipDedup: true })
   }
+
+  async getPasswordPolicy(): Promise<{ minLength: number; requireUppercase: boolean; requireNumber: boolean; requireSpecial: boolean }> {
+    return this.get('/api/settings/password-policy')
+  }
 }
 
 export const settingsService = new SSettings()

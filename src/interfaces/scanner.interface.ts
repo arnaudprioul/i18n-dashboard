@@ -16,3 +16,10 @@ export interface IScanResult {
 	scannedFiles: string[]
 	errors: string[]
 }
+
+export interface IDetectedFormats {
+	numberFormats: Record<string, Record<string, Record<string, any>>>
+	datetimeFormats: Record<string, Record<string, Record<string, any>>>
+	modifiers: Record<string, string>
+	sourceFile: string | null
+}

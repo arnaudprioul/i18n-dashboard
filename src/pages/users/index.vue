@@ -12,22 +12,22 @@
           {{ t('users.subtitle', 'Manage dashboard access') }}
         </p>
       </div>
-      <UButton
+      <u-button
         data-cy="global-users-add-btn"
         icon="i-heroicons-plus"
         @click="openAdd"
       >
         {{ t('users.add', 'Add a user') }}
-      </UButton>
+      </u-button>
     </div>
 
     <!-- Users table -->
-    <UCard>
+    <u-card>
       <div
         v-if="pending"
         class="space-y-3"
       >
-        <USkeleton
+        <u-skeleton
           v-for="i in 4"
           :key="i"
           class="h-12"
@@ -37,7 +37,7 @@
         v-else-if="!users.length"
         class="text-center py-12"
       >
-        <UIcon
+        <u-icon
           name="i-heroicons-users"
           class="text-4xl text-gray-300 mb-2"
         />
@@ -70,21 +70,21 @@
                 >
                   {{ user.name }}
                 </p>
-                <UBadge
+                <u-badge
                   v-if="user.is_super_admin"
                   size="xs"
                   color="error"
                 >
                   Super Admin
-                </UBadge>
-                <UBadge
+                </u-badge>
+                <u-badge
                   v-if="!user.is_active"
                   size="xs"
                   color="neutral"
                   variant="outline"
                 >
                   {{ t('users.inactive', 'Inactive') }}
-                </UBadge>
+                </u-badge>
               </div>
               <p
                 :data-cy="'user-email-' + user.id"
@@ -98,7 +98,7 @@
           <!-- Roles summary -->
           <div class="flex flex-wrap gap-1 flex-1 justify-center">
             <template v-if="user.roles?.length">
-              <UBadge
+              <u-badge
                 v-for="r in user.roles.slice(0, 3)"
                 :key="`${r.project_id}-${r.role}`"
                 size="xs"
@@ -106,15 +106,15 @@
                 variant="soft"
               >
                 {{ r.project_id === null ? t('users.global_access', 'Global') : r.project_name }} · {{ roleLabel(r.role) }}
-              </UBadge>
-              <UBadge
+              </u-badge>
+              <u-badge
                 v-if="user.roles.length > 3"
                 size="xs"
                 color="neutral"
                 variant="soft"
               >
                 +{{ user.roles.length - 3 }}
-              </UBadge>
+              </u-badge>
             </template>
             <span
               v-else
@@ -129,21 +129,21 @@
             <span class="text-xs text-gray-400">
               {{ user.last_login_at ? formatRelative(user.last_login_at) : t('users.never_connected', 'Never logged in') }}
             </span>
-            <UDropdownMenu :items="userActions(user)">
-              <UButton
+            <u-dropdown-menu :items="userActions(user)">
+              <u-button
                 icon="i-heroicons-ellipsis-vertical"
                 color="neutral"
                 variant="ghost"
                 size="xs"
               />
-            </UDropdownMenu>
+            </u-dropdown-menu>
           </div>
         </div>
       </div>
-    </UCard>
+    </u-card>
 
     <!-- Add user modal -->
-    <UModal
+    <u-modal
       v-model:open="showModal"
       data-cy="global-add-user-modal"
       :title="t('users.add_user_title', 'Add a user')"
@@ -151,41 +151,41 @@
       <template #body>
         <div class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
-            <UFormField
+            <u-form-field
               :label="t('users.full_name', 'Full name')"
               required
             >
-              <UInput
+              <u-input
                 v-model="form.name"
                 placeholder="Marie Dupont"
                 class="w-full"
               />
-            </UFormField>
-            <UFormField
+            </u-form-field>
+            <u-form-field
               :label="t('login.email', 'Email')"
               required
             >
-              <UInput
+              <u-input
                 v-model="form.email"
                 type="email"
                 placeholder="marie@example.com"
                 class="w-full"
               />
-            </UFormField>
+            </u-form-field>
           </div>
 
-          <UFormField
+          <u-form-field
             :label="t('users.role_label', 'Role')"
             required
           >
-            <USelect
+            <u-select
               v-model="form.role"
               :items="roleOptions"
               class="w-full"
             />
-          </UFormField>
+          </u-form-field>
 
-          <UFormField :label="t('users.project_access_label', 'Project access')">
+          <u-form-field :label="t('users.project_access_label', 'Project access')">
             <div class="space-y-2">
               <UCheckbox
                 v-model="form.global_access"
@@ -204,11 +204,11 @@
                 />
               </div>
             </div>
-          </UFormField>
+          </u-form-field>
 
           <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
             <p class="text-xs text-blue-600 dark:text-blue-400">
-              <UIcon
+              <u-icon
                 name="i-heroicons-information-circle"
                 class="inline mr-1"
               />
@@ -221,7 +221,7 @@
             class="bg-green-50 dark:bg-green-900/20 rounded-lg p-3"
           >
             <p class="text-xs text-green-700 dark:text-green-300 font-medium mb-1">
-              <UIcon
+              <u-icon
                 name="i-heroicons-key"
                 class="inline mr-1"
               />
@@ -229,7 +229,7 @@
             </p>
             <div class="flex items-center gap-2">
               <code class="text-sm font-mono text-green-800 dark:text-green-200 flex-1">{{ createdTempPassword }}</code>
-              <UButton
+              <u-button
                 size="xs"
                 icon="i-heroicons-clipboard"
                 color="neutral"
@@ -242,27 +242,27 @@
       </template>
       <template #footer>
         <div class="flex justify-end gap-3">
-          <UButton
+          <u-button
             data-cy="global-add-user-cancel-btn"
             color="neutral"
             variant="ghost"
             @click="closeModal"
           >
             {{ createdTempPassword ? t('common.close', 'Close') : t('common.cancel', 'Cancel') }}
-          </UButton>
-          <UButton
+          </u-button>
+          <u-button
             v-if="!createdTempPassword"
             :loading="saving"
             @click="saveUser"
           >
             {{ t('common.create', 'Create') }}
-          </UButton>
+          </u-button>
         </div>
       </template>
-    </UModal>
+    </u-modal>
 
     <!-- Roles modal -->
-    <UModal
+    <u-modal
       v-model:open="showRolesModal"
       :title="t('users.manage_access_title', 'Manage access')"
     >
@@ -291,7 +291,7 @@
               class="flex items-center justify-between gap-3"
             >
               <div class="flex items-center gap-2 min-w-0 flex-1">
-                <UIcon
+                <u-icon
                   v-if="item.project_id === null"
                   name="i-heroicons-globe-alt"
                   class="text-gray-400 shrink-0"
@@ -303,7 +303,7 @@
                 />
                 <span class="text-sm text-gray-700 dark:text-gray-300 truncate">{{ item.project_name }}</span>
               </div>
-              <USelect
+              <u-select
                 v-model="item.role"
                 :items="accessOptions"
                 class="w-44 shrink-0"
@@ -314,25 +314,25 @@
       </template>
       <template #footer>
         <div class="flex justify-end gap-3">
-          <UButton
+          <u-button
             color="neutral"
             variant="ghost"
             @click="showRolesModal = false"
           >
             {{ t('common.cancel', 'Cancel') }}
-          </UButton>
-          <UButton
+          </u-button>
+          <u-button
             :loading="rolesSaving"
             @click="saveRoles"
           >
             {{ t('common.save', 'Save') }}
-          </UButton>
+          </u-button>
         </div>
       </template>
-    </UModal>
+    </u-modal>
 
     <!-- Delete confirm -->
-    <UModal
+    <u-modal
       v-model:open="showDeleteConfirm"
       :title="t('users.delete_user_title', 'Delete user')"
     >
@@ -347,23 +347,23 @@
       </template>
       <template #footer>
         <div class="flex justify-end gap-3">
-          <UButton
+          <u-button
             color="neutral"
             variant="ghost"
             @click="showDeleteConfirm = false"
           >
             {{ t('common.cancel', 'Cancel') }}
-          </UButton>
-          <UButton
+          </u-button>
+          <u-button
             color="error"
             :loading="deleting"
             @click="deleteUser"
           >
             {{ t('common.delete', 'Delete') }}
-          </UButton>
+          </u-button>
         </div>
       </template>
-    </UModal>
+    </u-modal>
   </div>
 </template>
 
@@ -408,15 +408,15 @@
   const { projects } = useProject()
   const { users, pending, saving, createUser, rolesSaving, updateRoles, toggleActive, deleting, deleteUser: doDeleteUser } = useUsers('global')
 
-  function roleLabel(role: string) {
+  const roleLabel = (role: string) => {
     return { translator: t('users.role_translator', 'Translator'), moderator: t('users.role_moderator', 'Moderator'), admin: t('users.role_admin', 'Admin') }[role] || role
   }
 
-  function roleColor(role: string) {
+  const roleColor = (role: string) => {
     return { translator: 'primary', moderator: 'warning', admin: 'success' }[role] || 'neutral'
   }
 
-  function formatRelative(date: string) {
+  const formatRelative = (date: string) => {
     const diff = Date.now() - new Date(date).getTime()
     const min = Math.floor(diff / 60000)
     if (min < 1) return t('common.just_now', 'just now')
@@ -426,12 +426,12 @@
     return `${t('common.ago', 'ago')} ${Math.floor(h / 24)}d`
   }
 
-  function toggleProject(id: number, checked: boolean) {
+  const toggleProject = (id: number, checked: boolean) => {
     if (checked) form.value.project_ids = [...form.value.project_ids, id]
     else form.value.project_ids = form.value.project_ids.filter((p) => p !== id)
   }
 
-  function userActions(user: any) {
+  const userActions = (user: any) => {
     const isSelf = user.id === currentUser.value?.id
     const canEdit = !user.is_super_admin && !isSelf
 
@@ -459,13 +459,13 @@
     ]
   }
 
-  function openAdd() {
+  const openAdd = () => {
     createdTempPassword.value = ''
     form.value = { name: '', email: '', role: 'translator', project_ids: [], global_access: false }
     showModal.value = true
   }
 
-  function openRoles(user: any) {
+  const openRoles = (user: any) => {
     rolesUser.value = user
     const globalRole = user.roles?.find((r: any) => r.project_id === null)
     rolesForm.value = [
@@ -488,18 +488,18 @@
     showRolesModal.value = true
   }
 
-  function closeModal() {
+  const closeModal = () => {
     showModal.value = false
     createdTempPassword.value = ''
   }
 
-  async function saveUser() {
+  const saveUser = async () => {
     if (!form.value.name || !form.value.email) return
     const tempPassword = await createUser({ ...form.value })
     if (tempPassword) createdTempPassword.value = tempPassword
   }
 
-  async function saveRoles() {
+  const saveRoles = async () => {
     const roles = rolesForm.value.map(({ project_id, role }) => ({
       project_id,
       role: role === 'none' ? null : role,
@@ -508,13 +508,13 @@
     if (ok) showRolesModal.value = false
   }
 
-  async function deleteUser() {
+  const deleteUser = async () => {
     if (!deletingUser.value) return
     const ok = await doDeleteUser(deletingUser.value.id)
     if (ok) showDeleteConfirm.value = false
   }
 
-  async function copyTemp() {
+  const copyTemp = async () => {
     await navigator.clipboard.writeText(createdTempPassword.value)
     toast.add({ title: t('common.copied', 'Copied!'), color: 'success' })
   }

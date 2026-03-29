@@ -1,7 +1,8 @@
+import { onboardingService } from '../services/onboarding.service'
+
 export default defineNuxtRouteMiddleware(async (to, from) => {
   // Skip on SSR — auth checks run client-side only so Cypress intercepts apply.
-  // useFetch does not properly block in client-side route middleware (it resolves
-  // immediately with data = null). Use $fetch which is truly awaitable.
+  // onboardingService.getAuthStatus() is truly awaitable (unlike useFetch in route middleware).
   if (import.meta.server) return
 
   const publicPages = ['/login', '/forgot-password', '/reset-password']
@@ -19,7 +20,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   } | null = null
 
   try {
-    status = await $fetch('/api/auth/status')
+    status = await onboardingService.getAuthStatus()
   }
   catch {
     // Fetch failed — treat as DB unavailable, redirect to onboarding

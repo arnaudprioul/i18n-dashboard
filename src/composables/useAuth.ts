@@ -62,5 +62,13 @@ export function useAuth() {
     return role === 'admin'
   }
 
-  return { currentUser, fetchMe, login, logout, changePassword, getRoleForProject, canApprove, canManageProject, canManageUsers }
+  const forgotPassword = async (email: string): Promise<void> => {
+    await authService.forgotPassword(email)
+  }
+
+  const resetPassword = async (token: string, password: string, confirmPassword: string): Promise<void> => {
+    await authService.resetPassword(token, password, confirmPassword)
+  }
+
+  return { currentUser, fetchMe, login, logout, changePassword, forgotPassword, resetPassword, getRoleForProject, canApprove, canManageProject, canManageUsers }
 }

@@ -1,12 +1,12 @@
 <template>
   <div class="flex gap-2">
-    <UInput
+    <u-input
       :model-value="modelValue"
       class="flex-1 font-mono text-sm"
       :placeholder="placeholder || '/path/to/project'"
       @update:model-value="$emit('update:modelValue', $event)"
     />
-    <UButton
+    <u-button
       icon="i-heroicons-folder-open"
       color="neutral"
       variant="outline"
@@ -14,7 +14,7 @@
     />
   </div>
 
-  <UModal
+  <u-modal
     v-model:open="open"
     :title="t('pathpicker.title', 'Select a folder')"
     :ui="{ width: 'sm:max-w-xl' }"
@@ -23,7 +23,7 @@
       <div class="space-y-3">
         <!-- Breadcrumbs + home -->
         <div class="flex items-center gap-1 flex-wrap min-h-6">
-          <UButton
+          <u-button
             icon="i-heroicons-home"
             color="neutral"
             variant="ghost"
@@ -34,7 +34,7 @@
             v-for="(crumb, i) in data?.breadcrumbs"
             :key="crumb.path"
           >
-            <UIcon
+            <u-icon
               name="i-heroicons-chevron-right"
               class="text-gray-400 text-xs shrink-0"
             />
@@ -58,7 +58,7 @@
             class="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/60 border-b border-gray-100 dark:border-gray-800 transition-colors"
             @click="browse(data.parent)"
           >
-            <UIcon
+            <u-icon
               name="i-heroicons-arrow-up"
               class="text-gray-400 shrink-0"
             />
@@ -70,7 +70,7 @@
             v-if="loading"
             class="py-8 text-center"
           >
-            <UIcon
+            <u-icon
               name="i-heroicons-arrow-path"
               class="animate-spin text-gray-400 text-lg"
             />
@@ -95,12 +95,12 @@
               class="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-left hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors group"
               @click="browse(entry.path)"
             >
-              <UIcon
+              <u-icon
                 name="i-heroicons-folder"
                 class="text-amber-400 shrink-0"
               />
               <span class="font-mono text-gray-700 dark:text-gray-300 flex-1 truncate">{{ entry.name }}</span>
-              <UIcon
+              <u-icon
                 name="i-heroicons-chevron-right"
                 class="text-gray-300 dark:text-gray-600 shrink-0 group-hover:text-gray-400 transition-colors"
               />
@@ -110,7 +110,7 @@
 
         <!-- Current selection -->
         <div class="bg-gray-50 dark:bg-gray-800 rounded-lg px-3 py-2 flex items-center gap-2">
-          <UIcon
+          <u-icon
             name="i-heroicons-map-pin"
             class="text-primary-500 shrink-0 text-sm"
           />
@@ -128,69 +128,43 @@
 
     <template #footer>
       <div class="flex justify-end gap-2">
-        <UButton
+        <u-button
           color="neutral"
           variant="ghost"
           @click="open = false"
         >
           {{ t('common.cancel', 'Cancel') }}
-        </UButton>
-        <UButton
+        </u-button>
+        <u-button
           icon="i-heroicons-check"
           :disabled="!data?.current"
           @click="select"
         >
           {{ t('pathpicker.select', 'Select this folder') }}
-        </UButton>
+        </u-button>
       </div>
     </template>
-  </UModal>
+  </u-modal>
 </template>
 
 <script setup lang="ts">
+import type { IPathPickerProps, IPathPickerEmits } from '../../interfaces/project.interface'
+
 const { t } = useT()
+const { loading, browseError, data, browse } = useFs()
 
-const props = defineProps<{
-  modelValue: string
-  placeholder?: string
-}>()
+const props = defineProps<IPathPickerProps>()
 
-const emit = defineEmits<{
-  'update:modelValue': [value: string]
-}>()
+const emit = defineEmits<IPathPickerEmits>()
 
 const open = ref(false)
-const loading = ref(false)
-const browseError = ref('')
-const data = ref<{
-  current: string
-  parent: string | null
-  home: string
-  breadcrumbs: { name: string; path: string }[]
-  entries: { name: string; path: string }[]
-} | null>(null)
 
-async function openBrowser() {
+const openBrowser = async () => {
   open.value = true
-  // Start from modelValue if set, otherwise let the server default to home
-  await browse(props.modelValue || '')
+  await browse(props.modelValue || undefined)
 }
 
-async function browse(path: string) {
-  loading.value = true
-  browseError.value = ''
-  try {
-    data.value = await $fetch('/api/fs/browse', {
-      query: path ? { path } : {},
-    })
-  } catch (e: any) {
-    browseError.value = e?.data?.message ?? 'Cannot browse this path'
-  } finally {
-    loading.value = false
-  }
-}
-
-function select() {
+const select = () => {
   if (data.value?.current) {
     emit('update:modelValue', data.value.current)
   }

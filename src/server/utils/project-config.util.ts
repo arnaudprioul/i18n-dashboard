@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'fs'
 import { resolve } from 'path'
 import { useRuntimeConfig } from 'nitropack/runtime'
 
-import type { IDashboardConfig } from '../interfaces/project-config.interface'
+import type { IDashboardConfig } from '../../interfaces/project-config.interface'
 
 let _cachedConfig: IDashboardConfig | null = null
 

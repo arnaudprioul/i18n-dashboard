@@ -22,20 +22,20 @@
             </div>
             <code class="text-xs font-mono text-green-600 dark:text-green-400 mt-0.5 block truncate">{{ tpl.preview }}</code>
           </div>
-          <UBadge
+          <u-badge
             size="xs"
             :color="activeTplId === tpl.id ? 'success' : 'neutral'"
             variant="soft"
           >
             {{ tpl.forms.length }} {{ t('plural.forms', 'forms') }}
-          </UBadge>
+          </u-badge>
         </button>
       </div>
     </div>
 
     <!-- Implicit params hint -->
     <div class="flex items-start gap-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg px-3 py-2 text-xs text-amber-700 dark:text-amber-300">
-      <UIcon
+      <u-icon
         name="i-heroicons-information-circle"
         class="shrink-0 mt-0.5"
       />
@@ -73,7 +73,7 @@
             class="text-xs text-gray-300 hover:text-red-400 transition-colors flex items-center gap-0.5"
             @click="removeForm(i)"
           >
-            <UIcon
+            <u-icon
               name="i-heroicons-trash"
               class="text-xs"
             />
@@ -83,7 +83,7 @@
 
         <!-- Textarea + implicit param chips -->
         <div class="flex-1 space-y-1">
-          <UTextarea
+          <u-textarea
             v-model="forms[i]"
             :rows="2"
             class="w-full text-sm"
@@ -98,7 +98,7 @@
               class="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-mono bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700 hover:bg-amber-100 transition-colors"
               @mousedown.prevent="insertInForm(i, `{${p}}`)"
             >
-              <UIcon
+              <u-icon
                 name="i-heroicons-cursor-arrow-rays"
                 class="text-xs mr-0.5 opacity-60"
               />
@@ -112,7 +112,7 @@
         class="text-xs text-green-600 dark:text-green-400 hover:text-green-700 flex items-center gap-1 transition-colors mt-1"
         @click="addForm"
       >
-        <UIcon
+        <u-icon
           name="i-heroicons-plus-circle"
           class="text-sm"
         />
@@ -159,15 +159,13 @@
 </template>
 
 <script setup lang="ts">
+import type { IPluralEditorProps, IPluralEditorEmits } from '../../interfaces/translation.interface'
+
 const { t } = useT()
 
-const props = defineProps<{
-  modelValue: string
-}>()
+const props = defineProps<IPluralEditorProps>()
 
-const emit = defineEmits<{
-  'update:modelValue': [value: string]
-}>()
+const emit = defineEmits<IPluralEditorEmits>()
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -253,7 +251,7 @@ const joinedValue = computed(() => forms.value.join(PLURAL_SEP))
 
 // ── Label helpers ─────────────────────────────────────────────────────────────
 
-function formLabel(index: number): string {
+const formLabel = (index: number): string => {
   const len = forms.value.length
   if (len === 2) return index === 0 ? t('plural.singular', 'singular') : t('plural.plural_form', 'plural')
   if (len === 3) return [t('plural.zero', 'zero'), t('plural.singular', 'singular'), t('plural.plural_form', 'plural')][index] ?? `${t('plural.form', 'form')} ${index}`
@@ -261,7 +259,7 @@ function formLabel(index: number): string {
   return `${t('plural.form', 'form')} ${index}`
 }
 
-function triggerCount(index: number): string {
+const triggerCount = (index: number): string => {
   const len = forms.value.length
   if (len === 2) return index === 0 ? '1' : '0, 2, 3…'
   if (len === 3) return ['0', '1', '2, 3…'][index] ?? '…'
@@ -269,7 +267,7 @@ function triggerCount(index: number): string {
   return '…'
 }
 
-function formPlaceholder(index: number): string {
+const formPlaceholder = (index: number): string => {
   const len = forms.value.length
   if (len === 2) return index === 0 ? 'car' : 'cars'
   if (len === 3) {
@@ -280,7 +278,7 @@ function formPlaceholder(index: number): string {
 
 // ── Preview ───────────────────────────────────────────────────────────────────
 
-function resolvePreview(n: number): string {
+const resolvePreview = (n: number): string => {
   const len = forms.value.length
   if (!len) return ''
   const idx = activeRule.value(n, len)
@@ -290,7 +288,7 @@ function resolvePreview(n: number): string {
 
 // ── Actions ───────────────────────────────────────────────────────────────────
 
-function applyTemplate(tpl: ReturnType<typeof TEMPLATES.value[0]['rule']> extends Function ? any : any) {
+const applyTemplate = (tpl: ReturnType<typeof TEMPLATES.value[0]['rule']> extends Function ? any : any) => {
   activeTplId.value = tpl.id
   if (tpl.id !== 'custom') {
     forms.value = [...tpl.forms]
@@ -300,24 +298,24 @@ function applyTemplate(tpl: ReturnType<typeof TEMPLATES.value[0]['rule']> extend
   emitValue()
 }
 
-function addForm() {
+const addForm = () => {
   forms.value.push('')
   activeTplId.value = 'custom'
   emitValue()
 }
 
-function removeForm(index: number) {
+const removeForm = (index: number) => {
   if (forms.value.length <= 2) return
   forms.value.splice(index, 1)
   emitValue()
 }
 
-function insertInForm(formIndex: number, text: string) {
+const insertInForm = (formIndex: number, text: string) => {
   forms.value[formIndex] = (forms.value[formIndex] ?? '') + text
   emitValue()
 }
 
-function emitValue() {
+const emitValue = () => {
   emit('update:modelValue', joinedValue.value)
 }
 </script>

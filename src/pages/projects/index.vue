@@ -9,14 +9,14 @@
           {{ t('projects.subtitle', 'Manage your Vue.js projects') }}
         </p>
       </div>
-      <UButton
+      <u-button
         data-cy="projects-add-btn"
         icon="i-heroicons-plus"
         :disabled="pending"
         @click="openAdd"
       >
         {{ t('projects.add', 'Add a project') }}
-      </UButton>
+      </u-button>
     </div>
 
     <!-- Skeleton -->
@@ -30,17 +30,17 @@
         class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 p-5 space-y-4"
       >
         <div class="flex items-center gap-3">
-          <USkeleton class="w-10 h-10 rounded-lg shrink-0" />
+          <u-skeleton class="w-10 h-10 rounded-lg shrink-0" />
           <div class="flex-1 space-y-1.5">
-            <USkeleton class="h-4 w-2/3" />
-            <USkeleton class="h-3 w-full" />
+            <u-skeleton class="h-4 w-2/3" />
+            <u-skeleton class="h-3 w-full" />
           </div>
         </div>
         <div class="grid grid-cols-2 gap-3">
-          <USkeleton class="h-16 rounded-lg" />
-          <USkeleton class="h-16 rounded-lg" />
+          <u-skeleton class="h-16 rounded-lg" />
+          <u-skeleton class="h-16 rounded-lg" />
         </div>
-        <USkeleton class="h-8 rounded-lg" />
+        <u-skeleton class="h-8 rounded-lg" />
       </div>
     </div>
 
@@ -49,7 +49,7 @@
       v-else-if="!userProjects.length"
       class="bg-white dark:bg-gray-900 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 p-16 text-center"
     >
-      <UIcon
+      <u-icon
         class="text-6xl text-gray-300 dark:text-gray-600 mb-4"
         name="i-heroicons-folder-open"
       />
@@ -59,13 +59,13 @@
       <p class="text-gray-400 text-sm max-w-md mx-auto mb-6">
         {{ t('projects.none_hint', 'Add a Vue.js project to start managing its translation keys. Point to the root folder of your project.') }}
       </p>
-      <UButton
+      <u-button
         icon="i-heroicons-plus"
         size="lg"
         @click="openAdd"
       >
         {{ t('projects.add_first', 'Add your first project') }}
-      </UButton>
+      </u-button>
     </div>
 
     <!-- Project cards -->
@@ -87,7 +87,7 @@
               :class="`bg-${project.color || 'primary'}-100 dark:bg-${project.color || 'primary'}-900/30`"
               class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
             >
-              <UIcon
+              <u-icon
                 :class="`text-${project.color || 'primary'}-600`"
                 class="text-xl"
                 name="i-heroicons-folder"
@@ -114,11 +114,11 @@
               </p>
             </div>
           </div>
-          <UDropdownMenu
+          <u-dropdown-menu
             :items="projectActions(project)"
             @click.stop
           >
-            <UButton
+            <u-button
               :data-cy="'project-menu-btn-' + project.id"
               color="neutral"
               icon="i-heroicons-ellipsis-vertical"
@@ -126,7 +126,7 @@
               variant="ghost"
               @click.stop
             />
-          </UDropdownMenu>
+          </u-dropdown-menu>
         </div>
 
         <!-- Stats -->
@@ -158,7 +158,7 @@
             v-if="project.root_path"
             class="flex items-center gap-2 text-xs text-gray-400"
           >
-            <UIcon
+            <u-icon
               name="i-heroicons-folder"
               class="shrink-0 text-gray-300 dark:text-gray-600"
             />
@@ -168,7 +168,7 @@
             v-if="project.git_repo?.url"
             class="flex items-center gap-2 text-xs text-blue-500 dark:text-blue-400"
           >
-            <UIcon
+            <u-icon
               name="i-heroicons-code-bracket"
               class="shrink-0"
             />
@@ -179,7 +179,7 @@
             >· {{ project.git_repo.branch }}</span>
           </div>
           <div class="flex items-center gap-2 text-xs text-gray-400">
-            <UIcon
+            <u-icon
               name="i-heroicons-key"
               class="shrink-0 text-gray-300 dark:text-gray-600"
             />
@@ -190,11 +190,11 @@
         <!-- Actions -->
         <div class="flex gap-2 pt-1 border-t border-gray-100 dark:border-gray-800">
           <template v-if="!project.is_system">
-            <UTooltip
+            <u-tooltip
               :text="!canScanProject(project) ? t('projects.scan_requires_source', 'Requires a local path or git repo') : t('projects.scan_tooltip', 'Scan source files')"
               :disabled="canScanProject(project)"
             >
-              <UButton
+              <u-button
                 :disabled="!canScanProject(project)"
                 color="neutral"
                 icon="i-heroicons-magnifying-glass"
@@ -203,13 +203,13 @@
                 @click.stop="canScanProject(project) && openScanModal(project)"
               >
                 {{ t('sidebar.scan', 'Scan') }}
-              </UButton>
-            </UTooltip>
-            <UTooltip
+              </u-button>
+            </u-tooltip>
+            <u-tooltip
               :text="!canSyncProject(project) ? t('projects.sync_requires_source', 'Requires a local path or git repo') : t('projects.sync_tooltip', 'Sync JSON files')"
               :disabled="canSyncProject(project)"
             >
-              <UButton
+              <u-button
                 :disabled="!canSyncProject(project)"
                 :loading="syncing === project.id"
                 color="neutral"
@@ -219,10 +219,10 @@
                 @click.stop="canSyncProject(project) && syncProject(project)"
               >
                 {{ t('sidebar.sync', 'Sync JSON') }}
-              </UButton>
-            </UTooltip>
+              </u-button>
+            </u-tooltip>
           </template>
-          <UButton
+          <u-button
             :data-cy="'project-open-btn-' + project.id"
             class="ml-auto"
             color="primary"
@@ -230,13 +230,13 @@
             @click.stop="router.push(`/projects/${project.id}`)"
           >
             {{ t('projects.open', 'Open') }}
-          </UButton>
+          </u-button>
         </div>
       </div>
     </div>
 
     <!-- Add / Edit modal -->
-    <UModal
+    <u-modal
       v-model:open="showModal"
       data-cy="project-modal"
       :title="editingProject ? t('projects.edit_modal_title', 'Edit project') : t('projects.add_modal_title', 'Add a project')"
@@ -259,7 +259,7 @@
                 ? 'bg-primary-500 text-white'
                 : step > i + 1 ? 'bg-green-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-500'"
             >
-              <UIcon
+              <u-icon
                 v-if="step > i + 1"
                 name="i-heroicons-check"
                 class="text-xs"
@@ -286,17 +286,17 @@
           <p class="text-sm text-gray-500 dark:text-gray-400">
             {{ t('projects.step_source_hint', 'Enter a local path and/or a git repository to auto-detect project configuration.') }}
           </p>
-          <UFormField :label="t('projects.local_path_label', 'Local path (optional)')">
-            <PathPicker
+          <u-form-field :label="t('projects.local_path_label', 'Local path (optional)')">
+            <project-path-picker
               v-model="form.root_path"
               class="w-full"
             />
-          </UFormField>
+          </u-form-field>
           <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
             <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
               {{ t('projects.git_repo_title', 'Git repository') }}
             </p>
-            <GitRepoManager v-model="form.git_repo" />
+            <project-git-repo-manager v-model="form.git_repo" />
           </div>
         </div>
 
@@ -305,55 +305,55 @@
           v-if="!editingProject && step === 2"
           class="space-y-4"
         >
-          <UFormField
+          <u-form-field
             :label="t('projects.name_label', 'Project name')"
             required
             :error="nameError"
           >
-            <UInput
+            <u-input
               v-model="form.name"
               class="w-full"
               :placeholder="t('projects.name_placeholder', 'My Vue App')"
               @input="nameError = ''"
             />
-          </UFormField>
+          </u-form-field>
 
-          <UFormField
+          <u-form-field
             :hint="t('projects.locales_path_hint', 'Relative to the project root')"
             :label="t('projects.locales_path_label', 'Locales folder')"
           >
-            <UInput
+            <u-input
               v-model="form.locales_path"
               class="w-full"
-              placeholder="src/locales"
+              :placeholder="t('projects.locales_path_placeholder', 'src/locales')"
             />
-          </UFormField>
+          </u-form-field>
 
           <div class="grid grid-cols-2 gap-4">
-            <UFormField :label="t('projects.key_separator_label', 'Key separator')">
-              <UInput
+            <u-form-field :label="t('projects.key_separator_label', 'Key separator')">
+              <u-input
                 v-model="form.key_separator"
                 :maxlength="5"
                 class="w-full"
-                placeholder="."
+                :placeholder="t('projects.key_separator_placeholder', '.')"
               />
-            </UFormField>
-            <UFormField :label="t('projects.color_label', 'Color')">
-              <USelect
+            </u-form-field>
+            <u-form-field :label="t('projects.color_label', 'Color')">
+              <u-select
                 v-model="form.color"
                 :items="colorOptions"
                 class="w-full"
               />
-            </UFormField>
+            </u-form-field>
           </div>
 
-          <UFormField :label="t('translations.description_label', 'Description')">
-            <UInput
+          <u-form-field :label="t('translations.description_label', 'Description')">
+            <u-input
               v-model="form.description"
               class="w-full"
               :placeholder="t('projects.description_placeholder', 'Optional description')"
             />
-          </UFormField>
+          </u-form-field>
 
           <div
             v-if="form.root_path"
@@ -376,7 +376,7 @@
           <p class="text-sm text-gray-500 dark:text-gray-400">
             {{ t('projects.step_languages_hint', 'Add the languages for this project. The first one will be set as default. You can add more later.') }}
           </p>
-          <LanguagePicker v-model="form.languages" />
+          <project-language-picker v-model="form.languages" />
         </div>
 
         <!-- Edit: single step (all fields) -->
@@ -384,65 +384,65 @@
           v-if="editingProject"
           class="space-y-4"
         >
-          <UFormField
+          <u-form-field
             :label="t('projects.name_label', 'Project name')"
             required
             :error="nameError"
           >
-            <UInput
+            <u-input
               v-model="form.name"
               class="w-full"
               :placeholder="t('projects.name_placeholder', 'My Vue App')"
               @input="nameError = ''"
             />
-          </UFormField>
+          </u-form-field>
 
-          <UFormField
+          <u-form-field
             :hint="t('projects.local_path_hint', 'Absolute path on the server where the dashboard runs')"
             :label="t('projects.local_path_label', 'Local path (optional)')"
           >
-            <PathPicker
+            <project-path-picker
               v-model="form.root_path"
               class="w-full"
             />
-          </UFormField>
+          </u-form-field>
 
-          <UFormField
+          <u-form-field
             :hint="t('projects.locales_path_hint', 'Relative to the project root')"
             :label="t('projects.locales_path_label', 'Locales folder')"
           >
-            <UInput
+            <u-input
               v-model="form.locales_path"
               class="w-full"
-              placeholder="src/locales"
+              :placeholder="t('projects.locales_path_placeholder', 'src/locales')"
             />
-          </UFormField>
+          </u-form-field>
 
           <div class="grid grid-cols-2 gap-4">
-            <UFormField :label="t('projects.key_separator_label', 'Key separator')">
-              <UInput
+            <u-form-field :label="t('projects.key_separator_label', 'Key separator')">
+              <u-input
                 v-model="form.key_separator"
                 :maxlength="5"
                 class="w-full"
-                placeholder="."
+                :placeholder="t('projects.key_separator_placeholder', '.')"
               />
-            </UFormField>
-            <UFormField :label="t('projects.color_label', 'Color')">
-              <USelect
+            </u-form-field>
+            <u-form-field :label="t('projects.color_label', 'Color')">
+              <u-select
                 v-model="form.color"
                 :items="colorOptions"
                 class="w-full"
               />
-            </UFormField>
+            </u-form-field>
           </div>
 
-          <UFormField :label="t('translations.description_label', 'Description')">
-            <UInput
+          <u-form-field :label="t('translations.description_label', 'Description')">
+            <u-input
               v-model="form.description"
               class="w-full"
               :placeholder="t('projects.description_placeholder', 'Optional description')"
             />
-          </UFormField>
+          </u-form-field>
 
           <div
             v-if="form.root_path"
@@ -461,7 +461,7 @@
             <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
               {{ t('projects.git_repo_title', 'Git repository') }}
             </p>
-            <GitRepoManager v-model="form.git_repo" />
+            <project-git-repo-manager v-model="form.git_repo" />
           </div>
         </div>
       </template>
@@ -473,59 +473,59 @@
         >
           <!-- Step 1 -->
           <template v-if="step === 1">
-            <UButton
+            <u-button
               data-cy="modal-cancel-btn"
               color="neutral"
               variant="ghost"
               @click="showModal = false"
             >
               {{ t('common.cancel', 'Cancel') }}
-            </UButton>
-            <UButton
+            </u-button>
+            <u-button
               :disabled="!form.root_path && !form.git_repo?.url"
               :loading="detecting"
               @click="detectAndNext"
             >
               {{ detecting ? t('projects.detecting', 'Detecting...') : t('projects.detect_next', 'Detect & Next') }}
-              <UIcon
+              <u-icon
                 v-if="!detecting"
                 name="i-heroicons-arrow-right"
                 class="ml-1"
               />
-            </UButton>
+            </u-button>
           </template>
           <!-- Step 2 -->
           <template v-else-if="step === 2">
-            <UButton
+            <u-button
               color="neutral"
               variant="ghost"
               icon="i-heroicons-arrow-left"
               @click="step = 1"
             >
               {{ t('common.back', 'Back') }}
-            </UButton>
+            </u-button>
             <div class="flex gap-3">
-              <UButton
+              <u-button
                 color="neutral"
                 variant="ghost"
                 @click="showModal = false"
               >
                 {{ t('common.cancel', 'Cancel') }}
-              </UButton>
-              <UButton
+              </u-button>
+              <u-button
                 :disabled="!form.name || !!nameError"
                 @click="step = 3"
               >
-                {{ t('common.next', 'Next') }} <UIcon
+                {{ t('common.next', 'Next') }} <u-icon
                   name="i-heroicons-arrow-right"
                   class="ml-1"
                 />
-              </UButton>
+              </u-button>
             </div>
           </template>
           <!-- Step 3 -->
           <template v-else-if="step === 3">
-            <UButton
+            <u-button
               color="neutral"
               variant="ghost"
               icon="i-heroicons-arrow-left"
@@ -533,23 +533,23 @@
               @click="step = 2"
             >
               {{ t('common.back', 'Back') }}
-            </UButton>
+            </u-button>
             <div class="flex gap-3">
-              <UButton
+              <u-button
                 color="neutral"
                 variant="ghost"
                 :disabled="saving || !!creationStep"
                 @click="showModal = false"
               >
                 {{ t('common.cancel', 'Cancel') }}
-              </UButton>
-              <UButton
+              </u-button>
+              <u-button
                 :disabled="!form.name"
                 :loading="saving || !!creationStep"
                 @click="saveProject"
               >
                 {{ creationStep || t('common.create', 'Create') }}
-              </UButton>
+              </u-button>
             </div>
           </template>
         </div>
@@ -558,26 +558,26 @@
           v-else
           class="flex justify-end gap-3"
         >
-          <UButton
+          <u-button
             color="neutral"
             variant="ghost"
             @click="showModal = false"
           >
             {{ t('common.cancel', 'Cancel') }}
-          </UButton>
-          <UButton
+          </u-button>
+          <u-button
             :disabled="!form.name || !!nameError"
             :loading="saving"
             @click="saveProject"
           >
             {{ t('common.edit', 'Edit') }}
-          </UButton>
+          </u-button>
         </div>
       </template>
-    </UModal>
+    </u-modal>
 
     <!-- Scan modal -->
-    <ScanModal
+    <common-scan-modal
       v-if="scanningProject"
       v-model:open="showScanModal"
       :project-id="scanningProject.id"
@@ -586,7 +586,7 @@
     />
 
     <!-- Delete confirm -->
-    <UModal
+    <u-modal
       v-model:open="showDeleteConfirm"
       :title="t('projects.delete_title', 'Delete project')"
     >
@@ -605,24 +605,24 @@
       </template>
       <template #footer>
         <div class="flex justify-end gap-3">
-          <UButton
+          <u-button
             color="neutral"
             variant="ghost"
             @click="showDeleteConfirm = false"
           >
             {{ t('common.cancel', 'Cancel') }}
-          </UButton>
-          <UButton
+          </u-button>
+          <u-button
             data-cy="project-delete-confirm-btn"
             :loading="deleting"
             color="error"
             @click="deleteProject"
           >
             {{ t('common.delete', 'Delete') }}
-          </UButton>
+          </u-button>
         </div>
       </template>
-    </UModal>
+    </u-modal>
   </div>
 </template>
 
@@ -686,12 +686,17 @@ const {
   syncProject,
   fetchProjects,
   visibleProjects: userProjects,
+  checkProjectName,
+  detectProject,
+  scanWithOptions,
 } = useProject()
+
+const { createLanguageForProject } = useLanguages()
 
 const showScanModal = ref(false)
 const scanningProject = ref<any>(null)
 
-function openScanModal(project: any) {
+const openScanModal = (project: any) => {
   scanningProject.value = project
   showScanModal.value = true
 }
@@ -701,14 +706,12 @@ watch(() => form.value.name, (name) => {
   if (_nameCheckTimer) clearTimeout(_nameCheckTimer)
   if (!name.trim()) { nameError.value = ''; return }
   _nameCheckTimer = setTimeout(async () => {
-    const result = await $fetch<{ available: boolean }>('/api/projects/check-name', {
-      query: { name, exclude_id: editingProject.value?.id ?? undefined },
-    })
+    const result = await checkProjectName(name, editingProject.value?.id ?? undefined)
     nameError.value = result.available ? '' : t('projects.name_taken', 'This name is already taken')
   }, 400)
 })
 
-function openAdd() {
+const openAdd = () => {
   editingProject.value = null
   nameError.value = ''
   step.value = 1
@@ -716,7 +719,7 @@ function openAdd() {
   showModal.value = true
 }
 
-function openEdit(project: any) {
+const openEdit = (project: any) => {
   editingProject.value = project
   step.value = 1
   form.value = {
@@ -732,7 +735,7 @@ function openEdit(project: any) {
   showModal.value = true
 }
 
-function projectActions(project: any) {
+const projectActions = (project: any) => {
   return [
     [
       { label: t('common.edit', 'Edit'), icon: 'i-heroicons-pencil', onSelect: () => openEdit(project) },
@@ -746,7 +749,7 @@ function projectActions(project: any) {
   ]
 }
 
-async function detectAndNext() {
+const detectAndNext = async () => {
   detecting.value = true
   try {
     const body: Record<string, string> = {}
@@ -757,10 +760,7 @@ async function detectAndNext() {
       if (form.value.git_repo.token) body.git_token = form.value.git_repo.token
     }
 
-    const data = await $fetch<{ name?: string; localesPath?: string; languages: Array<{ code: string; name: string }> }>('/api/projects/detect', {
-      method: 'POST',
-      body,
-    })
+    const data = await detectProject(body)
 
     if (data.name) form.value.name = data.name
     if (data.localesPath !== undefined) form.value.locales_path = data.localesPath || 'src/locales'
@@ -772,7 +772,7 @@ async function detectAndNext() {
   } catch (e: any) {
     toast.add({
       title: t('common.error', 'Error'),
-      description: e?.data?.message ?? e?.message ?? 'Detection failed',
+      description: e?.data?.message ?? e?.message ?? t('projects.detection_failed', 'Detection failed'),
       color: 'error',
     })
   } finally {
@@ -780,7 +780,7 @@ async function detectAndNext() {
   }
 }
 
-async function saveProject() {
+const saveProject = async () => {
   if (!form.value.name || nameError.value) return
   nameError.value = ''
   if (editingProject.value) {
@@ -794,10 +794,7 @@ async function saveProject() {
         if (form.value.languages.length) {
           creationStep.value = t('projects.creating_languages', 'Adding languages...')
           for (const lang of form.value.languages) {
-            await $fetch('/api/languages', {
-              method: 'POST',
-              body: { project_id: newProject.id, code: lang.code, name: lang.name, is_default: lang.is_default },
-            })
+            await createLanguageForProject(newProject.id, { code: lang.code, name: lang.name, is_default: lang.is_default })
           }
         }
 
@@ -816,14 +813,13 @@ async function saveProject() {
         if (scanBody.mode) {
           creationStep.value = t('projects.scanning_files', 'Scanning source files...')
           try {
-            await $fetch('/api/scan', { method: 'POST', body: scanBody })
+            await scanWithOptions(scanBody)
           } catch {}
 
-          // Sync translations from local JSON files (local mode only)
           if (scanBody.mode === 'local') {
             creationStep.value = t('projects.syncing_translations', 'Syncing translations...')
             try {
-              await $fetch('/api/sync', { method: 'POST', body: { project_id: newProject.id } })
+              await syncProject({ id: newProject.id, name: newProject.name })
             } catch {}
           }
         }
@@ -840,7 +836,7 @@ async function saveProject() {
       } else {
         toast.add({
           title: t('common.error', 'Error'),
-          description: e?.data?.message ?? e?.message ?? 'Could not create project',
+          description: e?.data?.message ?? e?.message ?? t('projects.create_failed', 'Could not create project'),
           color: 'error',
         })
       }
@@ -848,7 +844,7 @@ async function saveProject() {
   }
 }
 
-async function deleteProject() {
+const deleteProject = async () => {
   if (!deletingProject.value) return
   const ok = await doDeleteProject(deletingProject.value.id)
   if (ok) showDeleteConfirm.value = false

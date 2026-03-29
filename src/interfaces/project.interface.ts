@@ -7,11 +7,15 @@ export interface IGitRepo {
 export interface IProjectPayload {
   name: string
   root_path?: string
+  source_url?: string
   locales_path: string
   key_separator: string
   color?: string
   description?: string
   git_repo?: IGitRepo | null
+  enable_number_formats?: boolean
+  enable_datetime_formats?: boolean
+  enable_modifiers?: boolean
 }
 
 export interface IProject {
@@ -27,4 +31,24 @@ export interface IProject {
   language_count?: number
   is_system?: boolean
   git_repo?: { name?: string; url: string; branch?: string; token?: string } | null
+  enable_number_formats?: boolean
+  enable_datetime_formats?: boolean
+  enable_modifiers?: boolean
+}
+
+export interface IGitRepoManagerProps {
+  modelValue: IGitRepo | null | undefined
+}
+
+export interface IGitRepoManagerEmits {
+  'update:modelValue': [value: IGitRepo | null]
+}
+
+export interface IPathPickerProps {
+  modelValue: string
+  placeholder?: string
+}
+
+export interface IPathPickerEmits {
+  'update:modelValue': [value: string]
 }

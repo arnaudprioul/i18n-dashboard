@@ -1,53 +1,49 @@
 <template>
   <div class="space-y-2">
     <div class="grid grid-cols-2 gap-2">
-      <UFormField
+      <u-form-field
         :label="t('projects.git_repo_url_label', 'Repository URL')"
         class="col-span-2"
       >
-        <UInput
+        <u-input
           v-model="local.url"
           class="w-full"
           placeholder="https://github.com/org/repo.git"
           @input="emitCurrent"
         />
-      </UFormField>
-      <UFormField
+      </u-form-field>
+      <u-form-field
         :label="t('projects.git_repo_branch_label', 'Branch')"
         class="col-span-2"
       >
-        <UInput
+        <u-input
           v-model="local.branch"
           class="w-full"
           placeholder="main"
           @input="emitCurrent"
         />
-      </UFormField>
+      </u-form-field>
     </div>
-    <UFormField :label="t('projects.git_token_label', 'Access token (optional)')">
-      <UInput
+    <u-form-field :label="t('projects.git_token_label', 'Access token (optional)')">
+      <u-input
         v-model="local.token"
         type="password"
         class="w-full"
         :placeholder="t('projects.git_token_placeholder', 'ghp_...')"
         @input="emitCurrent"
       />
-    </UFormField>
+    </u-form-field>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { IGitRepo } from '../interfaces/project.interface'
+import type { IGitRepo, IGitRepoManagerProps, IGitRepoManagerEmits } from '../../interfaces/project.interface'
 
 const { t } = useT()
 
-const props = defineProps<{
-  modelValue: IGitRepo | null | undefined
-}>()
+const props = defineProps<IGitRepoManagerProps>()
 
-const emit = defineEmits<{
-  'update:modelValue': [value: IGitRepo | null]
-}>()
+const emit = defineEmits<IGitRepoManagerEmits>()
 
 const local = reactive<IGitRepo>({ url: '', branch: '', token: '' })
 
@@ -57,7 +53,7 @@ watch(() => props.modelValue, (val) => {
   local.token = val?.token ?? ''
 }, { immediate: true })
 
-function emitCurrent() {
+const emitCurrent = () => {
   emit('update:modelValue', local.url.trim() ? { ...local } : null)
 }
 </script>

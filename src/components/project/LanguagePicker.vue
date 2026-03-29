@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-3">
     <!-- Search -->
-    <UInput
+    <u-input
       v-model="search"
       :placeholder="t('onboarding.languages_search', 'Search for a language...')"
       icon="i-heroicons-magnifying-glass"
@@ -22,7 +22,7 @@
           <span class="font-mono text-xs text-gray-400 w-14 shrink-0">{{ lang.code }}</span>
           <span class="flex-1">{{ lang.nativeName }}</span>
           <span class="text-xs text-gray-400 shrink-0">{{ lang.name }}</span>
-          <UIcon
+          <u-icon
             v-if="isSelected(lang.code)"
             name="i-heroicons-check"
             class="text-primary-500 shrink-0"
@@ -45,18 +45,18 @@
           class="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-left hover:bg-amber-50 dark:hover:bg-amber-900/20 text-gray-500 dark:text-gray-400 transition-colors"
           @click="addCustom(search)"
         >
-          <UIcon
+          <u-icon
             name="i-heroicons-plus-circle"
             class="shrink-0 text-amber-500"
           />
           <span class="flex-1">{{ t('languages.use_code', 'Use code') }} <code class="font-mono bg-gray-100 dark:bg-gray-800 px-1 rounded">{{ search }}</code></span>
-          <UBadge
+          <u-badge
             size="xs"
             color="warning"
             variant="soft"
           >
             BCP 47
-          </UBadge>
+          </u-badge>
         </button>
       </div>
     </div>
@@ -76,7 +76,7 @@
           class="flex items-center gap-1.5 bg-gray-100 dark:bg-gray-800 rounded-lg px-2 py-1"
         >
           <span class="text-xs font-mono font-medium text-gray-700 dark:text-gray-300">{{ lang.code }}</span>
-          <UBadge
+          <u-badge
             v-if="lang.is_default"
             size="xs"
             color="primary"
@@ -85,14 +85,14 @@
             @click="setDefault(lang.code)"
           >
             {{ t('languages.default_badge', 'Default') }}
-          </UBadge>
+          </u-badge>
           <button
             v-else
             class="text-xs text-gray-400 hover:text-primary-500 transition-colors"
             :title="t('languages.set_as_default', 'Set as default')"
             @click="setDefault(lang.code)"
           >
-            <UIcon
+            <u-icon
               name="i-heroicons-star"
               class="text-xs"
             />
@@ -101,7 +101,7 @@
             class="text-gray-300 hover:text-red-500 transition-colors"
             @click="remove(lang.code)"
           >
-            <UIcon
+            <u-icon
               name="i-heroicons-x-mark"
               class="text-xs"
             />
@@ -113,17 +113,13 @@
 </template>
 
 <script setup lang="ts">
-import { LANGUAGES } from '../consts/languages.const'
+import { LANGUAGES } from '../../consts/languages.const'
+import type { ILanguagePickerProps, ILanguagePickerEmits } from '../../interfaces/languages.interface'
 
 const { t } = useT()
 
-const props = defineProps<{
-  modelValue: Array<{ code: string; name: string; is_default: boolean }>
-}>()
-
-const emit = defineEmits<{
-  'update:modelValue': [value: Array<{ code: string; name: string; is_default: boolean }>]
-}>()
+const props = defineProps<ILanguagePickerProps>()
+const emit = defineEmits<ILanguagePickerEmits>()
 
 const search = ref('')
 
@@ -139,22 +135,22 @@ const filteredList = computed(() => {
   return list
 })
 
-function isSelected(code: string) {
+const isSelected = (code: string) => {
   return props.modelValue.some(l => l.code === code)
 }
 
-function isValidBcp47(code: string): boolean {
+const isValidBcp47 = (code: string): boolean => {
   return /^[a-z]{2,8}(-[A-Za-z0-9]{1,8})*$/i.test(code) && code.length >= 2
 }
 
-function add(lang: { code: string; name: string; nativeName: string }) {
+const add = (lang: { code: string; name: string; nativeName: string }) => {
   if (isSelected(lang.code)) return
   const isFirst = props.modelValue.length === 0
   emit('update:modelValue', [...props.modelValue, { code: lang.code, name: lang.name, is_default: isFirst }])
   search.value = ''
 }
 
-function addCustom(code: string) {
+const addCustom = (code: string) => {
   const normalized = code.trim()
   if (isSelected(normalized)) return
   const isFirst = props.modelValue.length === 0
@@ -162,7 +158,7 @@ function addCustom(code: string) {
   search.value = ''
 }
 
-function remove(code: string) {
+const remove = (code: string) => {
   const updated = props.modelValue.filter(l => l.code !== code)
   // If we removed the default, set the first one as default
   if (updated.length && !updated.some(l => l.is_default)) {
@@ -171,7 +167,7 @@ function remove(code: string) {
   emit('update:modelValue', updated)
 }
 
-function setDefault(code: string) {
+const setDefault = (code: string) => {
   emit('update:modelValue', props.modelValue.map(l => ({ ...l, is_default: l.code === code })))
 }
 </script>

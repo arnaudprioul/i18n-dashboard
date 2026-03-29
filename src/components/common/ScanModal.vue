@@ -1,5 +1,5 @@
 <template>
-  <UModal
+  <u-modal
     v-model:open="open"
     :title="t('scan.modal_title', 'Scan project')"
     :ui="{ width: '48rem' }"
@@ -17,7 +17,7 @@
               : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
             @click="mode = m.value"
           >
-            <UIcon
+            <u-icon
               :name="m.icon"
               class="text-sm"
             />
@@ -33,12 +33,12 @@
           <p class="text-sm text-gray-500 dark:text-gray-400">
             {{ t('scan.local_hint', 'Select the root folder of your Vue.js project. The scanner will detect all $t(), t(), <i18n-t> and v-t usages.') }}
           </p>
-          <UFormField :label="t('scan.local_path_label', 'Project root folder')">
-            <PathPicker
+          <u-form-field :label="t('scan.local_path_label', 'Project root folder')">
+            <project-path-picker
               v-model="localPath"
               class="w-full"
             />
-          </UFormField>
+          </u-form-field>
         </div>
 
         <!-- Git mode -->
@@ -49,9 +49,9 @@
           <p class="text-sm text-gray-500 dark:text-gray-400">
             {{ t('scan.git_hint', 'Clone a Git repository and scan source files for translation keys.') }}
           </p>
-          <GitRepoManager v-model="gitRepo" />
+          <project-git-repo-manager v-model="gitRepo" />
           <label class="flex items-center gap-2 cursor-pointer">
-            <UToggle
+            <u-switch
               v-model="saveRepo"
               size="sm"
             />
@@ -148,37 +148,35 @@
 
     <template #footer>
       <div class="flex justify-end gap-2">
-        <UButton
+        <u-button
           color="neutral"
           variant="ghost"
           @click="open = false"
         >
           {{ t('common.cancel', 'Cancel') }}
-        </UButton>
-        <UButton
+        </u-button>
+        <u-button
           :loading="loading"
           :disabled="mode === 'local' ? !localPath : !gitRepo?.url"
           icon="i-heroicons-magnifying-glass"
           @click="runScan"
         >
           {{ t('scan.run', 'Scan') }}
-        </UButton>
+        </u-button>
       </div>
     </template>
-  </UModal>
+  </u-modal>
 </template>
 
 <script setup lang="ts">
-import type { IGitRepo } from '../interfaces/project.interface'
+import type { IScanModalProps, IScanModalEmits } from '../../interfaces/scan.interface'
 
 const { t } = useT()
+const { updateProject, scanWithOptions } = useProject()
 
-const props = defineProps<{
-  projectId: number
-  project?: { languages?: { code: string; name: string }[]; root_path?: string; git_repo?: IGitRepo | null }
-}>()
+const props = defineProps<IScanModalProps>()
 
-const emit = defineEmits<{ done: [] }>()
+const emit = defineEmits<IScanModalEmits>()
 
 const open = defineModel<boolean>('open', { default: false })
 
@@ -206,32 +204,26 @@ watch(open, (val) => {
   }
 })
 
-async function runScan() {
+const runScan = async () => {
   loading.value = true
   error.value = ''
   result.value = null
   try {
     if (mode.value === 'git' && saveRepo.value && gitRepo.value?.url) {
-      await $fetch(`/api/projects/${props.projectId}`, {
-        method: 'PUT',
-        body: { git_repo: gitRepo.value },
-      })
+      await updateProject(props.projectId, { git_repo: gitRepo.value })
     }
 
-    result.value = await $fetch('/api/scan', {
-      method: 'POST',
-      body: {
-        project_id: props.projectId,
-        mode: mode.value,
-        root_path: mode.value === 'local' ? localPath.value : undefined,
-        git_url: mode.value === 'git' ? gitRepo.value?.url : undefined,
-        git_branch: mode.value === 'git' ? gitRepo.value?.branch : undefined,
-        git_token: mode.value === 'git' ? gitRepo.value?.token : undefined,
-      },
+    result.value = await scanWithOptions({
+      project_id: props.projectId,
+      mode: mode.value,
+      root_path: mode.value === 'local' ? localPath.value : undefined,
+      git_url: mode.value === 'git' ? gitRepo.value?.url : undefined,
+      git_branch: mode.value === 'git' ? gitRepo.value?.branch : undefined,
+      git_token: mode.value === 'git' ? gitRepo.value?.token : undefined,
     })
     emit('done')
   } catch (e: any) {
-    error.value = e?.data?.message ?? t('common.error', 'Error')
+    error.value = e?.message ?? t('common.error', 'Error')
   } finally {
     loading.value = false
   }

@@ -17,7 +17,7 @@ export function useKeys(options: {
   const data = ref<IKeysResponse | null>(null)
   const listPending = ref(false)
 
-  async function refresh() {
+  const refresh = async () => {
     if (!options.queryParams?.value.project_id) return
     listPending.value = true
     try {
@@ -34,7 +34,7 @@ export function useKeys(options: {
   }
 
   const addingKey = ref(false)
-  async function createKey(projectId: number, key: string, description?: string): Promise<boolean> {
+  const createKey = async (projectId: number, key: string, description?: string): Promise<boolean> => {
     addingKey.value = true
     try {
       await keyService.createKey({ project_id: projectId, key, description })
@@ -52,7 +52,7 @@ export function useKeys(options: {
   }
 
   const scanning = ref(false)
-  async function scan(projectId: number): Promise<void> {
+  const scan = async (projectId: number): Promise<void> => {
     scanning.value = true
     try {
       const result = await scanService.scan(projectId)
@@ -71,7 +71,7 @@ export function useKeys(options: {
   }
 
   const syncing = ref(false)
-  async function sync(projectId: number): Promise<void> {
+  const sync = async (projectId: number): Promise<void> => {
     syncing.value = true
     try {
       const result = await scanService.sync(projectId)
@@ -89,7 +89,7 @@ export function useKeys(options: {
   }
 
   const batchTranslating = ref(false)
-  async function batchTranslate(projectId: number, targetLang: string): Promise<void> {
+  const batchTranslate = async (projectId: number, targetLang: string): Promise<void> => {
     batchTranslating.value = true
     try {
       const result = await translationService.batchTranslate(projectId, targetLang)
@@ -117,7 +117,7 @@ export function useKeys(options: {
   const keyData = ref<Awaited<ReturnType<typeof keyService.getKey>> | null>(null)
   const detailPending = ref(false)
 
-  async function detailRefresh() {
+  const detailRefresh = async () => {
     const id = keyId.value
     if (!id) { keyData.value = null; return }
     detailPending.value = true
@@ -136,7 +136,7 @@ export function useKeys(options: {
   watch(keyId, (id) => { if (id) detailRefresh() })
 
   const savingLang = ref<string | null>(null)
-  async function saveTranslation(langCode: string, value: string): Promise<void> {
+  const saveTranslation = async (langCode: string, value: string): Promise<void> => {
     if (!keyData.value) return
     savingLang.value = langCode
     try {
@@ -150,7 +150,7 @@ export function useKeys(options: {
   }
 
   const settingStatus = ref<string | null>(null)
-  async function setStatus(langCode: string, status: string): Promise<void> {
+  const setStatus = async (langCode: string, status: string): Promise<void> => {
     if (!keyData.value) return
     settingStatus.value = `${langCode}:${status}`
     try {
@@ -163,7 +163,7 @@ export function useKeys(options: {
     }
   }
 
-  async function restoreVersion(langCode: string, value: string): Promise<void> {
+  const restoreVersion = async (langCode: string, value: string): Promise<void> => {
     if (!keyData.value) return
     try {
       await translationService.save({ key_id: keyData.value.id, language_code: langCode, value })
@@ -173,7 +173,7 @@ export function useKeys(options: {
     catch {}
   }
 
-  async function autoTranslate(langCode: string, text: string, sourceLang: string): Promise<string | null> {
+  const autoTranslate = async (langCode: string, text: string, sourceLang: string): Promise<string | null> => {
     try {
       const result = await translationService.translateText(text, sourceLang, langCode)
       return result.text
@@ -184,7 +184,7 @@ export function useKeys(options: {
   }
 
   const savingDescription = ref(false)
-  async function updateDescription(description: string | null): Promise<void> {
+  const updateDescription = async (description: string | null): Promise<void> => {
     if (!keyData.value) return
     savingDescription.value = true
     try {
@@ -199,7 +199,7 @@ export function useKeys(options: {
   }
 
   const deleting = ref(false)
-  async function deleteKey(): Promise<void> {
+  const deleteKey = async (): Promise<void> => {
     if (!keyData.value) return
     deleting.value = true
     try {
@@ -211,6 +211,37 @@ export function useKeys(options: {
     catch {
       deleting.value = false
     }
+  }
+
+  // ── Row-level operations (for TranslationRow component) ───────────────────
+  // These accept explicit IDs instead of relying on the current keyData ref.
+
+  const saveTranslationById = async (keyId: number, langCode: string, value: string): Promise<void> => {
+    await translationService.save({ key_id: keyId, language_code: langCode, value })
+  }
+
+  const setTranslationStatusById = async (keyId: number, langCode: string, status: string): Promise<void> => {
+    await translationService.setStatus({ key_id: keyId, language_code: langCode, status })
+  }
+
+  const autoTranslateById = async (keyId: number, langCode: string, text: string, sourceLang: string): Promise<void> => {
+    const result = await translationService.translateText(text, sourceLang, langCode)
+    await translationService.save({ key_id: keyId, language_code: langCode, value: result.text })
+  }
+
+  const updateDescriptionById = async (keyId: number, description: string | null): Promise<void> => {
+    await keyService.updateKey(keyId, { description })
+  }
+
+  const deleteKeyById = async (keyId: number): Promise<void> => {
+    await keyService.deleteKey(keyId)
+  }
+
+  // ── Search (for pickers) ──────────────────────────────────────────────────
+
+  const searchKeys = async (projectId: number, search?: string, limit = 50) => {
+    const res = await keyService.getKeys({ project_id: projectId, search: search || undefined, limit, page: 1 })
+    return res.data
   }
 
   // ── Shared ────────────────────────────────────────────────────────────────
@@ -240,6 +271,14 @@ export function useKeys(options: {
     updateDescription,
     deleting,
     deleteKey,
+    // Row-level
+    saveTranslationById,
+    setTranslationStatusById,
+    autoTranslateById,
+    updateDescriptionById,
+    deleteKeyById,
+    // Search
+    searchKeys,
     // Shared
     pending,
     refresh: options.id ? detailRefresh : refresh,

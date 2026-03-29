@@ -58,7 +58,7 @@ export function useProject() {
   const router = useRouter()
 
   const saving = ref(false)
-  async function createProject(payload: IProjectPayload): Promise<any> {
+  const createProject = async (payload: IProjectPayload): Promise<any> => {
     saving.value = true
     try {
       const project = await projectService.create(payload)
@@ -74,7 +74,7 @@ export function useProject() {
     }
   }
 
-  async function updateProject(id: number, payload: Partial<IProjectPayload>): Promise<boolean> {
+  const updateProject = async (id: number, payload: Partial<IProjectPayload>): Promise<boolean> => {
     saving.value = true
     try {
       await projectService.update(id, payload)
@@ -91,7 +91,7 @@ export function useProject() {
   }
 
   const deleting = ref(false)
-  async function deleteProject(id: number): Promise<boolean> {
+  const deleteProject = async (id: number): Promise<boolean> => {
     deleting.value = true
     try {
       await projectService.remove(id)
@@ -111,7 +111,7 @@ export function useProject() {
   // ── Scan / Sync ─────────────────────────────────────────────────────────────
 
   const scanning = ref<number | null>(null)
-  async function scanProject(project: { id: number; name: string }): Promise<void> {
+  const scanProject = async (project: { id: number; name: string }): Promise<void> => {
     scanning.value = project.id
     try {
       const result = await scanService.scan(project.id)
@@ -131,7 +131,7 @@ export function useProject() {
   }
 
   const syncing = ref<number | null>(null)
-  async function syncProject(project: { id: number; name: string }): Promise<void> {
+  const syncProject = async (project: { id: number; name: string }): Promise<void> => {
     syncing.value = project.id
     try {
       const result = await scanService.sync(project.id)
@@ -147,6 +147,28 @@ export function useProject() {
     finally {
       syncing.value = null
     }
+  }
+
+  // ── Project helpers ──────────────────────────────────────────────────────────
+
+  const checkProjectName = async (name: string, excludeId?: number): Promise<{ available: boolean }> => {
+    return projectService.checkName(name, excludeId)
+  }
+
+  const detectProject = async (body: any) => {
+    return projectService.detect(body)
+  }
+
+  // ── Scan with custom options (for ScanModal) ─────────────────────────────────
+
+  const scanWithOptions = async (body: Parameters<typeof scanService.scanWithOptions>[0]) => {
+    return scanService.scanWithOptions(body)
+  }
+
+  // ── Snapshot import ──────────────────────────────────────────────────────────
+
+  const importSnapshot = async (data: { snapshot: any; project_id: number; mode: string }) => {
+    return projectService.importSnapshot(data)
   }
 
   return {
@@ -165,5 +187,9 @@ export function useProject() {
     scanProject,
     syncing,
     syncProject,
+    checkProjectName,
+    detectProject,
+    scanWithOptions,
+    importSnapshot,
   }
 }
